@@ -1,5 +1,5 @@
 <?php
 
-echo "You are welcome ".$_POST["name"];
+echo "You are welcome ";
 
 ?>
