@@ -217,7 +217,7 @@ body {
     font-weight: 400;
     color: var(--white-1);
     line-height: var(--line-height-normal);
-    background: var(--black);
+    background: var(--black) !important;
     overflow-x: hidden;
 }
 
