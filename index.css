@@ -226,10 +226,9 @@ body {
 .brow{
     background-color:rgb(148, 185, 113);
     align-items: center;
+    border-bottom-left-radius: 70%;
+    border-bottom-right-radius: 70%;
     
-}
-ul{
-    padding-right: 4cm;
 }
     
 @media(max-width: 1340px) {
