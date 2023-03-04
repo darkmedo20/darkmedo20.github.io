@@ -226,6 +226,7 @@ body {
 .brow{
     background-color:rgb(148, 185, 113);
     align-items: center;
+    margin-right: 4cm;
 }
     
 @media(max-width: 1340px) {
