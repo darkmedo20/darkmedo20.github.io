@@ -3,43 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <title>Toggleable Definitions</title>
-  <style> 
-    @import url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
+  <style>
+  @import url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
 
-    * {
-      align-items: center;
-      margin-left: 50px;
-      background-color: #252833;
-    }
-    p {
-      color: #D6E5EF;
-      font-family: Calibri, sans-serif;
-      font-size: 22px;
-      margin-left: 2cm;
-    }
-    details {
-      margin-bottom: 10px;
-      font-family: sans-serif;
-      color: white; /* Sets the font color of details */
-    }
+  details {
+    margin-bottom: 10px;
+    font-family: sans-serif;
+    color: green;
+  }
 
   summary {
     cursor: pointer;
     font-weight: bold;
     font-family: 'Lora', serif;
     font-size: 22px;
-    line-height: 40px;
-    background: linear-gradient(
-      to right,
-      #6EB9FC 2%,
-      #F888D2 25%,
-      #FD957D 70%
-    );
-    /* background: linear-gradient(to right, orange, aqua, white); */
+    background: linear-gradient(to right, #6EB9FC 2%, #F888D2 25%, #FD957D 70%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    list-style: none; /* Removes default arrow */
+    position: relative;
+    padding-left: 20px; /* Space for custom indicator */
+  }
+
+  summary::before {
+    content: "▶"; /* Closed state arrow */
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #888;
+    transition: transform 0.3s ease;
+  }
+
+  details[open] summary::before {
+    content: "▼"; /* Open state arrow */
+  }
+
+  details[open] summary::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 50%;
+    width: 12px;
+    height: 2px;
+    background-color: #888;
+    transform: translateY(-50%);
+  }
+
+  p {
+    font-family: Calibri, sans-serif;
+    font-size: 18px;
   }
 </style>
+
 </head>
 <body>
 
