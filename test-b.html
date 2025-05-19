@@ -178,5 +178,25 @@
   
     </div>
   </body>
-
+  <script>
+      const btn = document.getElementById('fullscreen-btn');
+    
+      function updateFullscreenButton() {
+        if (document.fullscreenElement) {
+          btn.innerHTML = "❌ Exit Fullscreen"; // or use an <img> tag here
+        } else {
+          btn.innerHTML = "🔳 Enter Fullscreen";
+        }
+      }
+    
+      btn.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
+      });
+    
+      document.addEventListener('fullscreenchange', updateFullscreenButton);
+  </script>
 </html>
