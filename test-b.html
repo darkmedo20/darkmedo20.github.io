@@ -67,7 +67,17 @@
       margin-right: 1rem; /* Control space between marker and text *
       padding-right: 1px;
     }*/
-  
+    .lazy-load {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease;
+    }
+    
+    .lazy-load.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     @media (max-width: 600px) {
       p {
         font-size: 1rem;
@@ -86,6 +96,26 @@
       }
     }
   </style>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target); // Optional: stop observing after reveal
+          }
+        });
+      }, {
+        threshold: 0.1
+      });
+  
+      document.querySelectorAll("details").forEach(detail => {
+        detail.classList.add("lazy-load");
+        observer.observe(detail);
+      });
+    });
+  </script>
+
 </head>
 <body>
   <div class="container">
