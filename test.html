@@ -1,8 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Toggleable Definitions</title>
   <script>
   const btn = document.getElementById('fullscreen-btn');
 
@@ -14,6 +11,10 @@
     }
   });
 </script>
+<head>
+  <meta charset="UTF-8">
+  <title>Toggleable Definitions</title>
+  
 
   <style> 
     @import url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
@@ -208,17 +209,14 @@
 
 </body>
   <script>
-  function enterFullscreen() {
-    const iframe = document.getElementById('fs-iframe');
-    if (iframe.requestFullscreen) {
-      iframe.requestFullscreen();
-    } else if (iframe.webkitRequestFullscreen) { /* Safari */
-      iframe.webkitRequestFullscreen();
-    } else if (iframe.msRequestFullscreen) { /* IE11 */
-      iframe.msRequestFullscreen();
+  const btn = document.getElementById('fullscreen-btn');
+
+  btn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
     } else {
-      alert("Fullscreen mode is not supported on this browser.");
+      document.exitFullscreen();
     }
-  }
+  });
 </script>
 </html>
