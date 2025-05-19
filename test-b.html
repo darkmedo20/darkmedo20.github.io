@@ -8,7 +8,7 @@
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
     #fullscreen-btn {
-      background-color: #6EB9FC;
+      background-color: #0097B1;
       /*color: #252833;*/
       position: right;
       align-items: right;
@@ -21,7 +21,7 @@
     }
     
     #fullscreen-btn:hover {
-      background-color: #4a9cdc;
+      background-color: #FCA105;
     }
 
     body {
@@ -163,9 +163,13 @@
       const btn = document.getElementById('fullscreen-btn');
       function updateFullscreenButton() {
         if (document.fullscreenElement) {
-          btn.innerHTML = "><";
+          /*btn.innerHTML = "> <";*/
+          btn.innerHTML = '<img src="exit-fullscreen.png" alt="Full Screen" height=15px width=15px>';
+          btn.title = "Exit Full Screen";
         } else {
           btn.innerHTML = '<img src="fullscreen.png" alt="Full Screen" height=15px width=15px>';
+          btn.title = "Full Screen";
+
         }
       }
       
