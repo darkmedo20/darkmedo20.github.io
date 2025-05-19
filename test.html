@@ -206,6 +206,17 @@
       <p>The core part of the operating system that manages the system's resources.<br>
       الجزء الأساسي من نظام التشغيل المسؤول عن إدارة موارد النظام.</p>
     </details>
+  <script>
+    const btn = document.getElementById('fullscreen-btn');
+  
+    btn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    });
+  </script>
 
 </body>
   <script>
