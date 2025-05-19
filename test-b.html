@@ -45,8 +45,6 @@
     }
 
     summary {
-      position: relative;
-      padding-left: 1.5em; /* Create space for custom marker */
       cursor: pointer;
       font-family: 'Lora', serif;
       font-size: 1.7rem;
@@ -65,22 +63,10 @@
       text-align: right;
     }
     summary::marker {
-      display: none; /* Hide native triangle */
-
       font-size: 0.8rem; /* Reduce marker size */
       margin-right: 4px; /* Control space between marker and text */
     }
-    summary::before {
-      content: '▸'; /* Right-pointing triangle */
-      position: absolute;
-      left: 0;
-      font-size: 0.8rem;
-      color: #D6E5EF;
-      transition: transform 0.2s;
-    }
-    details[open] summary::before {
-      transform: rotate(90deg);
-    }
+  
     @media (max-width: 600px) {
       p {
         font-size: 1rem;
