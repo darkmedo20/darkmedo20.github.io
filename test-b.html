@@ -7,13 +7,13 @@
   <script>
     const btn = document.getElementById('fullscreen-btn');
   
-    function updateFullscreenButton() {
+    /*function updateFullscreenButton() {
       if (document.fullscreenElement) {
         btn.innerHTML = "❌ Exit Fullscreen"; // or use an <img> tag here
       } else {
         btn.innerHTML = "🔳 Enter Fullscreen";
       }
-    }
+    }*/
   
     btn.addEventListener('click', () => {
       if (!document.fullscreenElement) {
@@ -23,7 +23,7 @@
       }
     });
   
-    document.addEventListener('fullscreenchange', updateFullscreenButton);
+    //document.addEventListener('fullscreenchange', updateFullscreenButton);
 </script>
 
   <style>
