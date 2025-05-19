@@ -16,10 +16,9 @@
     }
 
     .container {
-      max-width: 900px;
+      max-width: 1100px;
       margin: auto;
-      padding: 10px;
-    }
+      padding: 10px 20px; /* Less padding on all sides */    }
 
     h2 {
       text-align: center;
@@ -72,6 +71,11 @@
 
       summary {
         font-size: 1.1rem;
+      }
+    }
+    @media (min-width: 1024px) {
+      .container {
+        padding: 10px 40px; /* Slightly more breathing room on desktops */
       }
     }
   </style>
