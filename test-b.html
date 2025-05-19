@@ -4,18 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Toggleable Definitions</title>
-<script>
-  const btn = document.getElementById('fullscreen-btn');
-
-  btn.addEventListener('click', () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      document.exitFullscreen();
-    }
-  });
-</script>
-
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
@@ -146,7 +134,7 @@
 </head>
   <body>
     <div class="container">
-      <button id="fullscreen-btn">🔳 Enter Fullscreen</button>
+      <button id="fullscreen-btn">Toggle Full Screen</button>
       <h2>Glossary</h2>
   
       <details>
@@ -167,17 +155,8 @@
       <!-- ... rest of the glossary entries ... -->
   
     </div>
-  </body>
-  <script>
+    <script>
       const btn = document.getElementById('fullscreen-btn');
-    
-      function updateFullscreenButton() {
-        if (document.fullscreenElement) {
-          btn.innerHTML = "❌ Exit Fullscreen"; // or use an <img> tag here
-        } else {
-          btn.innerHTML = "🔳 Enter Fullscreen";
-        }
-      }
     
       btn.addEventListener('click', () => {
         if (!document.fullscreenElement) {
@@ -186,7 +165,7 @@
           document.exitFullscreen();
         }
       });
-    
-      document.addEventListener('fullscreenchange', updateFullscreenButton);
-  </script>
+    </script>
+
+  </body>
 </html>
