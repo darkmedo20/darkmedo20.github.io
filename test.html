@@ -182,4 +182,18 @@
     </details>
 
 </body>
+  <script>
+  function enterFullscreen() {
+    const iframe = document.getElementById('fs-iframe');
+    if (iframe.requestFullscreen) {
+      iframe.requestFullscreen();
+    } else if (iframe.webkitRequestFullscreen) { /* Safari */
+      iframe.webkitRequestFullscreen();
+    } else if (iframe.msRequestFullscreen) { /* IE11 */
+      iframe.msRequestFullscreen();
+    } else {
+      alert("Fullscreen mode is not supported on this browser.");
+    }
+  }
+</script>
 </html>
