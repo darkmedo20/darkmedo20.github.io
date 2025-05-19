@@ -6,6 +6,20 @@
   <title>Toggleable Definitions</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Lora&display=swap');
+    #fullscreen-btn {
+      background-color: #6EB9FC;
+      color: #252833;
+      font-size: 16px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+    
+    #fullscreen-btn:hover {
+      background-color: #4a9cdc;
+    }
 
     body {
       margin: 0;
@@ -114,11 +128,21 @@
         observer.observe(detail);
       });
     });
+    const btn = document.getElementById('fullscreen-btn');
+
+    btn.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    });
   </script>
 
 </head>
 <body>
   <div class="container">
+    <button id="fullscreen-btn">Toggle Full Screen</button>
     <h2>Glossary</h2>
 
     <details>
