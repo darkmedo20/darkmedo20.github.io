@@ -128,15 +128,6 @@
         observer.observe(detail);
       });
     });
-    const btn = document.getElementById('fullscreen-btn');
-
-    btn.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
-    });
   </script>
 
 </head>
