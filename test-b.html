@@ -140,28 +140,40 @@
   </script>
 
 </head>
-<body>
-  <div class="container">
-    <button id="fullscreen-btn">Toggle Full Screen</button>
-    <h2>Glossary</h2>
+  <body>
+    <div class="container">
+      <button id="fullscreen-btn">Toggle Full Screen</button>
+      <h2>Glossary</h2>
+  
+      <details>
+        <summary>&nbsp;Operating System (OS) – نظام التشغيل</summary>
+        <p>Software that manages computer hardware and software resources and provides common services for computer programs.<br>
+          برمجيات تدير موارد الحاسوب المادية والبرمجية وتوفر خدمات عامة لبرامج الحاسوب.</p>
+      </details>
+  
+      <details>
+        <summary>&nbsp;User Interface (UI) – واجهة المستخدم</summary>
+        <p>The means by which a user interacts with a computer system. Can be command-line (CLI), graphical (GUI), or batch.<br><br>
+          <span class="ar">.الوسيلة التي يتفاعل بها المستخدم مع نظام الحاسوب، وقد تكون سطر أوامر، رسومية، أو دُفعية</span>
+        </p>
+      </details>
+  
+      <!-- Repeat this pattern for other <details> elements -->
+  
+      <!-- ... rest of the glossary entries ... -->
+  
+    </div>
+  </body>
+  <script>
+  const btn = document.getElementById('fullscreen-btn');
 
-    <details>
-      <summary>&nbsp;Operating System (OS) – نظام التشغيل</summary>
-      <p>Software that manages computer hardware and software resources and provides common services for computer programs.<br>
-        برمجيات تدير موارد الحاسوب المادية والبرمجية وتوفر خدمات عامة لبرامج الحاسوب.</p>
-    </details>
+  btn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  });
+</script>
 
-    <details>
-      <summary>&nbsp;User Interface (UI) – واجهة المستخدم</summary>
-      <p>The means by which a user interacts with a computer system. Can be command-line (CLI), graphical (GUI), or batch.<br><br>
-        <span class="ar">.الوسيلة التي يتفاعل بها المستخدم مع نظام الحاسوب، وقد تكون سطر أوامر، رسومية، أو دُفعية</span>
-      </p>
-    </details>
-
-    <!-- Repeat this pattern for other <details> elements -->
-
-    <!-- ... rest of the glossary entries ... -->
-
-  </div>
-</body>
 </html>
