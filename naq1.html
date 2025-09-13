@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to HCI Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db; /* Lighter text color for dark theme */
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-secondary {
+            background-color: #4b5563;
+            color: #d1d5db;
+        }
+        .btn-secondary:hover {
+            background-color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-white text-center mb-6">Quiz 1</h1>
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+        {
+            question: "What is the primary role of a Linux System Administrator?",
+            answerOptions: [
+                {
+                    text: "Designing new programming languages.",
+                    rationale: "That is the role of computer scientists or language developers, not system administrators.",
+                    isCorrect: false
+                },
+                {
+                    text: "Managing and maintaining Linux-based systems to ensure reliability, security, and performance.",
+                    rationale: "This is the correct definition of a Linux System Administrator’s core responsibility.",
+                    isCorrect: true
+                },
+                {
+                    text: "Selling Linux distributions to enterprises.",
+                    rationale: "Sales is a business function, not a system administration responsibility.",
+                    isCorrect: false
+                },
+                {
+                    text: "Creating mobile apps for Linux phones.",
+                    rationale: "Application developers may do this, but system administrators focus on managing the infrastructure.",
+                    isCorrect: false
+                }
+            ],
+            type: 'radio'
+        },
+        {
+            question: "Which of the following are typical tasks of a Linux System Administrator? (Select all that apply)",
+            answerOptions: [
+                {
+                    text: "Installing, configuring, and maintaining Linux operating systems.",
+                    rationale: "System administrators must install, configure, and maintain OS across hardware/VMs.",
+                    isCorrect: true
+                },
+                {
+                    text: "Monitoring system performance and applying patches.",
+                    rationale: "Both performance monitoring and patching are key responsibilities.",
+                    isCorrect: true
+                },
+                {
+                    text: "Managing user accounts and access control.",
+                    rationale: "User account and access management is one of the core sysadmin duties.",
+                    isCorrect: true
+                },
+                {
+                    text: "Developing new kernels from scratch.",
+                    rationale: "Sysadmins typically configure and patch kernels but do not develop new ones.",
+                    isCorrect: false
+                }
+            ],
+            type: 'checkbox'
+        },
+        {
+            question: "Who were the main developers of UNIX at AT&T Bell Labs in 1969?",
+            answerOptions: [
+                {
+                    text: "Ken Thompson, Dennis Ritchie, Douglas McIlroy",
+                    rationale: "Correct – they developed UNIX, the C language, and pipes respectively.",
+                    isCorrect: true
+                },
+                {
+                    text: "Linus Torvalds and Richard Stallman",
+                    rationale: "Linus created Linux and Stallman founded the GNU project, but neither created UNIX.",
+                    isCorrect: false
+                },
+                {
+                    text: "Bill Gates and Paul Allen",
+                    rationale: "They co-founded Microsoft, not UNIX.",
+                    isCorrect: false
+                },
+                {
+                    text: "Steve Jobs and Steve Wozniak",
+                    rationale: "They founded Apple and developed early Apple systems, not UNIX.",
+                    isCorrect: false
+                }
+            ],
+            type: 'radio'
+        },
+        {
+            question: "What are the main components that make up a Linux system?",
+            answerOptions: [
+                {
+                    text: "Linux Kernel",
+                    rationale: "The kernel is the core of the Linux OS.",
+                    isCorrect: true
+                },
+                {
+                    text: "GNU Software",
+                    rationale: "GNU tools provide utilities and software layers for Linux.",
+                    isCorrect: true
+                },
+                {
+                    text: "Software Package Management",
+                    rationale: "Package managers handle installing and updating software.",
+                    isCorrect: true
+                },
+                {
+                    text: "Windows Explorer",
+                    rationale: "Windows Explorer is part of Microsoft Windows, not Linux.",
+                    isCorrect: false
+                }
+            ],
+            type: 'checkbox'
+        },
+        {
+            question: "What is one of the major benefits of Linux being open source?",
+            answerOptions: [
+                {
+                    text: "Support staff can view and understand the operating system’s inner workings.",
+                    rationale: "Correct – access to source code improves in-house and third-party support.",
+                    isCorrect: true
+                },
+                {
+                    text: "It prevents any security vulnerabilities from ever occurring.",
+                    rationale: "Open source does not guarantee zero vulnerabilities, only transparency.",
+                    isCorrect: false
+                },
+                {
+                    text: "It allows only one company to control Linux development.",
+                    rationale: "Linux is community-driven, not controlled by one company.",
+                    isCorrect: false
+                },
+                {
+                    text: "It removes the need for user training.",
+                    rationale: "Open source has no impact on training needs.",
+                    isCorrect: false
+                }
+            ],
+            type: 'radio'
+        },
+        {
+            question: "Which of the following are recognized benefits of Linux? (Select all that apply)",
+            answerOptions: [
+                {
+                    text: "Reliability – Linux systems rarely crash.",
+                    rationale: "Correct – the Linux kernel is very stable and protected.",
+                    isCorrect: true
+                },
+                {
+                    text: "Availability – software can often be updated without reboot.",
+                    rationale: "Correct – Linux allows maintenance without downtime.",
+                    isCorrect: true
+                },
+                {
+                    text: "Proven tools such as Apache, BIND, and Sendmail.",
+                    rationale: "Correct – many tools used in Linux have a long Unix history.",
+                    isCorrect: true
+                },
+                {
+                    text: "Proprietary licensing that hides inner workings.",
+                    rationale: "This is the opposite of Linux’s open-source benefit.",
+                    isCorrect: false
+                }
+            ],
+            type: 'checkbox'
+        },
+        {
+            question: "When was Linux first developed, and by whom?",
+            answerOptions: [
+                {
+                    text: "1991, by Linus Torvalds",
+                    rationale: "Correct – Linus Torvalds, a Finnish student, developed Linux in 1991.",
+                    isCorrect: true
+                },
+                {
+                    text: "1969, by Ken Thompson",
+                    rationale: "Ken Thompson developed UNIX, not Linux, in 1969.",
+                    isCorrect: false
+                },
+                {
+                    text: "1985, by Richard Stallman",
+                    rationale: "Stallman started the GNU project, but not Linux.",
+                    isCorrect: false
+                },
+                {
+                    text: "2000, by Red Hat Inc.",
+                    rationale: "Red Hat distributes Linux, but did not create it.",
+                    isCorrect: false
+                }
+            ],
+            type: 'radio'
+        },
+        {
+            question: "Which of the following are popular Linux distributions? (Select all that apply)",
+            answerOptions: [
+                {
+                    text: "Red Hat",
+                    rationale: "Correct – Red Hat is a widely used enterprise Linux distribution.",
+                    isCorrect: true
+                },
+                {
+                    text: "Ubuntu",
+                    rationale: "Correct – Ubuntu is one of the most popular Linux distributions.",
+                    isCorrect: true
+                },
+                {
+                    text: "Fedora",
+                    rationale: "Correct – Fedora is a community-driven Linux distribution.",
+                    isCorrect: true
+                },
+                {
+                    text: "Windows Server",
+                    rationale: "Incorrect – Windows Server is a Microsoft operating system, not Linux.",
+                    isCorrect: false
+                }
+            ],
+            type: 'checkbox'
+        },
+        {
+            question: "What makes UNIX and Linux different?",
+            answerOptions: [
+                {
+                    text: "UNIX is proprietary, while Linux is open source.",
+                    rationale: "Correct – UNIX is proprietary, whereas Linux is community-developed and open source.",
+                    isCorrect: true
+                },
+                {
+                    text: "UNIX was developed in 1991, while Linux in 1969.",
+                    rationale: "Incorrect – UNIX came first in 1969; Linux was developed later in 1991.",
+                    isCorrect: false
+                },
+                {
+                    text: "UNIX only runs on mobile devices, Linux only on servers.",
+                    rationale: "Incorrect – both UNIX and Linux support multiple platforms.",
+                    isCorrect: false
+                },
+                {
+                    text: "There are no differences; Linux is just another name for UNIX.",
+                    rationale: "Incorrect – Linux is UNIX-like but not the same.",
+                    isCorrect: false
+                }
+            ],
+            type: 'radio'
+        }
+    ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                const correctOption = question.answerOptions.find(opt => opt.isCorrect);
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctOption.rationale}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>

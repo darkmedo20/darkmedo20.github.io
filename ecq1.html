@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Quiz - Chapter 1</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db; /* Lighter text color for dark theme */
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-secondary {
+            background-color: #4b5563;
+            color: #d1d5db;
+        }
+        .btn-secondary:hover {
+            background-color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-white text-center mb-6">Quiz 1</h1>
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+    {
+        "question": "Which of the following best defines e-commerce?",
+        "answerOptions": [
+            {
+                "text": "The use of the Internet to conduct business transactions, including web and mobile apps.",
+                "rationale": "This is the correct definition, as e-commerce refers to digitally enabled commercial transactions between and among organizations and individuals.",
+                "isCorrect": true
+            },
+            {
+                "text": "The use of digital technologies to manage processes within a firm only.",
+                "rationale": "This refers to e-business, not e-commerce, since e-commerce involves external transactions across organizational boundaries.",
+                "isCorrect": false
+            },
+            {
+                "text": "The process of marketing products on social media platforms.",
+                "rationale": "While social media marketing is part of e-commerce, it does not capture the full scope of digitally enabled commercial transactions.",
+                "isCorrect": false
+            },
+            {
+                "text": "Only buying and selling through mobile applications.",
+                "rationale": "This is specifically mobile commerce (m-commerce), which is a subset of e-commerce.",
+                "isCorrect": false
+            }
+        ],
+        "type": "radio"
+    },
+    {
+        "question": "What is the primary distinction between e-business and e-commerce?",
+        "answerOptions": [
+            {
+                "text": "E-business focuses on internal processes, while e-commerce involves commercial transactions across organizational boundaries.",
+                "rationale": "This is the correct distinction: e-business is about internal digital processes, whereas e-commerce extends beyond the firm.",
+                "isCorrect": true
+            },
+            {
+                "text": "E-business is more profitable than e-commerce.",
+                "rationale": "Profitability is not the key distinction between the two concepts.",
+                "isCorrect": false
+            },
+            {
+                "text": "E-commerce is limited to mobile platforms, while e-business is not.",
+                "rationale": "E-commerce includes many platforms (web, apps), not just mobile.",
+                "isCorrect": false
+            },
+            {
+                "text": "There is no difference; the terms are interchangeable.",
+                "rationale": "The lecture specifically differentiates the two terms.",
+                "isCorrect": false
+            }
+        ],
+        "type": "radio"
+    },
+    {
+        "question": "Which of the following are technological building blocks of e-commerce? (Select all that apply)",
+        "answerOptions": [
+            {
+                "text": "Internet",
+                "rationale": "The Internet is the core infrastructure enabling e-commerce.",
+                "isCorrect": true
+            },
+            {
+                "text": "World Wide Web",
+                "rationale": "The Web, including HTML and search systems, is a key enabler of e-commerce.",
+                "isCorrect": true
+            },
+            {
+                "text": "Mobile platforms (apps, smartphones, tablets)",
+                "rationale": "Mobile devices and apps provide access to e-commerce anywhere, making them a crucial technological building block.",
+                "isCorrect": true
+            },
+            {
+                "text": "Traditional print advertising",
+                "rationale": "Print ads are offline marketing tools, not technological building blocks of e-commerce.",
+                "isCorrect": false
+            }
+        ],
+        "type": "checkbox"
+    },
+    {
+        "question": "Which statement best describes the Deep Web compared to the Surface Web?",
+        "answerOptions": [
+            {
+                "text": "The Deep Web contains content not indexed by standard search engines and is much larger than the Surface Web.",
+                "rationale": "This is correct: the Deep Web includes databases and hidden resources, making it far larger than the Surface Web.",
+                "isCorrect": true
+            },
+            {
+                "text": "The Surface Web is 500 times larger than the Deep Web.",
+                "rationale": "This reverses the fact; the Deep Web is significantly larger than the Surface Web.",
+                "isCorrect": false
+            },
+            {
+                "text": "Both the Deep Web and Surface Web are the same in size and content.",
+                "rationale": "They are different in both scope and content availability.",
+                "isCorrect": false
+            },
+            {
+                "text": "The Deep Web only includes illegal activities and dark web content.",
+                "rationale": "This is incorrect; the Deep Web mainly consists of databases, private content, and resources not indexed by search engines.",
+                "isCorrect": false
+            }
+        ],
+        "type": "radio"
+    },
+    {
+        "question": "Which of the following are unique features of e-commerce technology? (Select all that apply)",
+        "answerOptions": [
+            {
+                "text": "Ubiquity",
+                "rationale": "E-commerce is accessible almost everywhere, anytime.",
+                "isCorrect": true
+            },
+            {
+                "text": "Global reach",
+                "rationale": "E-commerce crosses cultural and national boundaries.",
+                "isCorrect": true
+            },
+            {
+                "text": "Universal standards",
+                "rationale": "Standards are shared worldwide, reducing costs.",
+                "isCorrect": true
+            },
+            {
+                "text": "Seasonal availability",
+                "rationale": "This is not a unique feature of e-commerce technology.",
+                "isCorrect": false
+            }
+        ],
+        "type": "checkbox"
+    },
+    {
+        "question": "What is an example of interactivity in e-commerce technology?",
+        "answerOptions": [
+            {
+                "text": "Using a chat window to interact with customer support on a website.",
+                "rationale": "This represents interactivity, allowing two-way communication between merchant and consumer.",
+                "isCorrect": true
+            },
+            {
+                "text": "Watching a pre-recorded video advertisement.",
+                "rationale": "This is a one-way communication example, not interactivity.",
+                "isCorrect": false
+            },
+            {
+                "text": "Reading a static blog article.",
+                "rationale": "This does not involve two-way interaction.",
+                "isCorrect": false
+            },
+            {
+                "text": "Listening to a podcast.",
+                "rationale": "This is also a one-way communication channel.",
+                "isCorrect": false
+            }
+        ],
+        "type": "radio"
+    },
+    {
+        "question": "Which of the following types of e-commerce involve transactions directly between consumers?",
+        "answerOptions": [
+            {
+                "text": "Consumer-to-Consumer (C2C)",
+                "rationale": "C2C refers to individuals selling directly to other individuals, often through platforms like eBay.",
+                "isCorrect": true
+            },
+            {
+                "text": "Business-to-Business (B2B)",
+                "rationale": "B2B involves businesses transacting with each other, not consumers.",
+                "isCorrect": false
+            },
+            {
+                "text": "Business-to-Consumer (B2C)",
+                "rationale": "B2C involves businesses selling to individuals, not consumers selling to each other.",
+                "isCorrect": false
+            },
+            {
+                "text": "Local e-commerce",
+                "rationale": "Local e-commerce is based on geographic targeting, not strictly consumer-to-consumer.",
+                "isCorrect": false
+            }
+        ],
+        "type": "radio"
+    },
+    {
+        "question": "Which of the following are examples of personalization/customization in e-commerce? (Select all that apply)",
+        "answerOptions": [
+            {
+                "text": "Recommending products based on past purchases.",
+                "rationale": "This is personalization, tailoring messages to user interests.",
+                "isCorrect": true
+            },
+            {
+                "text": "Allowing a customer to design their own product variant (e.g., customized shoes).",
+                "rationale": "This is customization, changing the product based on user preferences.",
+                "isCorrect": true
+            },
+            {
+                "text": "Broadcasting the same advertisement to all customers.",
+                "rationale": "This is not personalization, since the message is not tailored.",
+                "isCorrect": false
+            },
+            {
+                "text": "Showing trending products to all visitors equally.",
+                "rationale": "This is not true personalization, as it is not user-specific.",
+                "isCorrect": false
+            }
+        ],
+        "type": "checkbox"
+    },
+    {
+        "question": "What is the projected size of B2B e-commerce in the U.S. by 2020 (excluding EDI transactions)?",
+        "answerOptions": [
+            {
+                "text": "Over $9 trillion",
+                "rationale": "According to the lecture, B2B e-commerce in the U.S. was projected to exceed $9 trillion by 2020.",
+                "isCorrect": true
+            },
+            {
+                "text": "About $900 billion",
+                "rationale": "This underestimates the projection by an order of magnitude.",
+                "isCorrect": false
+            },
+            {
+                "text": "$90 trillion",
+                "rationale": "This grossly overestimates the actual projection.",
+                "isCorrect": false
+            },
+            {
+                "text": "Less than B2C e-commerce",
+                "rationale": "B2B e-commerce dwarfs B2C in size; this is incorrect.",
+                "isCorrect": false
+            }
+        ],
+        "type": "radio"
+    },
+    {
+        "question": "Which of the following best describes social e-commerce?",
+        "answerOptions": [
+            {
+                "text": "E-commerce enabled by social networks and online social relationships.",
+                "rationale": "This is the correct definition: social e-commerce leverages social connections and platforms to drive transactions.",
+                "isCorrect": true
+            },
+            {
+                "text": "Only marketing products on Instagram or Facebook.",
+                "rationale": "While social media platforms are part of social e-commerce, the concept is broader and includes collaborative shopping, social sign-ons, and more.",
+                "isCorrect": false
+            },
+            {
+                "text": "Using mobile phones to buy goods and services.",
+                "rationale": "This describes m-commerce, not social e-commerce.",
+                "isCorrect": false
+            },
+            {
+                "text": "Local merchants targeting nearby customers.",
+                "rationale": "This describes local e-commerce, not social e-commerce.",
+                "isCorrect": false
+            }
+        ],
+        "type": "radio"
+    }
+];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                const correctOption = question.answerOptions.find(opt => opt.isCorrect);
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctOption.rationale}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>

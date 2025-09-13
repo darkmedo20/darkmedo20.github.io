@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to HCI Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db; /* Lighter text color for dark theme */
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-secondary {
+            background-color: #4b5563;
+            color: #d1d5db;
+        }
+        .btn-secondary:hover {
+            background-color: #6b7280;
+        }
+    
+        body {
+            direction: rtl;
+            text-align: right;
+        }
+
+
+        .option-label {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 0.75rem; /* مسافة مناسبة بين المربع والنص */
+        }
+        .option-label input {
+            margin: 0;
+            flex-shrink: 0;
+        }
+        .option-label span {
+            flex: 1;
+        }
+
+</style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-white text-center mb-6">Quiz 1</h1>
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "ما المقصود بمصطلح سايبر (Cyber)؟",
+                answerOptions: [
+                    {
+                        text: "يشمل فقط البرمجيات والتطبيقات.",
+                        rationale: "التعريف أوسع من ذلك، فهو لا يقتصر على البرمجيات فقط.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "يشمل جميع مجالات الحاسوب والاتصالات من معدات وبرمجيات وشبكات وإجراءات.",
+                        rationale: "هذا هو التعريف الصحيح لمصطلح سايبر كما ورد في المحاضرة.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "يشير فقط إلى شبكات الإنترنت.",
+                        rationale: "الإنترنت جزء من السايبر وليس كله.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "يدل على التواصل الاجتماعي عبر الإنترنت فقط.",
+                        rationale: "التواصل الاجتماعي أحد التطبيقات وليس المعنى الكامل للسايبر.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "أي من التالي يُعد من مكونات النظام الأخلاقي؟ (اختر كل ما ينطبق)",
+                answerOptions: [
+                    {
+                        text: "المثل (Ethics)",
+                        rationale: "المثل أحد مكونات النظام الأخلاقي.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "الأعراف (Norms)",
+                        rationale: "الأعراف تشكل جزءاً من النظام الأخلاقي.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "البرمجيات",
+                        rationale: "البرمجيات ليست جزءاً من النظام الأخلاقي بل من التكنولوجيا.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "الأخلاق (Morals)",
+                        rationale: "الأخلاق جزء أساسي من النظام الأخلاقي.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "هل أدخلت تكنولوجيا السايبر قضايا أخلاقية جديدة؟",
+                answerOptions: [
+                    {
+                        text: "لا، لم تضف شيئاً جديداً.",
+                        rationale: "المحاضرة أوضحت أن السايبر أدخلت قضايا جديدة مثل القرصنة وانتحال الهوية.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "نعم، أبرزت قضايا جديدة مثل القرصنة وانتحال الشخصية.",
+                        rationale: "هذا صحيح، فقد أدخلت السايبر أشكالاً جديدة من القضايا الأخلاقية.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "أي من التالي يُعتبر من القضايا الأخلاقية المتميزة لتكنولوجيا السايبر؟ (اختر كل ما ينطبق)",
+                answerOptions: [
+                    {
+                        text: "قابلية البرمجيات للتشكيل والتعديل.",
+                        rationale: "قابلية البرمجيات للتشكيل تجعلها مختلفة وتطرح قضايا أخلاقية جديدة.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "وجود فراغات تشريعية وقانونية.",
+                        rationale: "هذه من أبرز التحديات الأخلاقية في السايبر.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "سهولة الوصول إلى الإنترنت فقط.",
+                        rationale: "سهولة الوصول ليست قضية أخلاقية بحد ذاتها.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "تأثيرها على الأنشطة الإنسانية المتنوعة.",
+                        rationale: "نعم، تدخلها في مجالات مالية وتعليمية وحربية يجعل لها قضايا أخلاقية متميزة.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "ما الفرق بين الأخلاقيات المهنية وأخلاقيات السايبر؟",
+                answerOptions: [
+                    {
+                        text: "الأخلاقيات المهنية أوسع من أخلاقيات السايبر.",
+                        rationale: "العكس صحيح: أخلاقيات السايبر أوسع من الأخلاقيات المهنية.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "أخلاقيات السايبر تشمل الأخلاقيات المهنية بالإضافة إلى قضايا أوسع.",
+                        rationale: "هذا صحيح، حيث أن أخلاقيات السايبر جزء من الأخلاقيات التطبيقية وتشمل المهنية وغيرها.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "لا يوجد فرق بينهما.",
+                        rationale: "المحاضرة فرّقت بينهما بوضوح.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "أي من الخطوات التالية تُعتبر أساسية في تحليل القضايا الأخلاقية في السايبر؟ (اختر كل ما ينطبق)",
+                answerOptions: [
+                    {
+                        text: "تمييز وتحديد النواحي التي تسبب إشكالات أخلاقية.",
+                        rationale: "هذه الخطوة أولى وأساسية في التحليل.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "تجاهل الحالات السابقة.",
+                        rationale: "تجاهل الحالات السابقة يعارض ما أوصت به المحاضرة.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "المقارنة مع الحالات السابقة والتأمل فيها.",
+                        rationale: "نعم، هذه خطوة رئيسية في التحليل الأخلاقي.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "الاعتماد على التخمينات دون حقائق.",
+                        rationale: "المحاضرة شددت على الاعتماد على الحقائق وليس الظنون.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "أي من الأسس التالية يقوم عليها الحكم الأخلاقي الصحيح؟ (اختر كل ما ينطبق)",
+                answerOptions: [
+                    {
+                        text: "المساواة",
+                        rationale: "المساواة من الأسس الجوهرية للحكم الأخلاقي.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "العدالة",
+                        rationale: "العدالة ركن أساسي في بناء الحكم الأخلاقي.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "الاحترام",
+                        rationale: "الاحترام من القيم التي يقوم عليها الحكم الأخلاقي.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "السرعة في اتخاذ القرار.",
+                        rationale: "السرعة ليست من أسس الحكم الأخلاقي.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "كيف يمكن وصف الدراسات الوصفية للأخلاقيات؟",
+                answerOptions: [
+                    {
+                        text: "تصف الحالة وتحللها دون إصدار أحكام.",
+                        rationale: "هذا صحيح، الدراسات الوصفية تهتم بالوصف والتحليل فقط.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "تركز على إيجاد الحلول والمعايير.",
+                        rationale: "هذا دور الدراسات العرفية (normative) وليس الوصفية.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "ما الهدف من استشارة الزملاء والرؤساء في معالجة قضية أخلاقية؟",
+                answerOptions: [
+                    {
+                        text: "جمع وجهات نظر متعددة لمقارنة الحلول.",
+                        rationale: "هذا صحيح، فالاستشارة تساعد في اتخاذ قرار أخلاقي أكثر دقة.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "إلقاء المسئولية عليهم.",
+                        rationale: "الاستشارة لا تعني التخلي عن المسئولية.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "هل التعامل الأخلاقي مربح للمؤسسات؟",
+                answerOptions: [
+                    {
+                        text: "نعم، لأنه يكسب السمعة الجيدة ويزيد ثقة المجتمع.",
+                        rationale: "هذا صحيح، التعامل الأخلاقي يعزز الربحية على المدى الطويل.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "لا، لأنه يسبب خسائر مادية.",
+                        rationale: "المحاضرة أوضحت العكس: الالتزام الأخلاقي يحمي من الخسائر.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            }
+        ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                const correctOption = question.answerOptions.find(opt => opt.isCorrect);
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctOption.rationale}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>
