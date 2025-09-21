@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Business Models Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db; /* Lighter text color for dark theme */
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-secondary {
+            background-color: #4b5563;
+            color: #d1d5db;
+        }
+        .btn-secondary:hover {
+            background-color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-white text-center mb-6">Quiz 4</h1>
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "What is a 'marketspace' as defined in the lecture?",
+                answerOptions: [
+                    {
+                        text: "A specific, specialized customer group.",
+                        rationale: "This describes a 'niche market'.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The area of actual or potential commercial value a company intends to operate in.",
+                        rationale: "The lecture defines 'marketspace' as the area of actual or potential commercial value in which a company intends to operate.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "A market with no competitive advantages or asymmetries.",
+                        rationale: "This describes a 'perfect market'.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "A detailed analysis of a firm's competition.",
+                        rationale: "This describes a 'competitor analysis'.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which of the following are the eight key elements of a business model discussed in the lecture? (Select all that apply)",
+                answerOptions: [
+                    {
+                        text: "Value proposition",
+                        rationale: "Value proposition is one of the eight key elements.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Financial statements",
+                        rationale: "Financial statements are not listed as one of the eight key elements of a business model.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Market opportunity",
+                        rationale: "Market opportunity is one of the eight key elements.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Organizational development",
+                        rationale: "Organizational development is one of the eight key elements.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "According to the lecture, what is 'unauthorized competitive advantage'?",
+                answerOptions: [
+                    {
+                        text: "An advantage based on a factor that other firms can purchase.",
+                        rationale: "The lecture defines 'unfair competitive advantage' as an advantage based on a factor that other firms CANNOT purchase.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "An advantage that results from being the first into a marketplace with a product.",
+                        rationale: "This is the definition of 'first-mover advantage'.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "An advantage that a firm develops based on a factor that other firms cannot purchase.",
+                        rationale: "The lecture defines 'unfair competitive advantage' as an advantage based on a factor that other firms cannot purchase.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "A market where all firms have equal access to factors of production.",
+                        rationale: "This describes a 'perfect market'.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which of the following is an example of a competitive advantage strategy that involves producing products at a lower price than competitors?",
+                answerOptions: [
+                    {
+                        text: "Product differentiation",
+                        rationale: "Product differentiation is about creating new and different products or services, not necessarily lower prices.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Focus on a market niche",
+                        rationale: "Focusing on a market niche means specializing in a single market segment.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Low-cost leadership",
+                        rationale: "Low-cost leadership is the strategy of producing products and services at a lower price than competitors.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Strengthen customer and supplier intimacy",
+                        rationale: "This strategy is about building loyalty and increasing switching costs, not primarily about price.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "According to the lecture, what does a 'strong management team' possess? (Select all that apply)",
+                answerOptions: [
+                    {
+                        text: "The ability to give credibility to outside investors.",
+                        rationale: "A strong management team gives credibility to outside investors.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Extensive experience in multiple different industries.",
+                        rationale: "A strong management team is said to have market-specific knowledge, not necessarily experience in multiple different industries.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Market-specific knowledge.",
+                        rationale: "A strong management team has market-specific knowledge.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Experience in implementing business plans.",
+                        rationale: "A strong management team has experience in implementing business plans.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            }
+        ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                
+                // Find the rationale for the correct answer
+                const correctRationale = question.answerOptions.find(opt => opt.isCorrect)?.rationale || "No rationale available.";
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctRationale}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>

@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-commerce Business Models Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db; /* Lighter text color for dark theme */
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-secondary {
+            background-color: #4b5563;
+            color: #d1d5db;
+        }
+        .btn-secondary:hover {
+            background-color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-white text-center mb-6">Quiz 3</h1>
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "According to the lecture, what is the primary purpose of an 'e-commerce business model'?",
+                answerOptions: [
+                    {
+                        text: "To describe the company's financial accounting practices.",
+                        rationale: "A business model is a broader plan for how a firm competes, not just its accounting practices.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "To use and leverage the unique qualities of the Internet, Web, and mobile platform.",
+                        rationale: "This is the explicit definition of an e-commerce business model provided in the lecture.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "To serve as a detailed operational plan for a brick-and-mortar business.",
+                        rationale: "A business model is a plan for competition, and an e-commerce model is specifically for the digital platform.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "To provide a standard blueprint for all companies in a given industry.",
+                        rationale: "The notes state that there is no standard business model for an industry.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which of the following are successful e-commerce value propositions mentioned in the notes? (Select all that apply)",
+                answerOptions: [
+                    {
+                        text: "Personalization and customization.",
+                        rationale: "Personalization and customization are explicitly listed as successful e-commerce value propositions.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Providing a physical storefront for customers to browse products.",
+                        rationale: "This is a feature of traditional retail, not a value proposition unique to e-commerce.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Reduction of product search and price discovery costs.",
+                        rationale: "Reducing search and price discovery costs is a key value proposition for e-commerce businesses.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Facilitating transactions by managing product delivery.",
+                        rationale: "Managing product delivery is listed as a way e-commerce can facilitate transactions, which is a key value proposition.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "What is the 'freemium' strategy as a revenue model?",
+                answerOptions: [
+                    {
+                        text: "Charging a one-time fee for a premium product.",
+                        rationale: "A freemium model involves a free base service with an option to upgrade to a paid subscription.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Giving away a basic level of a product or service for free and charging a subscription for premium levels.",
+                        rationale: "This is the correct definition of the freemium strategy.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Receiving a fee for every transaction a user makes on the platform.",
+                        rationale: "This describes the 'transaction fee revenue model'.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "A company that provides a forum for advertisements and receives fees from advertisers.",
+                        rationale: "This describes the 'Advertising revenue model'.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which of the following are the eight key elements of a business model discussed in the lecture? (Select all that apply)",
+                answerOptions: [
+                    {
+                        text: "Value proposition",
+                        rationale: "Value proposition is one of the eight key elements.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Financial statements",
+                        rationale: "Financial statements are not listed as one of the eight key elements of a business model.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Revenue model",
+                        rationale: "Revenue model is one of the eight key elements.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Competitive environment",
+                        rationale: "The competitive environment is a key element of a business model.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "Which revenue model involves steering business to an affiliate and receiving a referral fee?",
+                answerOptions: [
+                    {
+                        text: "Sales revenue model",
+                        rationale: "The sales revenue model is based on selling goods, information, or services directly.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Affiliate revenue model",
+                        rationale: "This is the correct definition of the affiliate revenue model.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Subscription revenue model",
+                        rationale: "The subscription model charges a fee for access to content or services.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Transaction fee revenue model",
+                        rationale: "The transaction fee model charges for executing a transaction.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            }
+        ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                
+                // Find the rationale for the correct answer
+                const correctRationale = question.answerOptions.find(opt => opt.isCorrect)?.rationale || "No rationale available.";
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctRationale}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>

@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introduction to E-commerce Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db; /* Lighter text color for dark theme */
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-secondary {
+            background-color: #4b5563;
+            color: #d1d5db;
+        }
+        .btn-secondary:hover {
+            background-color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-white text-center mb-6">Quiz 2</h1>
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "Which of the following was a precursor to e-commerce before the invention period (1995-2000)?",
+                answerOptions: [
+                    {
+                        text: "Web 2.0 applications and social networks",
+                        rationale: "Web 2.0 and social networks grew during the 'Reinvention' period, which began in 2007.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The widespread adoption of smartphones and mobile devices",
+                        rationale: "Smartphones and mobile devices became a major force during the 'Reinvention' period (2007-Present).",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The French Minitel videotext system",
+                        rationale: "The French Minitel was a precursor to e-commerce, deployed before the invention period and used for services like online banking and retail.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "First-mover advantages and the dot-com crash",
+                        rationale: "First-mover advantages and the dot-com crash are concepts and events that occurred during the 'Invention' period (1995-2000).",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "According to the lecture, what is 'information asymmetry'?",
+                answerOptions: [
+                    {
+                        text: "A situation where all parties in a transaction have equal access to information.",
+                        rationale: "This describes a 'nearly perfect competitive market', which is the opposite of information asymmetry.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "A disparity in relevant market information among parties in a transaction.",
+                        rationale: "This is the correct definition of information asymmetry, a concept that e-commerce was initially expected to reduce.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The cost for a merchant to change the price of a product.",
+                        rationale: "This refers to 'menu costs', not information asymmetry.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The ability of a company to create a monopoly online.",
+                        rationale: "This describes the goal of many early dot-com entrepreneurs, but it is not the definition of information asymmetry.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which of the following were benefits of 'friction-free commerce' envisioned for merchants and producers during the invention period? (Select all that apply)",
+                answerOptions: [
+                    {
+                        text: "The ability to dynamically price products to reflect actual demand.",
+                        rationale: "Dynamic pricing was a key vision of friction-free commerce for producers.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The reduction of unfair competitive advantages.",
+                        rationale: "The elimination of unfair competitive advantages was a central promise of friction-free commerce.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Increased profits from monopoly brands.",
+                        rationale: "Friction-free commerce was expected to eliminate the possibility of monopoly profits based on brands or geography.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Personalized advertisements for every customer.",
+                        rationale: "The ability to personalize advertisements was a benefit of friction-free commerce for merchants.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "What is 'disintermediation' in the context of e-commerce?",
+                answerOptions: [
+                    {
+                        text: "The process of a new firm becoming a middleman between producers and consumers.",
+                        rationale: "This is the opposite of disintermediation, which involves displacing middlemen.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The displacement of market middlemen by a direct relationship between producers and consumers.",
+                        rationale: "This is the correct definition of disintermediation, where the manufacturer-distributor-retailer chain is shortened or eliminated.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The practice of selling the same goods to different groups at different prices.",
+                        rationale: "This describes 'price discrimination', not disintermediation.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The strategy of building near monopolies online through size and brand.",
+                        rationale: "This was a strategy for first-mover entrepreneurs, not a definition of disintermediation.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "During the 'Reinvention' period (2007-Present), which of the following trends transformed e-commerce?",
+                answerOptions: [
+                    {
+                        text: "The start-up financing shrinks and large traditional firms expand their presence.",
+                        rationale: "This trend characterized the 'Consolidation' period (2001-2006).",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The emergence of on-demand services enabled by mobile devices and cloud computing.",
+                        rationale: "The emergence of on-demand services is a key trend from the 'Reinvention' period.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The rise of friction-free commerce and first-mover advantages.",
+                        rationale: "These were visions and strategies from the 'Invention' period (1995-2000).",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The sale of simple retail goods with limited bandwidth.",
+                        rationale: "This describes the e-commerce environment during the 'Invention' period.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                 question: "According to the lecture notes, what is a 'digital good'?",
+                 answerOptions: [
+                    {
+                        text: "A physical product that is purchased online.",
+                        rationale: "A digital good is one that can be delivered over a digital network, such as music or software, not a physical product.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "A good with very high costs of delivery over the Internet.",
+                        rationale: "The cost of delivering a digital good over the Internet is described as being very low.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "A good where the cost of producing the first unit is almost the entire cost of the product.",
+                        rationale: "This is a key characteristic of a digital good. Once the first unit is produced, additional copies can be delivered at a very low cost.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "A product with pricing that is consistent and stable.",
+                        rationale: "The pricing for digital goods is described as being 'highly variable'.",
+                        isCorrect: false
+                    }
+                 ],
+                 type: 'radio'
+            },
+            {
+                question: "What were some of the key takeaways from the 'Invention' period (1995-2000) that were not fulfilled? (Select all that apply)",
+                answerOptions: [
+                    {
+                        text: "The idea of 'friction-free commerce' was fully realized.",
+                        rationale: "The 'friction-free commerce' vision was not fulfilled, as brands remained important and a 'perfect competition' model did not come to pass.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The concept of one world, one market, one price.",
+                        rationale: "The idea of a single global price was not realized, as merchants found ways to differentiate products and use flash pricing.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "First-mover advantage proved to be successful for a very small group of companies.",
+                        rationale: "The lecture notes state that first-mover advantage only succeeded for a small group of companies, but it was not a widely fulfilled vision.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Middlemen were completely eliminated from the market.",
+                        rationale: "This was a vision that was not fulfilled. Instead, new intermediaries emerged to aggregate content and services.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            }
+        ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                
+                // Find the rationale for the correct answer
+                const correctRationale = question.answerOptions.find(opt => opt.isCorrect)?.rationale || "No rationale available.";
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctRationale}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>
