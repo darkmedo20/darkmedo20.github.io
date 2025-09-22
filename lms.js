@@ -97,6 +97,12 @@ const showMessage = (message, duration = 3000, isError = false) => {
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=7c26k-1963432-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=ffffff&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `naq1.html`
                     },
+                    {
+                        id: `lecture-2`,
+                        name: `Lecture 2: Booting and Shutting Down Linux`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=gmigh-1970668-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=ffffff&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `naq2.html`
+                    },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
                         id: `lecture-${i + 2}`,
@@ -114,6 +120,12 @@ const showMessage = (message, duration = 3000, isError = false) => {
                         name: `Lecture 1: What is Mobile Computing`,
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=svwjs-19634a3-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `mcq1.html`
+                    },
+                    {
+                        id: `lecture-2`,
+                        name: `Lecture 2:  Dimensions of mobility`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=r8th7-1970629-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=ffffff&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `mcq2.html`
                     },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({

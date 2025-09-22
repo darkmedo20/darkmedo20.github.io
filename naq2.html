@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux Booting and Shutting Down Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db; /* Lighter text color for dark theme */
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-secondary {
+            background-color: #4b5563;
+            color: #d1d5db;
+        }
+        .btn-secondary:hover {
+            background-color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-white text-center mb-6">Quiz 2</h1>
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "What is the standard term for 'starting up a computer'?",
+                answerOptions: [
+                    {
+                        text: "Kernel loading",
+                        rationale: "Kernel loading is a step within the startup process, not the term for the entire process.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Bootstrapping",
+                        rationale: "The lecture defines 'bootstrapping' as the standard term for starting up a computer.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "ROM execution",
+                        rationale: "ROM execution is a part of the initial boot process, not the general term for startup.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "init process",
+                        rationale: "The 'init' process is created later in the boot process to manage startup scripts.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "According to the lecture, which of the following can prevent a computer from coming up during the boot time?",
+                answerOptions: [
+                    {
+                        text: "Errors in configuration",
+                        rationale: "The lecture explicitly lists 'Errors in configuration' as a factor that can prevent a computer from booting up.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Damaged filesystems",
+                        rationale: "The lecture explicitly lists 'damaged filesystems' as a factor that can prevent a computer from booting up.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Incompatible software",
+                        rationale: "While this can cause problems later, the lecture does not list it as a factor preventing the computer from 'coming up' during boot.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Missing or unreliable equipment",
+                        rationale: "The lecture explicitly lists 'missing or unreliable equipment' as a factor that can prevent a computer from booting up.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "What is the name of the process that is always process number 1 and manages the system's startup scripts?",
+                answerOptions: [
+                    {
+                        text: "Kernel",
+                        rationale: "The kernel is the core of the operating system, but it spawns the 'init' process, which is PID 1.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "BIOS",
+                        rationale: "The BIOS is the initial boot code stored in ROM.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "init",
+                        rationale: "The lecture states that the kernel spawns the system's 'init' process, which is always process number 1 and manages startup scripts.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Boot Loader",
+                        rationale: "The boot loader's job is to load the kernel, not manage startup scripts.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "What is the primary function of a 'Boot Loader'?",
+                answerOptions: [
+                    {
+                        text: "To run system startup scripts.",
+                        rationale: "Running startup scripts is the job of the 'init' process.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "To load the operating system kernel into memory.",
+                        rationale: "The lecture defines a boot loader as a small program responsible for loading the kernel into memory.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "To check for damaged filesystems.",
+                        rationale: "Checking filesystems is a task managed by the 'init' scripts.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "To detect and configure hardware devices.",
+                        rationale: "Device detection is a task performed by the kernel.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which of the following are common boot loaders for Linux mentioned in the lecture?",
+                answerOptions: [
+                    {
+                        text: "GRUB",
+                        rationale: "GRUB is listed as a common boot loader for most UNIX and Linux systems.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "LILO",
+                        rationale: "LILO is listed as a traditional and stable boot loader for Linux.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "BIOS",
+                        rationale: "BIOS is a system component that runs before the boot loader.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Windows Boot Manager",
+                        rationale: "The lecture mentions Windows but not its boot manager as a Linux boot loader.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "What does the 'BIOS' stand for and what is its role in the boot process?",
+                answerOptions: [
+                    {
+                        text: "Basic Internet Operating System; it manages network connections.",
+                        rationale: "This is an incorrect definition.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Basic Input/Output System; it contains information about the machine's configuration and tells the PC which device to boot from.",
+                        rationale: "The lecture correctly defines BIOS as Basic Input/Output System and describes its role in the boot process.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Boot Initialization Operating System; it loads the kernel directly into memory.",
+                        rationale: "This is an incorrect definition. The BIOS loads boot code from ROM, which in turn loads the boot loader.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Binary Integrated Operating System; it manages kernel processes.",
+                        rationale: "This is an incorrect definition.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "What is the role of 'init' in the startup process?",
+                answerOptions: [
+                    {
+                        text: "It is the first process created by the kernel, responsible for running startup scripts.",
+                        rationale: "The lecture states that after kernel initialization, 'init' is created with PID 1 and runs startup scripts to perform specific tasks.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "It is a program that loads the operating system kernel into memory.",
+                        rationale: "This is the role of the Boot Loader.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "It is a process that checks the system's hardware.",
+                        rationale: "Hardware probing is done by the kernel.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "It is a program stored in ROM that runs when the computer is first turned on.",
+                        rationale: "This is the function of the BIOS.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "According to the lecture, which of the following are examples of tasks performed by startup scripts?",
+                answerOptions: [
+                    {
+                        text: "Setting the hostname and time zone.",
+                        rationale: "The lecture lists setting the hostname and time zone as tasks performed by startup scripts.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Configuring network interfaces.",
+                        rationale: "The lecture lists configuring network interfaces as a task performed by startup scripts.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Checking and mounting the disks.",
+                        rationale: "The lecture lists checking and mounting disks as a task performed by startup scripts.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Loading the BIOS.",
+                        rationale: "The BIOS is loaded from ROM when the computer is first turned on, before startup scripts run.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "What is the run level for 'full multiuser mode'?",
+                answerOptions: [
+                    {
+                        text: "0",
+                        rationale: "Run level 0 is for system shutdown.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "1",
+                        rationale: "Run level 1 is for single-user mode.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "3",
+                        rationale: "The lecture specifies that run level 3 is for 'full multiuser mode'.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "5",
+                        rationale: "Run level 5 is for X11 (graphical user interface).",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which of the following commands can be used to reboot a Linux system?",
+                answerOptions: [
+                    {
+                        text: "shutdown -r now",
+                        rationale: "The lecture lists 'shutdown -r now' as a command to reboot the system.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "halt",
+                        rationale: "The 'halt' command is used to halt the system, not reboot it.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "telinit 6",
+                        rationale: "The lecture lists 'telinit 6' as a command to reboot the system.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "poweroff",
+                        rationale: "The 'poweroff' command is used to halt the system, not reboot it.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'checkbox'
+            }
+        ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                
+                // Find the rationale for the correct answer
+                const correctRationale = question.answerOptions.find(opt => opt.isCorrect)?.rationale || "No rationale available.";
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctRationale}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>

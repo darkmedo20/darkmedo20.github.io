@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Computing Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db; /* Lighter text color for dark theme */
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-secondary {
+            background-color: #4b5563;
+            color: #d1d5db;
+        }
+        .btn-secondary:hover {
+            background-color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-white text-center mb-6">Quiz 2</h1>
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "According to the lecture, what is the key characteristic that distinguishes mobile computing systems from other computing systems?",
+                answerOptions: [
+                    {
+                        text: "They are always connected to a network.",
+                        rationale: "The lecture states that network connectivity is not a prerequisite for being a mobile computing system.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Their ability to be easily moved physically and used while being moved.",
+                        rationale: "The lecture defines mobile computing systems as those that can be easily moved and whose capabilities can be used while they are being moved.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "They are exclusively powered by batteries.",
+                        rationale: "While batteries are a primary power source, the lecture does not state they are the exclusive power source.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Their larger size and more powerful CPUs.",
+                        rationale: "The lecture notes that mobile devices have limited size, storage, and CPU capabilities.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which of the following are distinguishing aspects of mobile computing systems as mentioned in the lecture? (Select all that apply)",
+                answerOptions: [
+                    {
+                        text: "Prevalent wireless network connectivity.",
+                        rationale: "Prevalent wireless network connectivity is listed as a distinguishing aspect of mobile computing systems.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Large size and unlimited power supply.",
+                        rationale: "The lecture states mobile systems have a small size and a limited power supply.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Mobile nature of their use.",
+                        rationale: "The mobile nature of their use is listed as a distinguishing aspect.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Functionalities particularly suited to the mobile user.",
+                        rationale: "Functionalities suited to the mobile user are listed as a distinguishing aspect.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "Which of the following is considered an early example of a mobile computing system?",
+                answerOptions: [
+                    {
+                        text: "The first computers from the mid-1900s.",
+                        rationale: "First computers are a later development compared to the abacus.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The abacus.",
+                        rationale: "The lecture mentions that the abacus was, in effect, a mobile computing system due to its small size and portability.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Wired networks.",
+                        rationale: "Wired networks are a medium for connecting computers, not a computing system itself.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The invention of electricity in the 1800s.",
+                        rationale: "Electricity is a power source, not a computing system.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "According to the lecture, what are the two general categories of challenges presented by a mobile device's changing location?",
+                answerOptions: [
+                    {
+                        text: "Localization and Location Sensitivity.",
+                        rationale: "The lecture states that these two categories present great difficulties for designers of mobile devices and applications.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Wired and Wireless Connectivity.",
+                        rationale: "These are types of network connectivity, not challenges related to location awareness.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Synchronous and Asynchronous Transactions.",
+                        rationale: "These are types of active transactions, not location-related challenges.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Active Behavior and Limited Power Supply.",
+                        rationale: "These are other dimensions of mobility, but not the specific location-based challenges mentioned.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which of the following describes 'Location sensitivity'?",
+                answerOptions: [
+                    {
+                        text: "The ability of an application to stop working when disconnected from the network.",
+                        rationale: "This is a function related to Quality of Service (QoS), not location sensitivity.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The ability of a device to use its location information to offer features and functionality.",
+                        rationale: "The lecture defines location sensitivity as the ability of a device and software to obtain and take advantage of location information.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The mere ability to select different business logic based on a location.",
+                        rationale: "This is the definition of 'Localization'.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The physical size limitations on a mobile device.",
+                        rationale: "This is a dimension of mobility related to device storage and CPU, not location.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "What is the key problem with using wired networks for mobile computing devices?",
+                answerOptions: [
+                    {
+                        text: "They are too expensive.",
+                        rationale: "The lecture does not mention expense as the primary problem.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "They are cumbersome for connecting mobile devices.",
+                        rationale: "The lecture states that wired networks are somewhat cumbersome for connecting mobile computing devices.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "They are too slow for mobile data.",
+                        rationale: "The lecture does not state that wired networks are too slow for mobile data.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "They are not a predominant method of connecting computers.",
+                        rationale: "The lecture states that wired networks remain the predominant method of connecting computers.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which of the following are consequences of the limited power supply on mobile devices? (Select all that apply)",
+                answerOptions: [
+                    {
+                        text: "The power supply has a direct or indirect effect on everything in the device.",
+                        rationale: "The lecture notes that the power supply has a direct or indirect effect on everything in a mobile device.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Applications must be aware of the remaining power supply.",
+                        rationale: "The lecture states that applications must carry some burden of awareness of the power supply.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "It is the main reason for large device size.",
+                        rationale: "The lecture states that the battery is typically the largest single source of weight, but it does not say it is the main reason for device size.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "It limits the processing power and storage capabilities.",
+                        rationale: "The lecture says the power supply constraint must be balanced with the processing power, storage, and size constraints. The limited storage and CPU are constraints on their own, imposed by physical size.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "What is an 'active system' in the context of transactions?",
+                answerOptions: [
+                    {
+                        text: "A system that requires a timely response from the user.",
+                        rationale: "This describes a 'synchronous active transaction', not the general term 'active system'.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "A system where the user must initiate all interactions.",
+                        rationale: "This describes a 'passive system'.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "A system where the transaction is initiated by the system.",
+                        rationale: "The lecture defines an active transaction as one initiated by the system.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "A system that uses multiple types of user interfaces.",
+                        rationale: "This describes a 'multichannel system'.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which of the following are properties of 'synchronous active transactions'?",
+                answerOptions: [
+                    {
+                        text: "They are initiated by the user.",
+                        rationale: "Synchronous transactions are initiated by the system.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "They require a timely response from the user.",
+                        rationale: "This is a key property of synchronous active transactions.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "They work in a sequential and serial manner.",
+                        rationale: "The lecture notes that interactions work in a sequential and serial manner during a synchronous transaction.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "They are not time-dependent.",
+                        rationale: "The lecture states that synchronous transactions are time-dependent.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "How does the lecture define 'asynchronous active transactions'?",
+                answerOptions: [
+                    {
+                        text: "They are time-dependent transactions.",
+                        rationale: "The lecture states that asynchronous transactions are not time-dependent.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "They are initiated between the system and a single user.",
+                        rationale: "This is a property of synchronous transactions, not asynchronous.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "They work just like messaging systems.",
+                        rationale: "The lecture states that asynchronous active transactions work just like messaging systems.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "They require a timely response from the user.",
+                        rationale: "This is a property of synchronous transactions, not asynchronous.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            }
+        ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                
+                // Find the rationale for the correct answer
+                const correctRationale = question.answerOptions.find(opt => opt.isCorrect)?.rationale || "No rationale available.";
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctRationale}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>
