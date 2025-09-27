@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Computing: The Mobile User Condition Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db; /* Lighter text color for dark theme */
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-white text-center mb-6">Quiz 3</h1>
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "According to the lecture, what defines the 'Mobile Condition'?",
+                answerOptions: [
+                    {
+                        text: "The speed at which the mobile user may be traveling.",
+                        rationale: "Speed is a variable related to changing location, not the definition of Mobile Condition itself.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The difference between the mobile user and the stationary user.",
+                        rationale: "The lecture explicitly defines 'Mobile Condition' as 'the difference between the mobile user and the stationary user.'",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The necessity for active transactions due to lack of focus.",
+                        rationale: "The necessity of active transactions is a consequence of the lack of focus, which is a characteristic of the mobile condition.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The high expectations of performance from the system.",
+                        rationale: "High performance expectation is related to the 'Immediacy' characteristic, not the definition of the Mobile Condition.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "The mobile user is fundamentally different from the stationary user in which of the following ways? (Select four that apply)",
+                answerOptions: [
+                    {
+                        text: "The mobile user frequently requires high degrees of immediacy and responsiveness from the system.",
+                        rationale: "This is one of the five ways listed in the lecture.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The mobile user is typically not focused on the computing task.",
+                        rationale: "This is one of the five ways listed in the lecture.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The mobile user is changing tasks frequently and/or abruptly.",
+                        rationale: "This is one of the five ways listed in the lecture.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The mobile user is typically focused on reaching a destination.",
+                        rationale: "While true, the listed difference is that the user is typically *not focused* on the computing task.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The mobile user is moving, at least occasionally, between known or unknown locations.",
+                        rationale: "This is one of the five ways listed in the lecture.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "Which of the following are variables related to a mobile user's **Changing Location**? (Select all that apply)",
+                answerOptions: [
+                    {
+                        text: "What network connectivity modes are available to the user.",
+                        rationale: "This is one of the variables listed related to changing location.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The location of the user at a given time.",
+                        rationale: "This is one of the variables listed related to changing location.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The primary task of reaching the destination.",
+                        rationale: "This is a reason for the 'Lack of Focus' characteristic, not a variable of 'Changing Location'.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "How long he or she may stay connected or disconnected.",
+                        rationale: "This is one of the variables listed related to changing location.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "The primary focus of the mobile user is seldom on the computing task. What does the lecture state is the primary reason for the necessity of **active transactions**?",
+                answerOptions: [
+                    {
+                        text: "Changing tasks frequently and/or abruptly.",
+                        rationale: "This is a different characteristic of the mobile user.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The need for high degrees of immediacy and responsiveness.",
+                        rationale: "This is related to the 'Immediacy' characteristic.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The primary focus of the mobile user is seldom on the computing task.",
+                        rationale: "The lecture states that the lack of focus is the 'primary reason for the necessity of active transactions.'",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The need to support a variety of platforms and user interfaces.",
+                        rationale: "This is a requirement for the 'Anywhere, Anytime' aspect.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Due to the mobile user's **Lack of Focus** (multitasking), what must the user interface to the system be? (Select two that apply)",
+                answerOptions: [
+                    {
+                        text: "Require as few of the user's senses focused on communicating with the machine as efficiently as possible.",
+                        rationale: "The UI must require as few of the user's senses as possible due to multitasking.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Provide functionality not possible with stationary applications.",
+                        rationale: "This is a benefit of 'Changing Location,' not a requirement of 'Lack of Focus.'",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Very user friendly.",
+                        rationale: "The UI must be 'Very user friendly.'",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Designed to support synchronous active transactions.",
+                        rationale: "Active transactions are necessary, but this is not a UI requirement.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "Which characteristic of the mobile user leads them to normally have **higher expectations of performance** from their devices than stationary users do?",
+                answerOptions: [
+                    {
+                        text: "Changing Location.",
+                        rationale: "This characteristic is related to connectivity and location services.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Lack of Focus.",
+                        rationale: "This characteristic is related to the need for active transactions and simple UIs.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Abrupt Changes in Tasks.",
+                        rationale: "This characteristic is related to task flow and returning to the application.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Immediacy.",
+                        rationale: "Mobile users needing to quickly perform tasks ('Immediacy') leads to higher performance expectations, as 'a short delay in application responsiveness can decrease its usefulness.'",
+                        isCorrect: true
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Regarding **Abrupt Changes in Tasks**, what do mobile users expect to be able to do without much effort?",
+                answerOptions: [
+                    {
+                        text: "Go through a long boot sequence before starting the task.",
+                        rationale: "This is directly contradicted by the 'Immediacy' requirement.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Stop a computing task abruptly, perform an unrelated task, and later return to continue the original task.",
+                        rationale: "The lecture states the user needs to be able to 'stop performing some computing task abruptly, do something that may be completely unrelated, then return to the application... and... continue the computing task.'",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Centralize the business logic on the server (thin client).",
+                        rationale: "This is an architectural challenge, not a user expectation for abrupt task changes.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Automatically receive a synchronous active transaction when distracted.",
+                        rationale: "Active transactions are a result of lack of focus, not a core requirement for task resumption.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "In the context of mobile software architecture and customer variables, what are the **two constants** that describe the mobile user (the customer)? (Select two that apply)",
+                answerOptions: [
+                    {
+                        text: "The location of the user and the speed of travel.",
+                        rationale: "These are variables of 'Changing Location,' not the core constants defining the customer.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The mobile condition.",
+                        rationale: "The lecture states 'The cost and the mobile condition comprise the variables that describe our customer.'",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The degree of immediacy required.",
+                        rationale: "Immediacy is one dimension of the mobile condition, not one of the two constants.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The cost/budget.",
+                        rationale: "The lecture states 'The cost and the mobile condition comprise the variables that describe our customer.'",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "What is the primary **conflict** in mobile software architecture mentioned in the lecture?",
+                answerOptions: [
+                    {
+                        text: "The conflict between supporting only one platform versus supporting multiple platforms.",
+                        rationale: "Supporting multiple platforms is a critical requirement, not a stated architectural conflict.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The conflict between the user's desire for an increased CPU and the resulting increase in device size.",
+                        rationale: "This is a secondary conflict mentioned, not the primary architectural one.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "The conflict between centralizing business logic (thin client) and pushing a significant portion of the application to the client (offline use/friendly UI).",
+                        rationale: "The lecture explicitly states a direct conflict between centralizing logic for more device support (thin client) and pushing logic to the client for better UI/offline use (thick client).",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The conflict between designing a user-friendly UI and requiring the user's senses to focus on the machine.",
+                        rationale: "The UI should aim to be user-friendly and require *few* senses; this is a design goal, not an inherent conflict.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "According to the lecture, after the process of gathering requirements, what is the **first step** in building a software application?",
+                answerOptions: [
+                    {
+                        text: "Conducting user acceptance testing (UAT).",
+                        rationale: "UAT is done at the end of the development cycle.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Deciding on the architecture (laying down a high-level plan).",
+                        rationale: "The lecture states the first step is to 'lay down a high-level plan of what the application will be like when it is finished,' which is 'to decide on the architecture.'",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Centralizing all business logic for platform support.",
+                        rationale: "This is an architectural decision that comes after the first step.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Implementing active transactions.",
+                        rationale: "This is a specific feature implementation, not the first architectural step.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            }
+        ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                
+                // Find the rationale for the correct answer
+                const correctRationale = question.answerOptions.find(opt => opt.isCorrect)?.rationale || "No rationale available.";
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctRationale}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>

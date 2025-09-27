@@ -133,6 +133,12 @@ const showMessage = (message, duration = 3000, isError = false) => {
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=r8th7-1970629-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=ffffff&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `mcq2.html`
                     },
+                    {
+                        id: `lecture-3`,
+                        name: `Lecture 3: Condition Of The Mobile User`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=he295-197878d-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `mcq3.html`
+                    },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
                         id: `lecture-${i + 2}`,
