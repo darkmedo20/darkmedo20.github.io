@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux User & Group Management Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db; /* Lighter text color for dark theme */
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+        .btn-secondary {
+            background-color: #4b5563;
+            color: #d1d5db;
+        }
+        .btn-secondary:hover {
+            background-color: #6b7280;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-white text-center mb-6">Quiz 3</h1>
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "What is the primary reason Linux is designed as a multi-user system?",
+                answerOptions: [
+                    {
+                        text: "To allow multiple processes to run at once without interference.",
+                        rationale: "While true, the core purpose is about managing user access and separation.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "To provide a mechanism to separate Users and allow them to share their work.",
+                        rationale: "The lecture states this is the reason: 'we need mechanisms to separate between Users... Then we will need mechanisms, which will allow Users to share their work.'",
+                        isCorrect: true
+                    },
+                    {
+                        text: "To implement a command-line interface.",
+                        rationale: "The user interface is not the primary reason for multi-user design.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "To simplify file permissions for all users.",
+                        rationale: "The goal is differentiation, which makes permissions more complex, not simpler.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "In Linux, the Super user (root) is identified by which User ID (UID)?",
+                answerOptions: [
+                    {
+                        text: "500-infinite",
+                        rationale: "This range is for ordinary or normal users.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "1-499",
+                        rationale: "This range is for system or software users.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "0",
+                        rationale: "The lecture explicitly states, 'User ID '0' is 'root' - the all-powerful administrator.'",
+                        isCorrect: true
+                    },
+                    {
+                        text: "1000",
+                        rationale: "This is a specific ID in the normal user range, not the ID for root.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which file contains a list of users recognized by the system and is consulted at login to determine a user's UID and home directory?",
+                answerOptions: [
+                    {
+                        text: "/etc/shadow",
+                        rationale: "This file is used to store encrypted passwords for security.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "/etc/group",
+                        rationale: "This file is used to store group account information.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "/etc/passwd",
+                        rationale: "The lecture states that this file is a list of users and the system consults it at login to determine a user's UID and home directory.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "/etc/fstab",
+                        rationale: "This file is used to define filesystems to be mounted.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "What is the main security reason for passwords being stored in an encrypted manner in the /etc/shadow file?",
+                answerOptions: [
+                    {
+                        text: "To make the password visible to the root user for troubleshooting.",
+                        rationale: "The password is encrypted; even root cannot see the original value.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "To allow the system to verify the password without knowing the original value.",
+                        rationale: "Passwords are stored encrypted for security. The system compares the hash of the user's input with the stored hash to authenticate, without ever decrypting the original password.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "To enforce a maximum length limit on user passwords.",
+                        rationale: "This is not the purpose of encryption.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "To save disk space by compressing the password text.",
+                        rationale: "This is incorrect; security is the primary purpose.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "What is the User ID (UID) range reserved for System or software users in Linux?",
+                answerOptions: [
+                    {
+                        text: "0",
+                        rationale: "UID 0 is reserved for the 'root' super user.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "500-infinite",
+                        rationale: "This range is for 'Ordinary or normal users'.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "1-499",
+                        rationale: "The lecture states that 'User ID '1-499' is system users.'",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Any number above 1000",
+                        rationale: "This is part of the ordinary user range, but not the system user range.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which of the following are the three types of user accounts in a Linux system? (Select all that apply)",
+                answerOptions: [
+                    {
+                        text: "Super user (root)",
+                        rationale: "Super user (root) is one of the three types of accounts.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Ordinary or normal users",
+                        rationale: "Ordinary or normal users is one of the three types of accounts.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Guest accounts",
+                        rationale: "Guest accounts are not listed as a main type, although they can be created as normal users.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "System or software users",
+                        rationale: "System or software users is one of the three types of accounts.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "Which pieces of information about a user are typically contained in a single line of the /etc/passwd file? (Select all that apply)",
+                answerOptions: [
+                    {
+                        text: "User's encrypted password",
+                        rationale: "The encrypted password is stored in the separate /etc/shadow file for security.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "User's home directory",
+                        rationale: "The home directory is one of the seven fields in the /etc/passwd file.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "User's login shell",
+                        rationale: "The login shell is one of the seven fields in the /etc/passwd file.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "User ID (UID)",
+                        rationale: "The UID is one of the seven fields in the /etc/passwd file.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "Which of the following concepts are defined in the lecture as special accounts, types of users, or identifiers used in Linux User & Group Management?",
+                answerOptions: [
+                    {
+                        text: "Root",
+                        rationale: "Root is a special account for the system administrator.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Group",
+                        rationale: "A Group is an account generated to permit a third level of access rights.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Kernel",
+                        rationale: "The kernel is the core of the OS, not a user/group concept for access control.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "UID",
+                        rationale: "UID (User ID) is the ID number assigned to a user for bookkeeping and access control.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "What are the key properties of a Private Group in Linux? (Select all that apply)",
+                answerOptions: [
+                    {
+                        text: "Its name matches that of the user account.",
+                        rationale: "The lecture states the private group's name typically matches that of the user.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "It contains a list of all users on the system.",
+                        rationale: "A private group should contain only a single user (the owner).",
+                        isCorrect: false
+                    },
+                    {
+                        text: "It contains only a single user, that of the owner.",
+                        rationale: "The lecture states the private group should contain only a single user, its owner.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Files and directories created by a user default to being owned by this group.",
+                        rationale: "The lecture states this is the default ownership behavior for files and directories created by the user.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "To what system objects are Users attached (or which objects are attached to Users) for the purpose of differentiating access to resources?",
+                answerOptions: [
+                    {
+                        text: "Hardware",
+                        rationale: "Hardware is managed by the kernel, not directly attached to a user account for access differentiation.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Processes",
+                        rationale: "The lecture states that 'Objects in the system (Processes, Files) are attached to Users.'",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Files",
+                        rationale: "The lecture states that 'Objects in the system (Processes, Files) are attached to Users.'",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Run Levels",
+                        rationale: "Run levels define the system state, not objects attached to users.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'checkbox'
+            }
+        ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                
+                // Find the rationale for the correct answer
+                const correctRationale = question.answerOptions.find(opt => opt.isCorrect)?.rationale || "No rationale available.";
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctRationale}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>

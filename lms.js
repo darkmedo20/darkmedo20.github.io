@@ -103,6 +103,12 @@ const showMessage = (message, duration = 3000, isError = false) => {
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=gmigh-1970668-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=ffffff&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `naq2.html`
                     },
+                    {
+                        id: `lecture-3`,
+                        name: `Lecture 3: User Group Management`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=ne5jt-1978750-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `naq3.html`
+                    },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
                         id: `lecture-${i + 2}`,
@@ -144,6 +150,12 @@ const showMessage = (message, duration = 3000, isError = false) => {
                         name: `Lecture 1: قضايا مهنية وأخلاقية`,
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=kvtmh-196350c-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `pmiq1.html`
+                    },
+                    {
+                        id: `lecture-2`,
+                        name: `Lecture 2: المفاهيم والنظريات الأخلاقية`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=zrhrn-1978757-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `pmiq2.html`
                     },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({

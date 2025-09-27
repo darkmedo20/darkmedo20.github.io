@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار المفاهيم والنظريات الأخلاقية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Naskh+Arabic:wght@400;700&display=swap');
+        body {
+            font-family: 'Noto Naskh Arabic', 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db; /* Lighter text color for dark theme */
+            text-align: right;
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-white text-center mb-6">Quiz 2</h1>
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">إرسال الإجابات</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">اكتمل الاختبار!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">إعادة الاختبار</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "ما هو الهدف الرئيسي للنظام الأخلاقي كما ورد في المحاضرة؟",
+                answerOptions: [
+                    {
+                        text: "تنفيذ القانون والدستور.",
+                        rationale: "هذا دور السلطة الرسمية أو القانون، وليس الهدف الرئيسي للنظام الأخلاقي غير الرسمي.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "دفع الأذى وجلب الخير للفرد والمجتمع.",
+                        rationale: "يهدف النظام الأخلاقي لدفع الأذى وجلب الخير للفرد والمجتمع.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "توحيد الثقافات السائدة بين بني البشر.",
+                        rationale: "النظام الأخلاقي يتعامل مع القيم الأساسية، وليس توحيد الثقافات بشكل مباشر.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "توفير الأخلاقيات في دائرة ضيقة ومحدودة.",
+                        rationale: "هذه إحدى مساوئ النظرية المبنية على العقد، وليست هدف النظام الأخلاقي بشكل عام.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "أي مما يلي يُعد من خواص النظام الأخلاقي كما وصفته المحاضرة؟ (اختر ثلاثة)",
+                answerOptions: [
+                    {
+                        text: "رسمي (Formal) وتحرسه سلطة",
+                        rationale: "النظام الأخلاقي ليس رسمياً بل (informal) وتحرسه قناعة الأفراد وضمائرهم.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "علني (Public) ومعروف للجميع",
+                        rationale: "من خواص النظام الأخلاقي أنه علني فقواعده معروفة للجميع.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "موضوعي (Rational) ومبني على المنطق السليم",
+                        rationale: "من خواص النظام الأخلاقي أنه موضوعي فمبادؤه مبنية على المنطق السليم.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "عادل وغير متحيز (Impartial) لمجموعة أو لفرد",
+                        rationale: "من خواص النظام الأخلاقي أنه عادل وغير متحيز لمجموعة أو لفرد.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "ما هو الأساس الذي ترتكز عليه النظرية الأخلاقية المبنية على النتيجة (المصلحة)؟",
+                answerOptions: [
+                    {
+                        text: "الإنسان هو الغاية وليس الوسيلة.",
+                        rationale: "هذه الفكرة ترتكز عليها النظرية المبنية على الواجب.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "العبرة بالنتيجة؛ فالعمل الذي يؤدي لأكبر نتائج مرغوبة يفيد مجموعة كبيرة من الناس فهو أخلاقي.",
+                        rationale: "في النظرية المبنية على النتيجة، يكون العمل أخلاقياً أو غير أخلاقي بناءً على نتيجته، فالعبرة بالنتيجة وما يجلب المصلحة للمجتمع.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "ما يراه المرء صحيحاً وفقاً لتربيته وشخصيته.",
+                        rationale: "هذه الفكرة ترتكز عليها نظرية الفضيلة.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "قواعد أخلاقية لحماية الأفراد داخل نطاق العقد الاجتماعي.",
+                        rationale: "هذه الفكرة ترتكز عليها النظرية المبنية على العقد.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "ما هي النظريات التي تعتمد على إعلاء قيمة السعادة والنفع الناتج عن العمل، ولكن يعاب عليها إهمال العدالة للأقليات؟",
+                answerOptions: [
+                    {
+                        text: "النظرية المبنية على الواجب.",
+                        rationale: "هذه النظرية تقلل من أهمية النفع والسعادة لصالح أداء الواجب.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "النظرية المبنية على العقد.",
+                        rationale: "ميزة هذه النظرية هي توفير دافع للتصرف الأخلاقي.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "النظرية المبنية على النتيجة (المصلحة).",
+                        rationale: "ترتكز النظرية المبنية على النتيجة (المصلحة) على إعلاء قيمة السعادة والنفع الناتج عن العمل، ومساوئها الأساسية هي إهمال العدالة للأقليات.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "نظرية الفضيلة.",
+                        rationale: "هذه النظرية ترتكز على التنشئة الأخلاقية والشخصية.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "تشمل مكونات النظام الأخلاقي قواعد ومبادئ تحكم السلوك. ما هما النوعان الرئيسيان لقواعد السلوك؟ (اختر اثنين)",
+                answerOptions: [
+                    {
+                        text: "قواعد لتوجيه أفعال الأفراد (على المستوى الصغير)",
+                        rationale: "قواعد السلوك تنقسم إلى توجيهات للأفراد (على المستوى الصغير) ونظم اجتماعية (على المستوى الكبير).",
+                        isCorrect: true
+                    },
+                    {
+                        text: "معايير للتقويم وتبرير قواعد السلوك",
+                        rationale: "هذه هي أسس التقويم، وهي منفصلة عن قواعد السلوك نفسها.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "قواعد لبناء سياسات اجتماعية (على المستوى الكبير)",
+                        rationale: "قواعد السلوك تنقسم إلى توجيهات للأفراد (على المستوى الصغير) وقواعد لبناء سياسات اجتماعية (على المستوى الكبير).",
+                        isCorrect: true
+                    },
+                    {
+                        text: "قواعد مأخوذة من القانون وحده",
+                        rationale: "القانون هو أحد أسس تبرير المبادئ الأخلاقية وليس المصدر الوحيد لقواعد السلوك.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "أي من مثبطات التدخل والتعامل الأخلاقي يُجاب عليه بالقول: 'لا نحكم وإنما نقيس الفعل المعين والموقف الأخلاقي فيه'؟",
+                answerOptions: [
+                    {
+                        text: "الاخلاق مسألة خاصة.",
+                        rationale: "هذا المثبط يُجاب عليه بأن الأخلاق مسألة عامة.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "من أنا حتى أحكم على الآخرين!",
+                        rationale: "هذا المثبط يُجاب عليه بأننا 'لا نحكم وإنما نقيس الفعل المعين والموقف الأخلاقي فيه' وأن حكمنا ليس معناه الإدانة.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "يختلف الحكم على الامور الاخلاقية.",
+                        rationale: "يُجاب على هذا المثبط بالتركيز على الأمور الأخلاقية المتفق عليها والمبادئ الثابتة.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "الاخلاقيات مسائل تحددها الثقافات السائدة.",
+                        rationale: "يُجاب على هذا المثبط بوجود اتفاق حول كثير من الأخلاقيات الأساسية بين بني البشر.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "يتم تبرير المبادئ الأخلاقية استناداً لعدة أسس. اذكر هذه الأسس الثلاثة كما وردت في المحاضرة. (اختر ثلاثة)",
+                answerOptions: [
+                    {
+                        text: "التنشئة الأخلاقية (التربية)",
+                        rationale: "التنشئة هي أساس لنظرية الفضيلة، لكنها ليست الأساس العام لتبرير المبادئ الأخلاقية.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "العقيدة الدينية",
+                        rationale: "يتم تبرير المبادئ الأخلاقية استناداً للعقيدة الدينية.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "القانون",
+                        rationale: "يتم تبرير المبادئ الأخلاقية استناداً للقانون.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "الفلسفات الأخلاقية",
+                        rationale: "يتم تبرير المبادئ الأخلاقية استناداً للفلسفات الأخلاقية.",
+                        isCorrect: true
+                    }
+                ],
+                type: 'checkbox'
+            },
+            {
+                question: "ما هو العيب الأساسي (المساوئ) الموجه للنظرية المبنية على النتيجة (المصلحة)؟",
+                answerOptions: [
+                    {
+                        text: "تقلل من أهمية النتيجة والسعادة.",
+                        rationale: "هذه إحدى مساوئ النظرية المبنية على الواجب.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "توفر الأخلاقيات في دائرة ضيقة.",
+                        rationale: "هذه إحدى مساوئ النظرية المبنية على العقد.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "تهمل العدالة للأقليات.",
+                        rationale: "الجدول يلخص أن المساوئ الأساسية للنظرية المبنية على النتيجة هي أنها تهمل العدالة للأقليات.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "تعتمد على مقاييس مجتمعات متجانسة.",
+                        rationale: "هذه إحدى مساوئ النظرية المبنية على الفضيلة.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "أي من النظريات الأخلاقية التالية تُعرف أيضاً بالنظرية المبنية على 'الشخصية' (Character-based)؟",
+                answerOptions: [
+                    {
+                        text: "النظرية المبنية على النتيجة.",
+                        rationale: "تُعرف هذه النظرية بنظرية المصلحة.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "نظرية الفضيلة (Virtue ethics).",
+                        rationale: "تُعرف نظرية الفضيلة أيضاً بأنها (character-based) وترى أن الفعل الأخلاقي يبنى وفقاً لما يراه المرء صحيحاً وفقاً لتربيته وشخصيته.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "النظرية المبنية على العقد.",
+                        rationale: "تُعرف هذه النظرية بالعقد الاجتماعي.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "النظرية المبنية على الواجب.",
+                        rationale: "تُعرف هذه النظرية بالنظرية المبنية على فكرة الواجب.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "ما هي النظريات التي ترى أن الإنسان هو الغاية وليس هو الوسيلة لغاية، وتؤمن بأن الموقف الأخلاقي هو الذي يساوي بين البشر؟",
+                answerOptions: [
+                    {
+                        text: "النظرية المبنية على النتيجة (المصلحة).",
+                        rationale: "هذه النظرية قد تضحي بالبعض (الأقلية) من أجل إسعاد الأغلبية.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "النظرية المبنية على أداء الواجب (Duty-based).",
+                        rationale: "ترى هذه النظرية أن من واجبنا العمل لما يفيد الإنسان كغاية، وأن الموقف الأخلاقي هو الذي يساوي بين البشر، رافضة التضحية بالأقلية.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "نظرية الفضيلة.",
+                        rationale: "هذه النظرية ترتكز على التنشئة الأخلاقية والشخصية.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "النظرية المبنية على العقد الاجتماعي.",
+                        rationale: "تُؤسس هذه النظرية الأخلاق بقواعد لحماية الأفراد داخل نطاق العقد.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            }
+        ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="ml-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join('، ') : userAnswer || 'لم يُجب عليه';
+                const correctAnswerText = correctAnswers.join('، ');
+                
+                // Find the rationale for the correct answer
+                const correctRationale = question.answerOptions.find(opt => opt.isCorrect)?.rationale || "لا يوجد تعليل متاح.";
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white text-right">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300 text-right">إجابتك: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300 text-right">الإجابة الصحيحة: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300 text-right">التعليل: ${correctRationale}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `لقد أحرزت ${score} من أصل ${quizData.length} نقطة`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>
