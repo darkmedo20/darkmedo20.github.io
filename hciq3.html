@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Introduction to HCI Quiz</title>
+    <title>HCI: Lecture 3 - The Computer</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
@@ -54,19 +54,13 @@
         .btn-primary:hover {
             background-color: #2563eb;
         }
-        .btn-secondary {
-            background-color: #4b5563;
-            color: #d1d5db;
-        }
-        .btn-secondary:hover {
-            background-color: #6b7280;
-        }
     </style>
 </head>
 <body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
 
     <main id="quiz-container" class="w-full max-w-3xl">
         <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h1 class="text-3xl font-bold text-white text-center mb-6">Quiz 3</h1>
             <div id="all-questions-container" class="space-y-8"></div>
             <div class="text-center mt-10">
                 <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
@@ -86,264 +80,264 @@
     <script>
         const quizData = [
             {
-                question: "What is the primary focus of Human-Computer Interaction (HCI)?",
+                question: "When we interact with computers, the main objective is similar to human communication. What is this main objective?",
                 answerOptions: [
                     {
-                        text: "Developing faster computer hardware and processors.",
-                        rationale: "While hardware performance is important for computing, HCI's main focus is on the user's interaction with the technology, not the internal components themselves.",
+                        text: "To establish a cognitive model.",
+                        rationale: "Establishing a cognitive model is part of understanding the user (human) side, not the main objective of the interaction itself.",
                         isCorrect: false
                     },
                     {
-                        text: "Designing, evaluating, and implementing interactive computing systems for human use.",
-                        rationale: "This option accurately summarizes the core definition of HCI provided in the lecture, encompassing the design process and its focus on the human user.",
+                        text: "To transfer information.",
+                        rationale: "The lecture states: 'The main objective is transferring information,' which flows back and forth between the user and the computer.",
                         isCorrect: true
                     },
                     {
-                        text: "Writing complex algorithms and software code.",
-                        rationale: "Writing code is a part of implementing systems, but HCI is a broader field concerned with the entire user-facing experience, not just the programming logic.",
+                        text: "To execute binary code.",
+                        rationale: "This is a low-level computer operation, not the high-level objective of HCI.",
                         isCorrect: false
                     },
                     {
-                        text: "Marketing new technology products to consumers.",
-                        rationale: "Marketing is a business function that happens after a product is developed; HCI is involved in the actual design and development process to ensure the product is usable.",
+                        text: "To provide multimodal feedback.",
+                        rationale: "This is a feature of advanced I/O, not the core objective of all interaction.",
                         isCorrect: false
                     }
                 ],
                 type: 'radio'
             },
             {
-                question: "What is the key difference between an 'interface' and an 'interaction' in HCI?",
+                question: "In the context of the I/O Model of Interaction, which of the following are the key elements? (Select all that apply)",
                 answerOptions: [
                     {
-                        text: "An interface is the abstract model of a task, while an interaction is the physical hardware used.",
-                        rationale: "This reverses the definitions. The 'interaction' is the abstract model (e.g., 'select an item'), not the interface.",
+                        text: "The I/O devices (e.g., screen, keyboard, speaker, microphone).",
+                        rationale: "I/O devices are the core components that receive and present information.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The physical manipulation/senses involved (e.g., typing, viewing, touching).",
+                        rationale: "The physical manipulation and senses involved are part of the I/O Model, describing how the user interacts with the devices.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "The user's long-term memory capacity.",
+                        rationale: "This is a concept from the Human side (Lecture 2), not the Computer/I/O Model.",
                         isCorrect: false
                     },
                     {
-                        text: "An interface is the technical realization (hardware/software), while an interaction is the abstract model of how a user performs a task.",
-                        rationale: "This correctly distinguishes the two terms, where the interaction is the conceptual method and the interface is the tool (like a mouse or touchscreen) used to achieve it.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "There is no difference; the terms are used interchangeably.",
-                        rationale: "The lecture material explicitly distinguishes between these two concepts as fundamental to understanding HCI.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "An interface refers only to software, while an interaction refers only to hardware.",
-                        rationale: "An interface can be either hardware (a mouse) or software (a delete button), so this definition is too narrow.",
-                        isCorrect: false
-                    }
-                ],
-                type: 'radio'
-            },
-            {
-                question: "Which of the following are key factors of Usability? (Select all that apply)",
-                answerOptions: [
-                    {
-                        text: "Effectiveness",
-                        rationale: "Effectiveness is one of the five core factors of Usability.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Efficiency",
-                        rationale: "Efficiency is one of the five core factors of Usability.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Satisfaction",
-                        rationale: "Satisfaction is one of the five core factors of Usability.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Brand Loyalty",
-                        rationale: "Brand Loyalty is a component of User Experience (UX), which is a broader concept than Usability.",
+                        text: "The central processing unit (CPU).",
+                        rationale: "The CPU is the internal processing unit, not part of the I/O interface that directly mediates interaction.",
                         isCorrect: false
                     }
                 ],
                 type: 'checkbox'
             },
             {
-                question: "Which design philosophy places the user and their needs at the center of every phase of the design process?",
+                question: "Which term is used to describe the integration of multiple input and output channels, such as combining voice commands, touch gestures, and haptic feedback?",
                 answerOptions: [
                     {
-                        text: "Technology-Centered Design",
-                        rationale: "This approach prioritizes technical capabilities over user needs, which is the opposite of the philosophy in question.",
+                        text: "Context-Aware Interaction",
+                        rationale: "Context-aware interaction uses AI to sense the environment and adjust, but doesn't specifically mean combining multiple channels.",
                         isCorrect: false
                     },
                     {
-                        text: "User-Centered Design (UCD)",
-                        rationale: "UCD is defined as an iterative process that revolves around user needs, expectations, and feedback from start to finish.",
+                        text: "Single-Stream Processing",
+                        rationale: "This term is the opposite, referring to one channel at a time.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Multimodality",
+                        rationale: "The lecture defines 'Multimodality' as combining 'multiple I/O channels... to create a richer, more expressive form of interaction.'",
                         isCorrect: true
                     },
                     {
-                        text: "Agile Development",
-                        rationale: "Agile is a project management methodology for software development, and while it is iterative and can incorporate UCD, it is not itself a design philosophy focused on the user.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Feature-Driven Design",
-                        rationale: "This approach focuses on building out a list of features, which may or may not be guided by a deep understanding of user needs.",
+                        text: "Perceptual Modeling",
+                        rationale: "This relates to how the human perceives the input, not the combination of I/O channels.",
                         isCorrect: false
                     }
                 ],
                 type: 'radio'
             },
             {
-                 question: "Which of the following is NOT one of the three core components of HCI?",
-                 answerOptions: [
-                    {
-                        text: "The Human",
-                        rationale: "Understanding human capabilities and limitations (cognitive, physical) is a fundamental component of HCI.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The Computer",
-                        rationale: "Understanding the technology, including its hardware and software, is a central part of the HCI model.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The Interaction",
-                        rationale: "The communication channel between the user and the computer is the third essential component of HCI.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The Market",
-                        rationale: "While market needs influence product development, the core academic components of HCI focus on the relationship between the user, the computer, and their interaction.",
-                        isCorrect: true
-                    }
-                 ],
-                 type: 'radio'
-            },
-            {
-                question: "How does User Experience (UX) differ from Usability?",
+                question: "The evolution of the User Interface (UI) can be broadly categorized into three main stages. Which of the following lists these stages in the correct historical order?",
                 answerOptions: [
                     {
-                        text: "UX is only about the visual design and aesthetics of a product.",
-                        rationale: "While aesthetics are part of UX, UX is much broader, encompassing all aspects of the user's interaction and feelings about the product and company.",
+                        text: "Graphical User Interface (GUI), Command Line Interface (CLI), Natural/Multimodal UI",
+                        rationale: "The order is incorrect; CLI came first.",
                         isCorrect: false
                     },
                     {
-                        text: "Usability is a component of UX, which also includes the user's overall feelings, perceptions, and satisfaction with the entire product and company.",
-                        rationale: "This correctly identifies that usability is a part of the larger picture of UX, which covers the entire journey and relationship a user has with a service.",
+                        text: "Command Line Interface (CLI), Graphical User Interface (GUI), Natural/Multimodal UI",
+                        rationale: "The lecture lists the evolution as: 1. Command Line Interface, 2. Graphical User Interface, 3. Natural/Multimodal UI.",
                         isCorrect: true
                     },
                     {
-                        text: "UX and Usability are the same concept.",
-                        rationale: "The lecture notes specify that UX is a broader concept than usability, using the Tirhal app as an example.",
+                        text: "Batch Processing, CLI, GUI",
+                        rationale: "Batch Processing is a very early form of computing but is not listed as the three main UI stages.",
                         isCorrect: false
                     },
                     {
-                        text: "Usability focuses on user emotions, while UX focuses on task completion speed.",
-                        rationale: "This reverses the primary focus of the two concepts. Usability is more concerned with efficiency and effectiveness, while UX is more holistic and includes emotions.",
+                        text: "Natural/Multimodal UI, CLI, GUI",
+                        rationale: "The order is incorrect; Natural/Multimodal UI is the current, most advanced stage.",
                         isCorrect: false
                     }
                 ],
                 type: 'radio'
             },
             {
-                question: "What is the main goal of Accessibility in HCI?",
+                question: "The evolution of computer hardware has a significant impact on HCI design. Which of the following are effects of this evolution mentioned in the lecture? (Select all that apply)",
                 answerOptions: [
                     {
-                        text: "To make software affordable for everyone.",
-                        rationale: "Economic access is an important issue, but in the context of HCI, 'Accessibility' refers to making technology usable by people with disabilities.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "To ensure products are usable by people of all abilities and disabilities.",
-                        rationale: "This is the core definition of accessibility, which aims to remove barriers for users with visual, auditory, physical, cognitive, and other disabilities.",
+                        text: "Faster CPUs allow for more complex and responsive UI interactions.",
+                        rationale: "Faster CPUs enable more complex UIs to run without delays.",
                         isCorrect: true
                     },
                     {
-                        text: "To ensure a product is available in multiple languages.",
-                        rationale: "This is known as internationalization or localization, which is a different (though also important) concept from accessibility.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "To make user interfaces more visually attractive.",
-                        rationale: "Aesthetics are a design goal, but accessibility is specifically focused on function and removing barriers to use.",
-                        isCorrect: false
-                    }
-                ],
-                type: 'radio'
-            },
-            {
-                question: "In interaction design, what is the purpose of 'Feedback'?",
-                answerOptions: [
-                    {
-                        text: "To collect user opinions and reviews after they use a product.",
-                        rationale: "Collecting user reviews is a form of feedback for the company, but in interaction design, 'feedback' refers to the system's immediate response to a user's action.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "To provide users with information about what action has been done and what has been accomplished.",
-                        rationale: "This is the correct definition. Feedback, like a progress bar or a confirmation message, keeps the user informed about the system's state.",
+                        text: "More memory (RAM) enables applications to handle larger datasets and keep more data immediately accessible.",
+                        rationale: "Increased memory allows for larger, more functional applications and data handling.",
                         isCorrect: true
                     },
                     {
-                        text: "To display advertisements to the user.",
-                        rationale: "Advertisements are a form of output, but they are not considered feedback in response to a user's direct action.",
+                        text: "Cheaper and larger storage capacity has limited the reliance on cloud services.",
+                        rationale: "Cheaper storage has made data storage easier but hasn't limited the reliance on cloud services; in fact, the two often work together.",
                         isCorrect: false
                     },
                     {
-                        text: "To prevent the user from making errors.",
-                        rationale: "While good feedback can help users notice and correct errors, its primary purpose is to communicate the result of an action, not prevent it entirely.",
-                        isCorrect: false
-                    }
-                ],
-                type: 'radio'
-            },
-            {
-                question: "Why is 'Consistency' an important principle in interface design?",
-                answerOptions: [
-                    {
-                        text: "It makes the interface look more creative and interesting.",
-                        rationale: "Inconsistency, or high variety, might be seen as creative by some, but consistency is valued for its effect on usability, not creativity.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "It reduces the development time for an application.",
-                        rationale: "While using consistent components can sometimes speed up development, the primary reason for this principle is to benefit the end-user.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "It makes the system predictable and easier to learn, as users can transfer knowledge from one part to another.",
-                        rationale: "This is the core benefit of consistency. When elements behave the same way throughout an interface, users don't have to constantly relearn how to do things.",
+                        text: "Cheaper storage allows for the use of rich media (video, high-res images) in interfaces.",
+                        rationale: "Cheaper storage directly enables richer, more engaging interfaces with high-quality media.",
                         isCorrect: true
-                    },
-                    {
-                        text: "It ensures the application will work on all devices and screen sizes.",
-                        rationale: "Ensuring an app works on different devices is called responsive design. Consistency is about the similarity of design elements within the interface itself.",
-                        isCorrect: false
-                    }
-                ],
-                type: 'radio'
-            },
-            {
-                question: "Which of the following are recognized challenges in HCI? (Select all that apply)",
-                answerOptions: [
-                    {
-                        text: "Subjectivity in User Preferences",
-                        rationale: "User preferences and behaviors can vary widely, making it challenging to design interfaces that universally satisfy all users.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Rapid Technological Change",
-                        rationale: "HCI faces the challenge of keeping up with rapid technological advancements, which can impact interface design and user interaction patterns.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Ethical Considerations (e.g., privacy, bias)",
-                        rationale: "HCI must navigate ethical issues such as privacy concerns, algorithmic bias, and the ethical implications of persuasive design techniques.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Slow Internet Speeds",
-                        rationale: "While this is a technical challenge, it is not a core HCI challenge related to human-computer interaction principles.",
-                        isCorrect: false
                     }
                 ],
                 type: 'checkbox'
+            },
+            {
+                question: "The final and most advanced stage of UI evolution mentioned is the 'Natural/Multimodal UI'. What is its main characteristic?",
+                answerOptions: [
+                    {
+                        text: "It requires the user to memorize precise commands and syntax.",
+                        rationale: "This is the characteristic of the Command Line Interface (CLI).",
+                        isCorrect: false
+                    },
+                    {
+                        text: "It uses only a single, large touchscreen for all interaction.",
+                        rationale: "It uses multiple channels (multimodal), not just a single touchscreen.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "It is a seamless and adaptive experience that uses various I/O devices (voice, gesture, gaze) based on the user's need and context.",
+                        rationale: "This stage allows for a seamless, adaptive experience that uses the most natural input/output channels for the situation.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "It relies heavily on the WIMP paradigm (Windows, Icons, Menus, Pointer).",
+                        rationale: "This is the characteristic of the Graphical User Interface (GUI).",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Artificial Intelligence (AI) plays a key role in the newest type of interfaces, such as smart homes or AR glasses. What primary shift does AI for Context-Aware & Proactive Interfaces cause in interaction style?",
+                answerOptions: [
+                    {
+                        text: "It focuses interaction strictly on keyboard and mouse input.",
+                        rationale: "AI-powered interfaces move away from traditional I/O devices toward natural input.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "It restricts the system to synchronous active transactions.",
+                        rationale: "AI enables complex, often asynchronous, interactions.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "It moves from command-based to anticipatory interaction.",
+                        rationale: "AI allows systems to sense context and proactively adjust, moving from the user issuing commands to the system anticipating needs.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "It primarily reduces system latency and improves CPU speed.",
+                        rationale: "This is the effect of hardware evolution, not AI's impact on interaction style.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "AI as a Bridge Between Humans & Machines represents the highest level of AI's role in HCI. What is the nature of the interaction at this level?",
+                answerOptions: [
+                    {
+                        text: "Transactional, focusing only on efficient data processing.",
+                        rationale: "The highest level moves beyond simple transactional interaction.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Dialog-like, turning computers from tools into collaborators.",
+                        rationale: "The lecture states this highest level turns computers from 'tools into collaborators' and interaction becomes 'dialog-like rather than transactional.'",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Command-based, requiring precise instructions.",
+                        rationale: "This is a feature of older interfaces (CLI).",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Sensory-only, relying entirely on haptic and gaze tracking.",
+                        rationale: "It uses all modes, but the key is the collaborative relationship, not just the I/O.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which is a major challenge or risk associated with AI-Powered Context-Aware & Proactive Interfaces (e.g., smart homes adjusting settings automatically)?",
+                answerOptions: [
+                    {
+                        text: "It increases the cognitive load on the user.",
+                        rationale: "Proactive interfaces typically reduce user effort by anticipating needs.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "It risks being intrusive if poorly designed.",
+                        rationale: "The lecture notes that this system 'reduces user effort but risks being intrusive if poorly designed.'",
+                        isCorrect: true
+                    },
+                    {
+                        text: "It prevents the use of multimodal I/O channels.",
+                        rationale: "AI often enables more complex multimodal interaction.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "It is incompatible with modern GPU architectures.",
+                        rationale: "This is a technical hardware concern and not the primary HCI design impact mentioned.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
+            },
+            {
+                question: "Which of the following describes the key function of the Motor system in the Model Human Processor (MHP)?",
+                answerOptions: [
+                    {
+                        text: "Processes and interprets information, making decisions.",
+                        rationale: "This is the function of the Cognitive system.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Takes in sensory information (like seeing, hearing, or touching).",
+                        rationale: "This is the function of the Perceptual system.",
+                        isCorrect: false
+                    },
+                    {
+                        text: "Controls physical actions (like typing, clicking, or moving a mouse).",
+                        rationale: "The Motor system is responsible for controlling physical actions.",
+                        isCorrect: true
+                    },
+                    {
+                        text: "Stores and retrieves data for long periods.",
+                        rationale: "This is the function of Long-Term Memory.",
+                        isCorrect: false
+                    }
+                ],
+                type: 'radio'
             }
         ];
 
@@ -443,13 +437,15 @@
 
                 const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
                 const correctAnswerText = correctAnswers.join(', ');
-                const correctOption = question.answerOptions.find(opt => opt.isCorrect);
+                
+                // Find the rationale for the correct answer
+                const correctRationale = question.answerOptions.find(opt => opt.isCorrect)?.rationale || "No rationale available.";
 
                 resultItem.innerHTML = `
                     <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
                     <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
                     <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
-                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctOption.rationale}</p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctRationale}</p>
                 `;
                 resultsSummaryEl.appendChild(resultItem);
             });
