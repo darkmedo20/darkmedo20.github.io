@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Data Selection & Exploration (Lec 3)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db;
+            text-align: left;
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Complete!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake Quiz</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "According to the lecture on Dataset Selection, what is a key requirement for the size of the data set chosen for a data mining task?",
+                answerOptions: [
+                    { text: "It must be large enough to fit entirely in main memory (RAM).", isCorrect: false },
+                    { text: "It must be huge (e.g., billions of tuples).", isCorrect: true },
+                    { text: "It must not exceed 100,000 tuples to ensure processing speed.", isCorrect: false },
+                    { text: "It must contain only nominal and binary attributes.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The lecture states that the size of the data must be <strong>huge (e.g., billions of tuples)</strong> to be suitable for data mining, reflecting the need for big data volumes to find meaningful patterns."
+            },
+            {
+                question: "An attribute is a property or characteristic of an object. Which of the following terms is <strong>NOT</strong> a synonym for 'Attribute' as mentioned in the lecture?",
+                answerOptions: [
+                    { text: "Dimension", isCorrect: false },
+                    { text: "Feature", isCorrect: false },
+                    { text: "Record", isCorrect: true },
+                    { text: "Variable", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "An Attribute is also known as a variable, field, characteristic, dimension, or <strong>feature</strong>. A <strong>Record</strong> is a synonym for an <strong>Object</strong>."
+            },
+            {
+                question: "For which attribute type is finding the <strong>mean (average) value</strong> considered <strong>not meaningful</strong> because the values do not have any meaningful order?",
+                answerOptions: [
+                    { text: "Binary Attribute", isCorrect: false },
+                    { text: "Numeric Attribute", isCorrect: false },
+                    { text: "Nominal Attribute", isCorrect: true },
+                    { text: "Ordinal Attribute", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>Nominal Attributes</strong> have values that are just symbols or names (like hair color) and do not have a meaningful order, so mathematical operations like finding the mean or median are not meaningful."
+            },
+            {
+                question: "Which attribute type has values with a <strong>meaningful order or ranking</strong>, but the <strong>magnitude or distance</strong> between successive values is <strong>unknown</strong>?",
+                answerOptions: [
+                    { text: "Nominal Attribute", isCorrect: false },
+                    { text: "Ordinal Attribute", isCorrect: true },
+                    { text: "Numeric Attribute", isCorrect: false },
+                    { text: "Binary Attribute", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "An <strong>Ordinal Attribute</strong> has a meaningful order (e.g., grades: A+ > A > B+), but the difference in 'magnitude' between A+ and A is not quantifiable or known."
+            },
+            {
+                question: "A binary attribute is referred to as <strong>Boolean</strong> if its two states correspond to what?",
+                answerOptions: [
+                    { text: "Positive and Negative", isCorrect: false },
+                    { text: "Present and Absent", isCorrect: false },
+                    { text: "True and False", isCorrect: true },
+                    { text: "Odd and Even", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "Binary attributes are referred to as <strong>Boolean</strong> if the two states correspond to <strong>true and false</strong>."
+            },
+            {
+                question: "What is the primary purpose of using summary statistics and visualization techniques in the Data Exploration step of data preprocessing?",
+                answerOptions: [
+                    { text: "To eliminate all non-numeric data from the dataset.", isCorrect: false },
+                    { text: "To perform the main Data Mining algorithm itself.", isCorrect: false },
+                    { text: "To get an overall picture of the data, including value distribution, to inform preprocessing.", isCorrect: true },
+                    { text: "To permanently transform ordinal data into nominal data.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "Data Exploration is essential to have an overall picture of the data, including attribute types, values, and how they are distributed, which is crucial for successful preprocessing."
+            },
+            {
+                question: "Which of the following are considered measures of <strong>central tendency</strong> used in summary statistics? (Select two)",
+                answerOptions: [
+                    { text: "Range", isCorrect: false },
+                    { text: "Mean", isCorrect: true },
+                    { text: "Mode", isCorrect: true },
+                    { text: "Standard Deviation", isCorrect: false }
+                ],
+                type: 'checkbox',
+                fullExplanation: "Measures of central tendency measure the location of the middle or center of a data distribution. They include the <strong>mean, median, mode, and midrange</strong>."
+            },
+            {
+                question: "What is the specific term for the <strong>most frequent attribute value</strong> in a data set, which is often a better measure for Nominal attributes than the mean?",
+                answerOptions: [
+                    { text: "Midrange", isCorrect: false },
+                    { text: "Median", isCorrect: false },
+                    { text: "Frequency", isCorrect: false },
+                    { text: "Mode", isCorrect: true }
+                ],
+                type: 'radio',
+                fullExplanation: "The <strong>Mode</strong> of an attribute is defined as the most frequent attribute value. Note that 'Frequency' is the percentage of time a value occurs, while 'Mode' is the value itself."
+            },
+            {
+                question: "Measures of data dispersion, such as the interquartile range and standard deviation, are particularly useful for identifying what?",
+                answerOptions: [
+                    { text: "Clusters of data points.", isCorrect: false },
+                    { text: "The mean value of numeric data.", isCorrect: false },
+                    { text: "Outliers.", isCorrect: true },
+                    { text: "Data transformation requirements.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "Measures of data dispersion (like range, quartiles, and standard deviation) are useful for identifying how the data is spread out and are specifically mentioned as being useful for identifying <strong>outliers</strong>."
+            },
+            {
+                question: "A Scatter Plot is a useful graphical representation technique primarily designed to look at what kind of data and patterns? (Select two key purposes)",
+                answerOptions: [
+                    { text: "The distribution of a *single* attribute (univariate data).", isCorrect: false },
+                    { text: "Correlation relationships (positive or negative) between attributes.", isCorrect: true },
+                    { text: "Clusters of points and outliers in bivariate data.", isCorrect: true },
+                    { text: "The most frequent value of a nominal attribute (Mode).", isCorrect: false }
+                ],
+                type: 'checkbox',
+                fullExplanation: "The scatter plot is used for <strong>bivariate data</strong> (two variables) to see <strong>clusters of points and outliers</strong>, and to explore the possibility of <strong>correlation relationships</strong>. Histograms are typically used for single attribute distribution."
+            }
+        ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    // Check if the user's set of answers exactly matches the correct set
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                
+                const explanationText = question.fullExplanation || "No explanation available.";
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${explanationText}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>

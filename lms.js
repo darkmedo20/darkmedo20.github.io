@@ -31,6 +31,12 @@ const showMessage = (message, duration = 3000, isError = false) => {
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=d42qj-19805f5-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `hciq3.html`
                     },
+                    {
+                        id: `lecture-4`,
+                        name: `Lecture 4: Interaction`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=fqmu4-19a0839-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `hciq4.html`
+                    },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
                         id: `lecture-${i + 2}`,
@@ -90,6 +96,24 @@ const showMessage = (message, duration = 3000, isError = false) => {
                         name: `Lecture 2: Data Mining Process`,
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=4qerx-19806e4-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `dmq2.html`
+                    },
+                    {
+                        id: `lecture-3`,
+                        name: `Lecture 3: Data Selection & Exploration`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=9gtpu-19a0776-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `dmq3.html`
+                    },
+                    {
+                        id: `lecture-4`,
+                        name: `Lecture 4: Data Cleaning`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=nqqne-19a0979-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `dmq4.html`
+                    },
+                    {
+                        id: `lecture-5`,
+                        name: `Lecture 5: Data Integration`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=nzhvu-19a1047-pb&from=pb6admin&share=1&download=1&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `dmq5.html`
                     },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({

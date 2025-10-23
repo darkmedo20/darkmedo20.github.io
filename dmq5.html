@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Data Integration (Lec 5)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db;
+            text-align: left;
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Complete!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake Quiz</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "What is the primary goal of using the Chi-Square ($\chi^2$) test for nominal data during redundancy detection?",
+                answerOptions: [
+                    { text: "To determine the mean difference between two attributes.", isCorrect: false },
+                    { text: "To test the hypothesis that two attributes are independent (uncorrelated).", isCorrect: true },
+                    { text: "To measure the strength and direction of a linear relationship between numeric variables.", isCorrect: false },
+                    { text: "To calculate the probability of a missing value.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The $\chi^2$ statistic tests the hypothesis that two attributes are <strong>independent</strong>, meaning there is no correlation between them. A high $\chi^2$ value suggests the opposite (they are dependent)."
+            },
+            {
+                question: "In the Chi-Square ($\chi^2$) formula, what does $o_{ij}$ represent?",
+                answerOptions: [
+                    { text: "The total number of data tuples in the dataset.", isCorrect: false },
+                    { text: "The expected frequency of the joint event ($A_i$, $B_j$).", isCorrect: false },
+                    { text: "The observed frequency (actual count) of the joint event ($A_i$, $B_j$).", isCorrect: true },
+                    { text: "The critical value needed to reject the null hypothesis.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "$o_{ij}$ is the <strong>observed frequency</strong> (actual count) of the joint event $(A_i, B_j)$, while $e_{ij}$ is the expected frequency."
+            },
+            {
+                question: "What is the term for the data integration challenge where records referring to the same real-world entity have different attribute values or names across sources (e.g., 'Bill Clinton' in one vs. 'William Clinton' in another)?",
+                answerOptions: [
+                    { text: "Heterogeneous data", isCorrect: false },
+                    { text: "Tuple duplication", isCorrect: false },
+                    { text: "Entity Resolution (or Entity Identification)", isCorrect: true },
+                    { text: "Covariance conflict", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>Entity Resolution</strong> (also called entity identification or linkage) is the task of matching records from different data sources that refer to the same real-world entity."
+            },
+            {
+                question: "Which of the following is a key challenge in <strong>schema integration</strong>?",
+                answerOptions: [
+                    { text: "Detecting the independence of nominal attributes.", isCorrect: false },
+                    { text: "Resolving conflicts between attribute names (synonym/homonym conflicts).", isCorrect: true },
+                    { text: "Handling the non-linear relationship between two numeric attributes.", isCorrect: false },
+                    { text: "Ignoring tuples with missing values.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "Schema integration involves resolving conflicts between attribute names, types, or structures. A common issue is the <strong>synonym problem</strong>, where attributes have different names but the same meaning."
+            },
+            {
+                question: "What type of data attributes is the Covariance method used to detect redundancy for?",
+                answerOptions: [
+                    { text: "Nominal attributes only.", isCorrect: false },
+                    { text: "Ordinal attributes only.", isCorrect: false },
+                    { text: "Categorical attributes only.", isCorrect: false },
+                    { text: "Numeric (Interval-scaled or Ratio-scaled) attributes.", isCorrect: true }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>Covariance</strong> is a statistical measure used to detect relationships and redundancy between two <strong>numeric</strong> attributes (like sales and advertising budget)."
+            },
+            {
+                question: "If the Covariance value between two numeric attributes is significantly <strong>positive</strong>, what does this imply?",
+                answerOptions: [
+                    { text: "The attributes are independent of each other.", isCorrect: false },
+                    { text: "As one attribute's value increases, the other's value tends to increase as well.", isCorrect: true },
+                    { text: "As one attribute's value increases, the other's value tends to decrease.", isCorrect: false },
+                    { text: "The attributes are nominal and should be tested with Chi-Square.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "A <strong>positive covariance</strong> indicates that both attributes tend to vary in the same direction: when one increases, the other generally increases, and vice versa."
+            },
+            {
+                question: "Which of these is explicitly mentioned as a key challenge in data integration, in addition to schema integration and entity resolution? (Select all that apply)",
+                answerOptions: [
+                    { text: "Redundancy detection", isCorrect: true },
+                    { text: "Noise removal", isCorrect: false },
+                    { text: "Handling unit conflict (e.g., metric vs. imperial)", isCorrect: true },
+                    { text: "Data selection", isCorrect: false }
+                ],
+                type: 'checkbox',
+                fullExplanation: "Data integration challenges include schema integration, entity resolution, <strong>handling unit conflicts</strong>, and identifying and resolving <strong>data redundancy</strong>."
+            },
+            {
+                question: "In the context of the $\chi^2$ test, if the calculated $\chi^2$ value is greater than the critical value (based on the degrees of freedom), what conclusion is typically drawn?",
+                answerOptions: [
+                    { text: "The attributes are highly independent.", isCorrect: false },
+                    { text: "The expected frequency is incorrect.", isCorrect: false },
+                    { text: "The hypothesis of independence is rejected, suggesting correlation.", isCorrect: true },
+                    { text: "The data contains too much noise.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "If the calculated $\chi^2$ value is large enough (i.e., greater than the critical value), the hypothesis of independence is <strong>rejected</strong>, suggesting the attributes are correlated."
+            },
+            {
+                question: "What is the computational expression for the **expected frequency** $e_{ij}$ of a cell (A= $a_i$, B=$b_j$) in a contingency table for the $\chi^2$ test?",
+                answerOptions: [
+                    { text: "$count(A=a_i) \\cdot count(B=b_j)$", isCorrect: false },
+                    { text: "$o_{ij} / n$", isCorrect: false },
+                    { text: "$(count(A=a_i) \\cdot count(B=b_j)) / n$", isCorrect: true },
+                    { text: "$count(A=a_i) + count(B=b_j)$", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The expected frequency $e_{ij}$ is calculated as $(\\text{count}(A=a_i) \\cdot \\text{count}(B=b_j)) / n$, where $n$ is the total number of tuples, as shown in the lecture content."
+            },
+            {
+                question: "What is the ultimate goal of the Data Integration pre-processing step?",
+                answerOptions: [
+                    { text: "To combine data from multiple, disparate sources into a coherent data store.", isCorrect: true },
+                    { text: "To remove all noisy and inconsistent data from a single source.", isCorrect: false },
+                    { text: "To transform numeric attributes into categorical ones.", isCorrect: false },
+                    { text: "To determine the best data mining algorithm for a given task.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "Data integration is the process of merging data from multiple, <strong>disparate sources</strong> into a <strong>coherent data store</strong>, such as a data warehouse."
+            }
+        ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    // Use the option text as the value for the input
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    // Check if the user's set of answers exactly matches the correct set
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                
+                const explanationText = question.fullExplanation || "No explanation available.";
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${explanationText}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>

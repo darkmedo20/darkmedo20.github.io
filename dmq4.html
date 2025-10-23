@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Data Cleaning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db;
+            text-align: left;
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Complete!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake Quiz</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "Which of the following data quality dimensions refers to the degree to which the data conforms to a known or agreed-upon set of rules?",
+                answerOptions: [
+                    { text: "Accuracy", isCorrect: false },
+                    { text: "Completeness", isCorrect: false },
+                    { text: "Consistency", isCorrect: true },
+                    { text: "Timeliness", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>Consistency</strong> ensures that the data adheres to formats, types, and constraints defined by the data source."
+            },
+            {
+                question: "Which data quality dimension is primarily concerned with the closeness of a data value to the true value (e.g., variance or error in a measured variable)?",
+                answerOptions: [
+                    { text: "Believability", isCorrect: false },
+                    { text: "Completeness", isCorrect: false },
+                    { text: "Accuracy", isCorrect: true },
+                    { text: "Interpretability", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>Accuracy</strong> is the degree to which data values are correct, often concerned with errors and variances in measurement."
+            },
+            {
+                question: "Which of the following are considered valid methods for handling missing values in the data cleaning process? (Select two)",
+                answerOptions: [
+                    { text: "Fill in the value with a random number.", isCorrect: false },
+                    { text: "Fill in with a global constant (e.g., 'unknown').", isCorrect: true },
+                    { text: "Fill in with the attribute's median value for the entire dataset.", isCorrect: false },
+                    { text: "Fill in with the attribute's mean value.", isCorrect: true }
+                ],
+                type: 'checkbox',
+                fullExplanation: "Valid methods listed in the lecture include filling in with a <strong>global constant</strong> or filling in with the <strong>attribute's mean value</strong>. Filling with the median is also possible but not explicitly listed in the top-level options, while filling with a random number is generally avoided."
+            },
+            {
+                question: "What is a major disadvantage of using the 'Ignore the tuple' method for handling missing data values?",
+                answerOptions: [
+                    { text: "It introduces noise into the dataset.", isCorrect: false },
+                    { text: "It is computationally expensive.", isCorrect: false },
+                    { text: "It leads to a loss of data/information.", isCorrect: true },
+                    { text: "It can only be used for discrete attributes.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "Ignoring tuples (records) that have missing values will <strong>lead to a loss of data</strong>, which can be problematic if the number of missing values is large."
+            },
+            {
+                question: "What is the term defined as a 'random error or variance in a measured variable' which must be addressed by data smoothing techniques?",
+                answerOptions: [
+                    { text: "Outlier", isCorrect: false },
+                    { text: "Anomaly", isCorrect: false },
+                    { text: "Inconsistency", isCorrect: false },
+                    { text: "Noise", isCorrect: true }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>Noise</strong> is explicitly defined as a random error or variance in a measured variable."
+            },
+            {
+                question: "What is the primary objective of employing data smoothing techniques during data cleaning?",
+                answerOptions: [
+                    { text: "To replace all nominal data with numeric data.", isCorrect: false },
+                    { text: "To remove the effects of noise from the data.", isCorrect: true },
+                    { text: "To ensure the data are timely and complete.", isCorrect: false },
+                    { text: "To combine data from multiple, disparate sources.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "Data smoothing techniques are used to <strong>'smooth' out the data to remove the noise</strong>."
+            },
+            {
+                question: "What is the name of the data smoothing technique that works by sorting data values and consulting the 'neighborhood' values around a given value?",
+                answerOptions: [
+                    { text: "Regression", isCorrect: false },
+                    { text: "Clustering", isCorrect: false },
+                    { text: "Binning", isCorrect: true },
+                    { text: "Discretization", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>Binning</strong> methods smooth a sorted data value by consulting its 'neighborhood,' that is, the values around it."
+            },
+            {
+                question: "When applying a binning method, what criterion is typically used to partition the sorted data values into bins?",
+                answerOptions: [
+                    { text: "Equal-width (based on range)", isCorrect: false },
+                    { text: "Equal-frequency (each bin contains the same number of values)", isCorrect: true },
+                    { text: "Binning by mode", isCorrect: false },
+                    { text: "Binning by standard deviation", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The example provided in the lecture uses partitioning into <strong>equal-frequency bins</strong>, where each bin contains the same number of values (e.g., three values)."
+            },
+            {
+                question: "In the smoothing method called 'smoothing by bin means,' what value replaces each original value within a bin?",
+                answerOptions: [
+                    { text: "The most frequent value (mode) of the bin.", isCorrect: false },
+                    { text: "The minimum or maximum (boundary) value closest to the original value.", isCorrect: false },
+                    { text: "The average (mean) value of the bin.", isCorrect: true },
+                    { text: "A global constant like 'unknown'.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "In <strong>smoothing by bin means</strong>, each value in a bin is replaced by the <strong>mean value of the bin</strong>."
+            },
+            {
+                question: "The method of filling in a missing value with the 'most probable value' often involves using what type of technique?",
+                answerOptions: [
+                    { text: "Regression or inference-based methods", isCorrect: true },
+                    { text: "Manual data cleaning and verification", isCorrect: false },
+                    { text: "Simple binning techniques", isCorrect: false },
+                    { text: "Ignoring the entire tuple", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "Filling in with the <strong>most probable value</strong> often requires sophisticated techniques like regression, Bayesian formulas, or other <strong>inference-based methods</strong> to predict the likely value."
+            }
+        ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    // Check if the user's set of answers exactly matches the correct set
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                
+                const explanationText = question.fullExplanation || "No explanation available.";
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${explanationText}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>
