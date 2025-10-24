@@ -136,7 +136,7 @@ const showMessage = (message, duration = 3000, isError = false) => {
                     {
                         id: `lecture-2`,
                         name: `Lecture 2: Booting and Shutting Down Linux`,
-                        podbeanUrl: `https://www.podbean.com/player-v2/?i=gmigh-1970668-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=ffffff&logo_link=episode_page&btn-skin=3267a3`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=9zute-19a20cc-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `naq2.html`
                     },
                     {
