@@ -1,4 +1,37 @@
-const showMessage = (message, duration = 3000, isError = false) => {
+        // Define all classes for both modes to enable swapping
+        const DARK_MODE_CLASSES = {
+            'body': 'bg-black text-white',
+            'mainContainer': 'bg-gray-900',
+            'sidebar': 'bg-gray-800 border-gray-700',
+            'sidebarButton': 'text-gray-300 hover:bg-gray-700',
+            'sidebarButtonActive': 'bg-gray-700 text-blue-400',
+            'innerSection': 'bg-gray-800',
+            'textMuted': 'text-gray-400',
+            'textStrong': 'text-gray-200',
+            'buttonNav': 'bg-gray-700 hover:bg-gray-600 text-white',
+            'loginCard': 'bg-gray-900',
+            'inputField': 'bg-gray-700 text-white border-gray-600',
+            'quizFullBtn': 'bg-gray-700 hover:bg-gray-600 text-white',
+            'themeToggleHover': 'hover:bg-gray-700',
+        };
+
+        const LIGHT_MODE_CLASSES = {
+            'body': 'bg-gray-100 text-gray-800',
+            'mainContainer': 'bg-white',
+            'sidebar': 'bg-gray-200 border-gray-300',
+            'sidebarButton': 'text-gray-700 hover:bg-gray-300',
+            'sidebarButtonActive': 'bg-gray-300 text-blue-600',
+            'innerSection': 'bg-white',
+            'textMuted': 'text-gray-500',
+            'textStrong': 'text-gray-700',
+            'buttonNav': 'bg-gray-300 hover:bg-gray-400 text-gray-800',
+            'loginCard': 'bg-white',
+            'inputField': 'bg-gray-50 text-gray-800 border-gray-300',
+            'quizFullBtn': 'bg-gray-300 hover:bg-gray-400 text-gray-800',
+            'themeToggleHover': 'hover:bg-gray-300',
+        };
+
+        const showMessage = (message, duration = 3000, isError = false) => {
             const messageBox = document.getElementById('messageBox');
             messageBox.textContent = message;
             messageBox.classList.remove('bg-blue-500', 'bg-red-500');
@@ -8,8 +41,9 @@ const showMessage = (message, duration = 3000, isError = false) => {
                 messageBox.classList.remove('show');
             }, duration);
         };
-        // Lectures
+
         const subjects = [
+            // ... (Subjects data remains the same)
             {
                 name: "Human Computer Interaction",
                 lectures: [
@@ -216,9 +250,113 @@ const showMessage = (message, duration = 3000, isError = false) => {
             }
         ];
 
+        // Function to apply theme classes
+        const applyTheme = (isLightMode) => {
+            const mode = isLightMode ? LIGHT_MODE_CLASSES : DARK_MODE_CLASSES;
+            const oppositeMode = isLightMode ? DARK_MODE_CLASSES : LIGHT_MODE_CLASSES;
+            
+            const body = document.body;
+            const mainContainer = document.querySelector('#lms-content > div');
+            const loginCard = document.querySelector('#login-container > div');
+            const sidebar = document.getElementById('sidebar');
+            const lectureSections = document.querySelectorAll('#lecture-section, #quiz-section');
+            const navButtons = document.querySelectorAll('#lecture-nav button');
+            const inputField = document.getElementById('passwordInput');
+            const textMuted = document.querySelectorAll('#login-info, #userIdDisplay, #intro-message');
+            const textStrong = document.querySelectorAll('#lecture-title, #quiz-section h2, #subject-title, .font-semibold');
+            const themeToggleBtn = document.getElementById('themeToggle');
+            const fullScreenBtn = document.getElementById('fullScreenQuizBtn');
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+
+            // Helper to swap classes on an element
+            const swapClasses = (element, modeKey, oppositeModeKey) => {
+                if (element) {
+                    element.classList.remove(...oppositeMode[oppositeModeKey || modeKey].split(' '));
+                    element.classList.add(...mode[modeKey].split(' '));
+                }
+            };
+            
+            // 1. Body
+            swapClasses(body, 'body');
+
+            // 2. Main Content Wrapper
+            swapClasses(mainContainer, 'mainContainer');
+            if (mainContainer) {
+                 // The border-r class on sidebar causes the main container border to be on the right. We update the border color on the sidebar.
+                 const sidebarBorder = isLightMode ? 'border-gray-300' : 'border-gray-700';
+                 sidebar.classList.remove('border-gray-300', 'border-gray-700');
+                 sidebar.classList.add(sidebarBorder);
+            }
+
+            // 3. Login Card
+            swapClasses(loginCard, 'loginCard');
+
+            // 4. Input Field
+            swapClasses(inputField, 'inputField');
+            
+            // 5. Sidebar and Inner Sections
+            swapClasses(sidebar, 'sidebar');
+            lectureSections.forEach(el => swapClasses(el, 'innerSection'));
+            
+            // 6. Navigation Buttons
+            navButtons.forEach(btn => swapClasses(btn, 'buttonNav'));
+
+            // 7. Text colors
+            textMuted.forEach(el => swapClasses(el, 'textMuted'));
+            textStrong.forEach(el => swapClasses(el, 'textStrong'));
+            
+            // 8. Sidebar Buttons (Handle non-active and active state swaps)
+            document.querySelectorAll('#sidebar button').forEach(btn => {
+                // Check if button is currently in an active state (using both potential active classes)
+                const isActive = btn.classList.contains(...DARK_MODE_CLASSES.sidebarButtonActive.split(' ')) || 
+                                 btn.classList.contains(...LIGHT_MODE_CLASSES.sidebarButtonActive.split(' '));
+                
+                // Remove all previous mode classes (both active and inactive)
+                btn.classList.remove(...oppositeMode.sidebarButton.split(' '), ...oppositeMode.sidebarButtonActive.split(' '));
+                
+                // Add current mode classes
+                btn.classList.add(...mode.sidebarButton.split(' '));
+                
+                if (isActive) {
+                    // Re-apply the active state using the current theme's active classes
+                    btn.classList.add(...mode.sidebarButtonActive.split(' '));
+                }
+            });
+
+            // 9. Special UI Elements (Icons/Toggle)
+            swapClasses(fullScreenBtn, 'quizFullBtn');
+            
+            if (themeToggleBtn) {
+                themeToggleBtn.classList.remove(oppositeMode.themeToggleHover);
+                themeToggleBtn.classList.add(mode.themeToggleHover);
+            }
+
+            if (isLightMode) {
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            } else {
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            }
+        };
+
+        const toggleTheme = () => {
+            const isLightMode = localStorage.getItem('theme') === 'light';
+            const newTheme = isLightMode ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme === 'light');
+        };
+
+
         const renderLectureList = (subjectName) => {
             const subject = subjects.find(s => s.name === subjectName);
             if (!subject) return;
+
+            const isLight = localStorage.getItem('theme') === 'light';
+            const darkActiveClasses = DARK_MODE_CLASSES.sidebarButtonActive.split(' ');
+            const lightActiveClasses = LIGHT_MODE_CLASSES.sidebarButtonActive.split(' ');
+            const allActiveClasses = [...darkActiveClasses, ...lightActiveClasses];
 
             document.getElementById('subject-title').textContent = subject.name;
             document.getElementById('intro-message').classList.add('hidden');
@@ -230,12 +368,45 @@ const showMessage = (message, duration = 3000, isError = false) => {
             
             subject.lectures.forEach((lecture, index) => {
                 const card = document.createElement('div');
-                card.classList.add('bg-gray-900', 'p-4', 'rounded-lg', 'shadow', 'cursor-pointer', 'hover:shadow-md', 'transition-shadow', 'transition-colors', 'duration-300', 'border-2', 'border-custom-orange');
+                card.classList.add('p-4', 'rounded-lg', 'shadow', 'cursor-pointer', 'hover:shadow-md', 'transition-shadow', 'transition-colors', 'duration-300', 'border-2', 'border-custom-orange');
+                
+                // Apply theme-specific classes for the lecture card background/text
+                const cardBaseClasses = isLight ? ['bg-white'] : ['bg-gray-900'];
+                card.classList.add(...cardBaseClasses);
+                
+                const cardTitleColor = isLight ? 'text-gray-800' : 'text-gray-200';
+
                 card.innerHTML = `
-                    <h3 class="font-semibold text-lg text-gray-200">${lecture.name}</h3>
+                    <h3 class="font-semibold text-lg ${cardTitleColor}">${lecture.name}</h3>
                 `;
                 card.addEventListener('click', () => displayLecture(subject.name, index));
                 lectureListDiv.appendChild(card);
+            });
+            
+            // Re-apply sidebar base classes in case they were lost
+            const sidebar = document.getElementById('sidebar');
+            const mode = isLight ? LIGHT_MODE_CLASSES : DARK_MODE_CLASSES;
+            const oppositeMode = isLight ? DARK_MODE_CLASSES : LIGHT_MODE_CLASSES;
+            sidebar.classList.remove(...oppositeMode.sidebar.split(' '));
+            sidebar.classList.add(...mode.sidebar.split(' '));
+            
+            // Update sidebar button inactive state colors
+            document.querySelectorAll('#sidebar button').forEach(btn => {
+                btn.classList.remove(...oppositeMode.sidebarButton.split(' '));
+                btn.classList.add(...mode.sidebarButton.split(' '));
+            });
+
+            // Logic for the sidebar button activation:
+            document.querySelectorAll('#sidebar button').forEach(btn => {
+                btn.onclick = () => {
+                    // Remove ALL active classes from ALL buttons
+                    document.querySelectorAll('#sidebar button').forEach(b => {
+                        b.classList.remove(...allActiveClasses);
+                    });
+                    // Add the current theme's active classes to the clicked button
+                    btn.classList.add(...(isLight ? lightActiveClasses : darkActiveClasses));
+                    renderLectureList(subject.name); // Re-render logic is minimal here, usually just for UI
+                };
             });
         };
 
@@ -300,7 +471,7 @@ const showMessage = (message, duration = 3000, isError = false) => {
                 nextBtn.onclick = null;
             }
         };
-        // Users
+        
         const handleLogin = () => {
             const password = document.getElementById('passwordInput').value.trim();
             const users = {
@@ -320,21 +491,43 @@ const showMessage = (message, duration = 3000, isError = false) => {
                 document.getElementById('userIdDisplay').textContent = `Welcome, ${username}!`;
                 document.getElementById('login-container').classList.add('hidden');
                 document.getElementById('lms-content').classList.remove('hidden');
+                // Re-apply theme to ensure all elements are correct after login
+                applyTheme(localStorage.getItem('theme') === 'light');
             } else {
                 showMessage('Invalid password. Please try again.', 3000, true);
             }
         };
 
         const initializeLMS = () => {
+            // Check for theme preference and apply it immediately
+            const initialTheme = localStorage.getItem('theme') || 'dark'; // Default to dark
+            applyTheme(initialTheme === 'light');
+            
             // Render subject buttons
             const sidebar = document.getElementById('sidebar');
             subjects.forEach(subject => {
                 const button = document.createElement('button');
-                button.classList.add('text-left', 'py-3', 'px-4', 'rounded-lg', 'font-medium', 'text-gray-300', 'hover:bg-gray-700', 'transition-colors', 'duration-300');
+                button.classList.add('text-left', 'py-3', 'px-4', 'rounded-lg', 'font-medium', 'transition-colors', 'duration-300');
+                
+                // Set initial button styling based on theme
+                const isLight = initialTheme === 'light';
+                const buttonClasses = isLight ? LIGHT_MODE_CLASSES.sidebarButton.split(' ') : DARK_MODE_CLASSES.sidebarButton.split(' ');
+                button.classList.add(...buttonClasses);
+
                 button.innerHTML = `<span>${subject.name}</span>`;
                 button.addEventListener('click', () => {
-                    document.querySelectorAll('#sidebar button').forEach(btn => btn.classList.remove('bg-gray-700', 'text-blue-400'));
-                    button.classList.add('bg-gray-700', 'text-blue-400');
+                    const currentIsLight = localStorage.getItem('theme') === 'light';
+                    const darkActiveClasses = DARK_MODE_CLASSES.sidebarButtonActive.split(' ');
+                    const lightActiveClasses = LIGHT_MODE_CLASSES.sidebarButtonActive.split(' ');
+                    const allActiveClasses = [...darkActiveClasses, ...lightActiveClasses];
+                    
+                    document.querySelectorAll('#sidebar button').forEach(btn => {
+                        // Remove all possible active classes
+                        btn.classList.remove(...allActiveClasses);
+                    });
+                    
+                    // Apply the current theme's active classes
+                    button.classList.add(...(currentIsLight ? lightActiveClasses : darkActiveClasses));
                     renderLectureList(subject.name);
                 });
                 sidebar.appendChild(button);
@@ -347,6 +540,9 @@ const showMessage = (message, duration = 3000, isError = false) => {
                     handleLogin();
                 }
             });
+            
+            // Set up theme toggle listener
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
 
             // Set up a single click listener for the full-screen button
             const fullScreenBtn = document.getElementById('fullScreenQuizBtn');
