@@ -310,6 +310,7 @@ const showMessage = (message, duration = 3000, isError = false) => {
                 'Fatima@Hiwarat': 'Fatooma',
                 'mohammeD@5alah': '2020ITIBB0360',
                 'amani@Hiwarat': 'amani',
+                'almuiz@Hiwarat': 'almuiz',
                 '1423': 'Ahmed Almostafa'
             };
             
