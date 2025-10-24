@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz: Controlling Processes (Lec 4)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .option-label {
+            display: block;
+            padding: 1rem;
+            border: 1px solid #4a5568;
+            border-radius: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            margin-bottom: 1rem;
+            color: #d1d5db;
+            text-align: left;
+        }
+        .option-label:hover {
+            background-color: #374151;
+            border-color: #60a5fa;
+        }
+        .option-label.selected {
+            background-color: #1e3a8a;
+            border-color: #3b82f6;
+            color: #ffffff;
+        }
+        .option-label.correct {
+            background-color: #14532d;
+            border-color: #22c55e;
+            color: #ffffff;
+        }
+        .option-label.incorrect {
+            background-color: #7f1d1d;
+            border-color: #ef4444;
+            color: #ffffff;
+        }
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+
+    <main id="quiz-container" class="w-full max-w-3xl">
+        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <div id="all-questions-container" class="space-y-8"></div>
+            <div class="text-center mt-10">
+                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+            </div>
+        </div>
+
+        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
+            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Complete!</h2>
+            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
+            <div id="results-summary" class="space-y-6"></div>
+            <div class="text-center mt-8">
+                <button id="restart-btn" class="btn btn-primary">Retake Quiz</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const quizData = [
+            {
+                question: "In Linux, what is the Process ID (PID) assigned to the 'init' process?",
+                answerOptions: [
+                    { text: "0", isCorrect: false },
+                    { text: "1", isCorrect: true },
+                    { text: "100", isCorrect: false },
+                    { text: "The first available number (variable)", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The 'init' process is the first process created after booting the Linux kernel and is always given a PID of <strong>1</strong>."
+            },
+            {
+                question: "Which term describes the relationship between the process that creates a new process and the newly created process?",
+                answerOptions: [
+                    { text: "Owner/Guest", isCorrect: false },
+                    { text: "Master/Slave", isCorrect: false },
+                    { text: "Parent/Child", isCorrect: true },
+                    { text: "Primary/Secondary", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The creating process is known as the <strong>parent</strong>, and the created process is known as the <strong>child</strong>."
+            },
+            {
+                question: "Which system call is explicitly mentioned as being used to spawn a new process in Linux?",
+                answerOptions: [
+                    { text: "spawn()", isCorrect: false },
+                    { text: "create()", isCorrect: false },
+                    { text: "exec()", isCorrect: false },
+                    { text: "fork()", isCorrect: true }
+                ],
+                type: 'radio',
+                fullExplanation: "The spawning of a process is accomplished using system calls to the Linux kernel, including <strong>fork()</strong>, wait(), and exec()."
+            },
+            {
+                question: "What is the primary purpose of the `ps` command when used without any options?",
+                answerOptions: [
+                    { text: "To show all active processes on the system.", isCorrect: false },
+                    { text: "To show a real-time, interactive view of running processes.", isCorrect: false },
+                    { text: "To display processes associated with the current shell.", isCorrect: true },
+                    { text: "To terminate a running process by its name.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The command <strong>ps</strong> (process show) without options is used to find the PIDs of the underlying processes associated with the <strong>current shell</strong> and its jobs."
+            },
+            {
+                question: "To forcibly terminate a process with a higher probability of success, what option is commonly used with the `kill` command?",
+                answerOptions: [
+                    { text: "kill -f", isCorrect: false },
+                    { text: "kill -9", isCorrect: true },
+                    { text: "kill -a", isCorrect: false },
+                    { text: "kill -s", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The <strong>-9 option</strong> is used with the kill command to send the SIGKILL signal, forcing a process to terminate abruptly and with a higher probability of success."
+            },
+            {
+                question: "Which command shows a real-time view of running processes and displays a system information summary including CPU and memory usage?",
+                answerOptions: [
+                    { text: "ps -aux", isCorrect: false },
+                    { text: "pstree", isCorrect: false },
+                    { text: "top", isCorrect: true },
+                    { text: "grep", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The <strong>top</strong> (table of process) command shows a <strong>real-time view</strong> of running processes and displays a system information summary on resource utilization."
+            },
+            {
+                question: "What does PID stand for?",
+                answerOptions: [
+                    { text: "Program Identifier", isCorrect: false },
+                    { text: "Process Input Device", isCorrect: false },
+                    { text: "Parent Initialization Datum", isCorrect: false },
+                    { text: "Process ID number", isCorrect: true }
+                ],
+                type: 'radio',
+                fullExplanation: "PID stands for <strong>Process ID number</strong>. The kernel assigns a unique ID number to every process."
+            },
+            {
+                question: "The `init` process is responsible for which critical function after the Linux kernel has been initialized?",
+                answerOptions: [
+                    { text: "Running startup scripts to set up the system (e.g., hostname, network)", isCorrect: true },
+                    { text: "Loading the kernel into memory from the boot device.", isCorrect: false },
+                    { text: "Managing graphical user interface (GUI) rendering.", isCorrect: false },
+                    { text: "Handling all network traffic and firewall rules.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The <strong>init</strong> process (PID 1) runs startup scripts to perform specific tasks, such as setting the hostname, checking and mounting disks, and configuring network interfaces."
+            },
+            {
+                question: "Which combination of `ps` options is used to display all processes in a hierarchical (tree-like) format, showing parent-child relationships?",
+                answerOptions: [
+                    { text: "ps -aux", isCorrect: false },
+                    { text: "ps -l", isCorrect: false },
+                    { text: "ps -aeH", isCorrect: true },
+                    { text: "ps -f", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The command <strong>ps -aeH</strong> is used to display all processes and show the process hierarchy (including the init process)."
+            },
+            {
+                question: "In the context of process creation, the `exec()` system call is primarily responsible for:",
+                answerOptions: [
+                    { text: "Creating a new, identical copy of the parent process.", isCorrect: false },
+                    { text: "Waiting for a child process to terminate.", isCorrect: false },
+                    { text: "Replacing the current process's image with a new program.", isCorrect: true },
+                    { text: "Pausing the execution of the parent process indefinitely.", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The <strong>exec()</strong> system call is generally used to load a new program into the address space of the current process, effectively replacing the current running program with a new one."
+            }
+        ];
+
+        const userAnswers = new Array(quizData.length).fill(null);
+        
+        const quizContentEl = document.getElementById('quiz-content');
+        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const resultsScreenEl = document.getElementById('results-screen');
+        const submitBtn = document.getElementById('submit-btn');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function renderAllQuestions() {
+            quizData.forEach((question, questionIndex) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8'; 
+                questionDiv.innerHTML = `
+                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
+                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
+                `;
+                
+                const optionsContainer = questionDiv.querySelector('.options-container');
+
+                question.answerOptions.forEach(option => {
+                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
+                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
+                    
+                    const optionEl = document.createElement('label');
+                    optionEl.className = 'option-label flex items-center';
+                    optionEl.setAttribute('for', optionId);
+
+                    optionEl.innerHTML = `
+                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
+                        <span>${option.text}</span>
+                    `;
+                    optionsContainer.appendChild(optionEl);
+
+                    const inputEl = optionEl.querySelector('input');
+                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
+                });
+
+                allQuestionsContainerEl.appendChild(questionDiv);
+            });
+        }
+
+        function handleOptionSelect(e, questionIndex) {
+            const currentQuestion = quizData[questionIndex];
+            const target = e.target;
+            
+            if (currentQuestion.type === 'radio') {
+                userAnswers[questionIndex] = target.value;
+                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                    input.closest('label').classList.remove('selected');
+                });
+                target.closest('label').classList.add('selected');
+            } else { // checkbox
+                if (!Array.isArray(userAnswers[questionIndex])) {
+                    userAnswers[questionIndex] = [];
+                }
+                const answerSet = new Set(userAnswers[questionIndex]);
+                if (target.checked) {
+                    answerSet.add(target.value);
+                    target.closest('label').classList.add('selected');
+                } else {
+                    answerSet.delete(target.value);
+                    target.closest('label').classList.remove('selected');
+                }
+                userAnswers[questionIndex] = Array.from(answerSet);
+            }
+        }
+
+        function showResults() {
+            quizContentEl.classList.add('hidden');
+            resultsScreenEl.classList.remove('hidden');
+
+            let score = 0;
+            const resultsSummaryEl = document.getElementById('results-summary');
+            resultsSummaryEl.innerHTML = '';
+
+            quizData.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                
+                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                
+                if (question.type === 'radio') {
+                    isCorrect = userAnswer === correctAnswers[0];
+                } else { // checkbox
+                    const userAnswerSet = new Set(userAnswer);
+                    const correctAnswerSet = new Set(correctAnswers);
+                    // Check if the user's set of answers exactly matches the correct set
+                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+                }
+                
+                if (isCorrect) score++;
+
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-4 border rounded-lg';
+                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+
+                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                
+                const explanationText = question.fullExplanation || "No explanation available.";
+
+                resultItem.innerHTML = `
+                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    <p class="text-sm mt-3 text-gray-300">Explanation: ${explanationText}</p>
+                `;
+                resultsSummaryEl.appendChild(resultItem);
+            });
+
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+        }
+
+        submitBtn.addEventListener('click', showResults);
+        
+        restartBtn.addEventListener('click', () => {
+            location.reload();
+        });
+
+        // Initial render
+        renderAllQuestions();
+    </script>
+</body>
+</html>
