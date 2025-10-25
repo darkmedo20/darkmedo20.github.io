@@ -191,12 +191,12 @@
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=xj384-19a2484-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `naq5.html`
                     },
-                    {
-                        id: `lecture-5-2`,
+                    /*{
+                        id: `lecture-6`,
                         name: `Test`,
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=xj384-19a2484-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
-                        quizUrl: `naq5-2.html`
-                    },
+                        quizUrl: `naq6.html`
+                    },*/
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
                         id: `lecture-${i + 2}`,
@@ -458,7 +458,7 @@
             podbeanIframe.style.minWidth = "min(100%, 430px)";
             podbeanIframe.style.height = "150px";
             podbeanIframe.src = lecture.podbeanUrl;
-            podbeanIframe.loading = "lazy";
+            podbeanIframe.loading = "eager";
             
             const podbeanContainer = document.getElementById('lecture-podbean-container');
             podbeanContainer.innerHTML = '';
@@ -515,7 +515,7 @@
             
             if (users[password]) {
                 const username = users[password];
-                showMessage(`Login successful!`);
+                //showMessage(`Login successful!`);
                 document.getElementById('userIdDisplay').textContent = `Welcome, ${username}!`;
                 document.getElementById('login-container').classList.add('hidden');
                 document.getElementById('lms-content').classList.remove('hidden');
