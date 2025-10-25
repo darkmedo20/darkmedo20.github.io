@@ -6,32 +6,35 @@
     <title>Linux File Systems Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        /* NEW FONT: Open Sans for better readability at small sizes */
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
         
-        /* Optimized for iframe embedding: removed centering and min-height */
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #1f2937; /* Consistent dark background for the entire embed */
-            padding: 1rem; /* Small padding around the whole quiz in case of tight iframe */
+            font-family: 'Open Sans', sans-serif;
+            background-color: #1f2937; 
+            overflow-x: hidden; 
         }
 
         .option-label {
             display: block;
-            padding: 1rem;
+            /* Reduced vertical padding for options */
+            padding: 0.6rem 1rem; 
             border: 1px solid #4a5568;
             border-radius: 0.75rem;
             cursor: pointer;
             transition: all 0.2s ease-in-out;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem; /* Reduced bottom margin */
             color: #d1d5db;
             text-align: left;
+            /* Further reduced font size for options */
+            font-size: 0.9rem; 
         }
         .option-label:not(.answered):hover {
             background-color: #374151;
             border-color: #60a5fa;
         }
         .option-label.selected {
-            background-color: #1f2937; /* Darker gray for selected but not answered */
+            background-color: #1f2937;
             border-color: #60a5fa;
         }
         .option-label.correct {
@@ -49,12 +52,15 @@
             opacity: 0.8;
         }
         .btn {
-            padding: 0.75rem 1.5rem;
+            /* Tighter button padding */
+            padding: 0.5rem 1rem; 
             border-radius: 0.75rem;
             font-weight: 600;
             transition: all 0.2s ease-in-out;
             border: none;
             cursor: pointer;
+            width: 100%; 
+            font-size: 0.85rem; /* Further reduced button text */
         }
         .btn-primary {
             background-color: #3b82f6;
@@ -68,44 +74,43 @@
             cursor: not-allowed;
         }
         .explanation {
-            margin-top: 1rem;
-            padding: 1rem;
+            margin-top: 0.75rem; /* Reduced margin */
+            padding: 0.75rem; /* Reduced padding */
             border-left: 5px solid #3b82f6;
             background-color: #1f2937;
             color: #d1d5db;
             border-radius: 0.5rem;
+            font-size: 0.85rem; /* Further reduced explanation text */
         }
     </style>
 </head>
 <body class="bg-gray-900 p-4">
 
     <main id="quiz-container" class="w-full mx-auto max-w-2xl">
-        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <div id="question-navigation" class="text-left text-lg font-medium text-gray-400 mb-6">
+        <div id="quiz-content" class="bg-gray-800 p-4 rounded-xl shadow-lg"> 
+            <div id="question-navigation" class="text-left text-sm font-medium text-gray-400 mb-4">
                 <span id="current-question-number"></span> / <span id="total-questions"></span>
             </div>
             
-            <div id="current-question-container" class="space-y-8">
-                </div>
+            <div id="current-question-container" class="space-y-6"> </div>
 
-            <div id="feedback-area" class="mt-4 hidden">
-                <div id="explanation-text" class="explanation"></div>
+            <div id="feedback-area" class="mt-3 hidden"> <div id="explanation-text" class="explanation"></div>
             </div>
 
-            <div class="flex justify-between mt-10">
-                <button id="prev-btn" class="btn btn-primary" disabled>Previous</button>
-                <div class="flex space-x-4">
+            <div class="flex flex-wrap justify-between items-start mt-8 gap-3"> <button id="prev-btn" class="btn btn-primary w-full sm:w-auto" disabled>Previous</button>
+                
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
                     <button id="check-answer-btn" class="btn btn-primary">Check Answer</button>
                     <button id="next-btn" class="btn btn-primary" disabled>Next</button>
                 </div>
             </div>
         </div>
 
-        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Complete!</h2>
-            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
-            <div id="results-summary" class="space-y-6"></div>
-            <div class="text-center mt-8">
+        <div id="results-screen" class="hidden bg-gray-800 p-4 rounded-xl shadow-lg"> 
+            <h2 class="text-xl font-bold text-white text-center mb-3">Quiz Complete!</h2>
+            <p id="score-text" class="text-lg text-gray-300 text-center font-semibold mb-6"></p>
+            <div id="results-summary" class="space-y-4"></div>
+            <div class="text-center mt-6">
                 <button id="restart-btn" class="btn btn-primary">Retake Quiz</button>
             </div>
         </div>
@@ -248,9 +253,8 @@
             const userAnswer = userAnswers[index];
             currentQuestionContainerEl.innerHTML = `
                 <div class="question-item" data-index="${index}">
-                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionData.question}</h2>
-                    <div class="options-container space-y-4"></div>
-                </div>
+                    <h2 class="text-base font-semibold text-gray-300 mb-4">${questionData.question}</h2>
+                    <div class="options-container space-y-3"></div> </div>
             `;
             
             currentQuestionNumberEl.textContent = index + 1;
@@ -440,7 +444,8 @@
                 const explanationText = question.fullExplanation || "No explanation available.";
 
                 const resultItem = document.createElement('div');
-                resultItem.className = 'p-4 border rounded-lg';
+                // Reduced padding and border size
+                resultItem.className = 'p-3 border rounded-lg';
                 if (userAnswer.answered) {
                     resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
                 } else {
@@ -449,10 +454,10 @@
                 
 
                 resultItem.innerHTML = `
-                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
-                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
-                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
-                    ${userAnswer.answered ? `<p class="text-sm mt-3 text-gray-300">Explanation: ${explanationText}</p>` : '<p class="text-sm mt-3 text-gray-300 font-bold">Question was not answered.</p>'}
+                    <p class="font-semibold text-sm text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-xs mt-1 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-xs mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    ${userAnswer.answered ? `<p class="text-xs mt-2 text-gray-300">Explanation: ${explanationText}</p>` : '<p class="text-xs mt-2 text-gray-300 font-bold">Question was not answered.</p>'}
                 `;
                 resultsSummaryEl.appendChild(resultItem);
             });
