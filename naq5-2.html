@@ -11,8 +11,8 @@
         
         body {
             font-family: 'Open Sans', sans-serif;
-            /* CHANGE: Body background set to bg-gray-800 */
-            background-color: #1f2937; 
+            /* Body background is black */
+            background-color: #000000; 
             overflow-x: hidden; 
         }
 
@@ -20,7 +20,7 @@
             display: block;
             padding: 0.6rem 1rem; 
             border: 1px solid #4a5568;
-            border-radius: 0.75rem;
+            border-radius: 0.75rem; 
             cursor: pointer;
             transition: all 0.2s ease-in-out;
             margin-bottom: 0.75rem;
@@ -29,11 +29,13 @@
             font-size: 0.9rem; 
         }
         .option-label:not(.answered):hover {
-            background-color: #374151;
+            /* CHANGE: Dark gray hover for contrast on black background */
+            background-color: #111827; 
             border-color: #60a5fa;
         }
         .option-label.selected {
-            background-color: #1f2937;
+            /* CHANGE: Dark gray selected background for contrast on black container */
+            background-color: #111827; 
             border-color: #60a5fa;
         }
         .option-label.correct {
@@ -53,21 +55,21 @@
         
         /* === UNIFIED BUTTON SIZE/PADDING (Applies to all three buttons) === */
         .btn {
-            padding: 0.4rem 0.8rem; /* Uniform reduced padding */
+            padding: 0.4rem 0.8rem;
             border-radius: 0.5rem;
             font-weight: 600;
             transition: all 0.2s ease-in-out;
             border: none; 
             cursor: pointer;
-            display: inline-block; /* Makes it shrink to content width */
-            font-size: 0.8rem; /* Uniform font size */
+            display: inline-block;
+            font-size: 0.8rem;
         }
         /* === END UNIFIED BUTTON SIZE/PADDING === */
 
         /* Primary buttons (Check Answer, Next) are orange/yellow */
         .btn-primary {
             background-color: #FCA300; 
-            color: #1f2937; 
+            color: #111827; 
             border: none;
         }
         .btn-primary:hover:not(:disabled) {
@@ -81,7 +83,7 @@
             border: 1px solid #4a5568; 
         }
         .btn-secondary:hover:not(:disabled) {
-            background-color: #374151; 
+            background-color: #111827; 
             color: #ffffff;
             border-color: #9ca3af; 
         }
@@ -95,17 +97,18 @@
             margin-top: 0.75rem; 
             padding: 0.75rem; 
             border-left: 5px solid #3b82f6;
-            background-color: #1f2937;
+            /* CHANGE: Explanation background set to black */
+            background-color: #000000;
             color: #d1d5db;
             border-radius: 0.5rem;
             font-size: 0.85rem; 
         }
     </style>
 </head>
-<body class="bg-gray-800 p-4">
+<body class="bg-black p-4">
 
     <main id="quiz-container" class="w-full mx-auto max-w-2xl">
-        <div id="quiz-content" class="bg-gray-800 p-4"> <!-- "rounded-xl shadow-lg" taken from here-->
+        <div id="quiz-content" class="bg-black p-4"> 
             
             <div id="question-navigation" class="text-left text-sm font-medium text-gray-400 mb-4">
                 <span id="current-question-number"></span> / <span id="total-questions"></span>
@@ -126,9 +129,9 @@
                     <button id="next-btn" class="btn btn-primary" disabled>Next</button>
                 </div>
             </div>
-            </div>
+        </div>
 
-        <div id="results-screen" class="hidden bg-gray-800 p-4 rounded-xl shadow-lg"> 
+        <div id="results-screen" class="hidden bg-black p-4"> 
             <h2 class="text-xl font-bold text-white text-center mb-3">Quiz Complete!</h2>
             <p id="score-text" class="text-lg text-gray-300 text-center font-semibold mb-6"></p>
             <div id="results-summary" class="space-y-4"></div>
