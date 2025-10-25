@@ -57,7 +57,6 @@
     </style>
 </head>
 <body class="bg-black text-white transition-colors duration-300">
-    <!-- Login container -->
     <div id="login-container" class="min-h-screen flex items-center justify-center p-4">
         <div class="bg-gray-900 rounded-xl shadow-lg w-full max-w-sm p-8 text-center transition-colors duration-300">
             <h2 class="text-3xl font-bold text-theme-blue mb-4"><span class="text-custom-orange">Hi</span>warat</h2>
@@ -67,9 +66,7 @@
         </div>
     </div>
 
-    <!-- Main LMS content container (hidden by default) -->
     <div id="lms-content" class="hidden container min-h-screen p-4 md:p-8 flex flex-col items-center">
-        <!-- Header -->
         <header class="w-full mb-6 flex items-center justify-between">
             <div class="flex-shrink-0 w-16">
                 <a href="https://sites.google.com/view/hiwarat/"><img src="hiwarat-logo-arc.png" alt="LMS Logo" class="h-17 w-16"></a>
@@ -78,14 +75,11 @@
                 <h1 class="text-4xl md:text-5xl font-extrabold text-theme-blue tracking-tight"><span class="text-custom-orange">Hi</span>warat</h1>
                 <p id="userIdDisplay" class="text-sm text-gray-400 mt-2">Welcome!</p>
             </div>
-            <!-- Theme Toggle Button -->
             <div class="w-16 flex justify-end">
-                 <button id="themeToggle" class="p-2 rounded-full hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-custom-orange">
-                    <!-- Moon Icon (Dark Mode) -->
+                 <button id="themeToggle" class="p-2 rounded-full hover:bg-gray-700 theme-aware-hover-bg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-custom-orange">
                     <svg id="moon-icon" class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                     </svg>
-                    <!-- Sun Icon (Light Mode) -->
                     <svg id="sun-icon" class="w-6 h-6 text-custom-orange hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>
@@ -93,28 +87,30 @@
             </div>
         </header>
 
-        <!-- Main Content Area -->
         <div class="bg-gray-900 rounded-xl shadow-lg w-full flex flex-col md:flex-row overflow-hidden transition-colors duration-300">
-            <!-- Sidebar Navigation -->
             <nav id="sidebar" class="w-full md:w-1/4 bg-gray-800 p-4 border-r border-gray-700 flex flex-col space-y-2 transition-colors duration-300">
-                <!-- Subject buttons will be dynamically added here -->
-            </nav>
+                </nav>
 
-            <!-- Embedded Content Viewer -->
-            <main id="content-viewer" class="flex-1 p-4 md:p-8 flex flex-col space-y-6">
+            <main id="content-viewer" class="flex-1 p-4 md:p-8 flex flex-col space-y-6"> 
+                <button id="sidebarToggle" class="p-2 rounded-full hover:bg-gray-700 theme-aware-hover-bg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-custom-orange self-start">
+                    <svg id="chevron-left-icon" class="w-6 h-6 sidebar-toggle-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <svg id="menu-icon" class="w-6 h-6 sidebar-toggle-icon hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+                
                 <div id="intro-message" class="text-center text-gray-400 text-lg md:text-xl p-8">
                     <p>Welcome to your learning portal! Select a subject from the left to get started.</p>
                 </div>
 
-                <!-- Lecture List Container -->
                 <div id="lecture-list-container" class="hidden flex-1 flex flex-col space-y-4">
                     <h2 id="subject-title" class="text-3xl font-bold text-gray-100 mb-4"></h2>
                     <div id="lecture-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <!-- Lecture cards will be dynamically added here -->
-                    </div>
+                        </div>
                 </div>
 
-                <!-- Lecture Detail Container -->
                 <div id="lecture-detail-container" class="hidden flex-1 flex flex-col space-y-6">
                     <div id="lecture-section" class="flex flex-col bg-gray-800 p-6 rounded-lg shadow-inner">
                         <div class="flex items-center justify-between mb-4">
@@ -122,30 +118,28 @@
                         </div>
                         <div id="lecture-podbean-container" class="w-full rounded-lg shadow-md"></div>
                     </div>
-                    <div id="quiz-section" class="flex flex-col bg-gray-800 "> <!--"p-6 rounded-lg shadow-inner" taken-->
+                    <div id="quiz-section" class="flex flex-col bg-gray-800 p-6 rounded-lg shadow-inner">
                         <div class="flex items-center justify-between mb-4">
                             <h2 class="text-2xl font-bold text-gray-200">Quiz</h2>
-                            <!-- Full Screen button for quiz -->
-                            <button id="fullScreenQuizBtn" style="background-color: #0097B2;" class="p-2 bg-gray-700 hover:bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" title="Full Screen">
+                            <button id="fullScreenQuizBtn" class="p-2 bg-gray-700 hover:bg-gray-600 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" title="Full Screen">
                                 <img src="fullscreen-white.png" width="15px">
                             </button>
                         </div>
                         <div id="quiz-frame" class="w-full rounded-lg shadow-md"></div>
                     </div>
-                    <!-- Lecture Navigation Buttons -->
                     <div id="lecture-nav" class="flex justify-between items-center mt-4">
-                        <button id="prevBtn" style="background-color: #0097B2;" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-full transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">Previous Lecture</button>
-                        <button id="nextBtn" style="background-color: #0097B2;" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-full transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">Next Lecture</button>
+                        <button id="prevBtn" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-full transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">Previous Lecture</button>
+                        <button id="nextBtn" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-full transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">Next Lecture</button>
                     </div>
                 </div>
             </main>
         </div>
     </div>
 
-    <!-- Custom Message Box -->
     <div id="messageBox" class="message-box bg-blue-500 text-white"></div>
 
-    <script src="lms.js">
-        </script>
+    <script src="lms.js"> 
+        
+    </script>
 </body>
 </html>

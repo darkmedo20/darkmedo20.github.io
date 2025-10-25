@@ -11,8 +11,8 @@
         
         body {
             font-family: 'Open Sans', sans-serif;
-            /* Body background is black */
-            background-color: #000000; 
+            /* CHANGE: Body background set to #1B1B1B */
+            background-color: #1B1B1B; 
             overflow-x: hidden; 
         }
 
@@ -29,12 +29,12 @@
             font-size: 0.9rem; 
         }
         .option-label:not(.answered):hover {
-            /* CHANGE: Dark gray hover for contrast on black background */
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
             background-color: #111827; 
             border-color: #60a5fa;
         }
         .option-label.selected {
-            /* CHANGE: Dark gray selected background for contrast on black container */
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
             background-color: #111827; 
             border-color: #60a5fa;
         }
@@ -97,18 +97,18 @@
             margin-top: 0.75rem; 
             padding: 0.75rem; 
             border-left: 5px solid #3b82f6;
-            /* CHANGE: Explanation background set to black */
-            background-color: #000000;
+            /* CHANGE: Explanation background set to #1B1B1B */
+            background-color: #1B1B1B;
             color: #d1d5db;
             border-radius: 0.5rem;
             font-size: 0.85rem; 
         }
     </style>
 </head>
-<body class="bg-black p-4">
+<body class="bg-[#1B1B1B] p-4">
 
     <main id="quiz-container" class="w-full mx-auto max-w-2xl">
-        <div id="quiz-content" class="bg-black p-4"> 
+        <div id="quiz-content" class="bg-[#1B1B1B] p-4"> 
             
             <div id="question-navigation" class="text-left text-sm font-medium text-gray-400 mb-4">
                 <span id="current-question-number"></span> / <span id="total-questions"></span>
@@ -131,7 +131,7 @@
             </div>
         </div>
 
-        <div id="results-screen" class="hidden bg-black p-4"> 
+        <div id="results-screen" class="hidden bg-[#1B1B1B] p-4"> 
             <h2 class="text-xl font-bold text-white text-center mb-3">Quiz Complete!</h2>
             <p id="score-text" class="text-lg text-gray-300 text-center font-semibold mb-6"></p>
             <div id="results-summary" class="space-y-4"></div>

@@ -1,4 +1,4 @@
-        // Define all classes for both modes to enable swapping
+// Define all classes for both modes to enable swapping
         const DARK_MODE_CLASSES = {
             'body': 'bg-black text-white',
             'mainContainer': 'bg-gray-900',
@@ -282,10 +282,12 @@
             const inputField = document.getElementById('passwordInput');
             const textMuted = document.querySelectorAll('#login-info, #userIdDisplay, #intro-message');
             const textStrong = document.querySelectorAll('#lecture-title, #quiz-section h2, #subject-title, .font-semibold');
-            const themeToggleBtn = document.getElementById('themeToggle');
+            const themeAwareButtons = document.querySelectorAll('.theme-aware-hover-bg');
             const fullScreenBtn = document.getElementById('fullScreenQuizBtn');
             const sunIcon = document.getElementById('sun-icon');
             const moonIcon = document.getElementById('moon-icon');
+            // NEW: Get all sidebar toggle icons
+            const toggleIcons = document.querySelectorAll('.sidebar-toggle-icon');
 
             // Helper to swap classes on an element
             const swapClasses = (element, modeKey, oppositeModeKey) => {
@@ -345,10 +347,18 @@
             // 9. Special UI Elements (Icons/Toggle)
             swapClasses(fullScreenBtn, 'quizFullBtn');
             
-            if (themeToggleBtn) {
-                themeToggleBtn.classList.remove(oppositeMode.themeToggleHover);
-                themeToggleBtn.classList.add(mode.themeToggleHover);
-            }
+            // Apply theme to all aware buttons
+            themeAwareButtons.forEach(btn => {
+                swapClasses(btn, 'themeToggleHover');
+            });
+
+            // NEW: Apply color to the sidebar toggle icons
+            toggleIcons.forEach(icon => {
+                // Clear previous color and apply the new one
+                icon.classList.remove('text-white', 'text-black'); 
+                icon.classList.add(isLightMode ? 'text-black' : 'text-white');
+            });
+
 
             if (isLightMode) {
                 sunIcon.classList.remove('hidden');
@@ -561,6 +571,27 @@
             
             // Set up theme toggle listener
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
+            // Sidebar toggle listener 
+            document.getElementById('sidebarToggle').addEventListener('click', () => {
+                const sidebar = document.getElementById('sidebar');
+                const chevronIcon = document.getElementById('chevron-left-icon');
+                const menuIcon = document.getElementById('menu-icon');
+                
+                // Toggle the sidebar visibility
+                sidebar.classList.toggle('hidden');
+                
+                // Toggle the button's icons
+                if (sidebar.classList.contains('hidden')) {
+                    // Sidebar is now hidden -> show menu icon (to bring it back)
+                    chevronIcon.classList.add('hidden');
+                    menuIcon.classList.remove('hidden');
+                } else {
+                    // Sidebar is now visible -> show chevron icon (to hide it)
+                    chevronIcon.classList.remove('hidden');
+                    menuIcon.classList.add('hidden');
+                }
+            });
 
             // Set up a single click listener for the full-screen button
             const fullScreenBtn = document.getElementById('fullScreenQuizBtn');
