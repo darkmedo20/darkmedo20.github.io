@@ -191,6 +191,12 @@
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=xj384-19a2484-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `naq5.html`
                     },
+                    {
+                        id: `lecture-5-2`,
+                        name: `Test`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=xj384-19a2484-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `naq5-2.html`
+                    },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
                         id: `lecture-${i + 2}`,
