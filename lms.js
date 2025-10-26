@@ -227,6 +227,24 @@
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=he295-197878d-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `mcq3.html`
                     },
+                    {
+                        id: `lecture-4`,
+                        name: `Lecture 4: Mobile Computing Functions`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=948qq-19a3cb7-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `mcq4.html`
+                    },
+                    {
+                        id: `lecture-5`,
+                        name: `Lecture 5: Wireless Transmission`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=2bmwm-19a3cda-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a`,
+                        quizUrl: `mcq5.html`
+                    },
+                    {
+                        id: `lecture-6`,
+                        name: `Lecture 6: Media Access Methods`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=pmg28-19a3d1e-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `mcq6.html`
+                    },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
                         id: `lecture-${i + 2}`,
