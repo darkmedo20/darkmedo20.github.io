@@ -540,8 +540,8 @@
                 'mohammeD@5alah': '2020ITIBB0360',
                 'amani@Hiwarat': 'amani',
                 'almuiz@Hiwarat': 'almuiz',
-                'mozafar@Hiwarat': '2019ITIBB0139',
-                '1423': 'Ahmed Almostafa'
+                'Mstra@123': '2019ITIBB0139',
+                '11423': 'Ahmed Almostafa'
             };
             
             if (users[password]) {
