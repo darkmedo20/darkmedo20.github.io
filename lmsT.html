@@ -62,6 +62,12 @@
             <h2 class="text-3xl font-bold text-theme-blue mb-4"><span class="text-custom-orange">Hi</span>warat</h2>
             <p id="login-info" class="text-gray-400 mb-6">Enter your password to access the LMS.</p>
             <input type="password" id="passwordInput" placeholder="Enter password" class="w-full px-4 py-2 mb-4 rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-white">
+            
+            <div class="flex items-center justify-start mb-4">
+                <input type="checkbox" id="showPasswordToggle" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 bg-gray-700 border-gray-600">
+                <label for="showPasswordToggle" id="showPasswordLabel" class="ml-2 text-sm font-medium text-gray-400">Show Password</label>
+            </div>
+            
             <button id="loginBtn" class="w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition-colors">Log In</button>
         </div>
     </div>
@@ -154,6 +160,7 @@
             'inputField': 'bg-gray-700 text-white border-gray-600',
             'quizFullBtn': 'bg-gray-700 hover:bg-gray-600 text-white',
             'themeToggleHover': 'hover:bg-gray-700',
+            'checkboxLabel': 'text-gray-400', // NEW
         };
 
         const LIGHT_MODE_CLASSES = {
@@ -170,6 +177,7 @@
             'inputField': 'bg-gray-50 text-gray-800 border-gray-300',
             'quizFullBtn': 'bg-gray-300 hover:bg-gray-400 text-gray-800',
             'themeToggleHover': 'hover:bg-gray-300',
+            'checkboxLabel': 'text-gray-500', // NEW
         };
 
         const showMessage = (message, duration = 3000, isError = false) => {
@@ -307,8 +315,8 @@
             const fullScreenBtn = document.getElementById('fullScreenQuizBtn');
             const sunIcon = document.getElementById('sun-icon');
             const moonIcon = document.getElementById('moon-icon');
-            // NEW: Get all sidebar toggle icons
             const toggleIcons = document.querySelectorAll('.sidebar-toggle-icon');
+            const checkboxLabel = document.getElementById('showPasswordLabel'); // NEW
 
             // Helper to swap classes on an element
             const swapClasses = (element, modeKey, oppositeModeKey) => {
@@ -373,12 +381,15 @@
                 swapClasses(btn, 'themeToggleHover');
             });
 
-            // NEW: Apply color to the sidebar toggle icons
+            // Apply color to the sidebar toggle icons
             toggleIcons.forEach(icon => {
                 // Clear previous color and apply the new one
                 icon.classList.remove('text-white', 'text-black'); 
                 icon.classList.add(isLightMode ? 'text-black' : 'text-white');
             });
+
+            // NEW: Apply theme to checkbox label
+            swapClasses(checkboxLabel, 'checkboxLabel');
 
 
             if (isLightMode) {
@@ -533,6 +544,7 @@
             
             if (users[password]) {
                 const username = users[password];
+                
                 showMessage(`Login successful!`);
                 document.getElementById('userIdDisplay').textContent = `Welcome, ${username}!`;
                 document.getElementById('login-container').classList.add('hidden');
@@ -625,6 +637,17 @@
                     }
                 } else {
                     showMessage('Quiz not loaded yet.', 3000, true);
+                }
+            });
+
+            // NEW: Set up "Show Password" toggle listener
+            const showPasswordToggle = document.getElementById('showPasswordToggle');
+            const passwordInput = document.getElementById('passwordInput');
+            showPasswordToggle.addEventListener('change', () => {
+                if (showPasswordToggle.checked) {
+                    passwordInput.type = 'text';
+                } else {
+                    passwordInput.type = 'password';
                 }
             });
         };

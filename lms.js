@@ -641,5 +641,15 @@
                 }
             });
         };
+        // NEW: Set up "Show Password" toggle listener
+        const showPasswordToggle = document.getElementById('showPasswordToggle');
+        const passwordInput = document.getElementById('passwordInput');
+        showPasswordToggle.addEventListener('change', () => {
+            if (showPasswordToggle.checked) {
+                passwordInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
+            }
+        });
 
         window.onload = initializeLMS;
