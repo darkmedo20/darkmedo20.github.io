@@ -66,10 +66,10 @@
                         quizUrl: `hciq3.html`
                     },
                     {
-                        id: `lecture-4`,
-                        name: `Lecture 4: Interaction`,
-                        podbeanUrl: `https://www.podbean.com/player-v2/?i=fqmu4-19a0839-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
-                        quizUrl: `hciq4.html`
+                        id: `lecture-4-5`,
+                        name: `Lecture 4 & 5: Interaction`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=yah6d-19b8a56-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `hciq4-5.html`
                     },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
@@ -148,6 +148,18 @@
                         name: `Lecture 5: Data Integration`,
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=nzhvu-19a1047-pb&from=pb6admin&share=1&download=1&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `dmq5.html`
+                    },
+                    {
+                        id: `lecture-6`,
+                        name: `Lecture 6: Data Reduction`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=86nq2-19b8a68-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `dmq6.html`
+                    },
+                    {
+                        id: `lecture-7`,
+                        name: `Lecture 7: Data Transformation`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=s32u9-19b8b47-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `dmq7.html`
                     },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
@@ -528,6 +540,7 @@
                 'mohammeD@5alah': '2020ITIBB0360',
                 'amani@Hiwarat': 'amani',
                 'almuiz@Hiwarat': 'almuiz',
+                'mozafar@Hiwarat': '2019ITIBB0139',
                 '1423': 'Ahmed Almostafa'
             };
             
