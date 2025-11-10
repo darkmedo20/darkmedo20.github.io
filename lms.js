@@ -221,6 +221,24 @@
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=vwhie-19a30e3-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `naq6.html`
                     },
+                    {
+                        id: `lecture-7`,
+                        name: `Lecture 7: Software and Configuration Management`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=393ws-19bac5b-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `naq7.html`
+                    },
+                    {
+                        id: `lecture-8`,
+                        name: `Lecture 8: Linux Networking Basics`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=vk266-19bb2ff-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `naq8.html`
+                    },
+                    {
+                        id: `lecture-9`,
+                        name: `Lecture 9: DHCP + Samba Servers`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=iq438-19bb3be-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `naq9.html`
+                    },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
                         id: `lecture-${i + 2}`,
@@ -268,6 +286,12 @@
                         name: `Lecture 6: Media Access Methods`,
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=pmg28-19a3d1e-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `mcq6.html`
+                    },
+                    {
+                        id: `lecture-7`,
+                        name: `Lecture 7: Wireless LANs`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=h6b7t-19bb3fa-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `mcq7.html`
                     },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
