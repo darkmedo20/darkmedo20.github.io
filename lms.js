@@ -71,6 +71,12 @@
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=yah6d-19b8a56-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `hciq4-5.html`
                     },
+                    {
+                        id: `lecture-6-7`,
+                        name: `Lecture 6 & 7: The Evolution of HCI Paradigms`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=4uv7v-19bac3f-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `hciq6-7.html`
+                    },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
                         id: `lecture-${i + 2}`,
@@ -160,6 +166,12 @@
                         name: `Lecture 7: Data Transformation`,
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=s32u9-19b8b47-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `dmq7.html`
+                    },
+                    {
+                        id: `lecture-8`,
+                        name: `Lecture 8: Classification`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=8hmed-19babf2-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `dmq8.html`
                     },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
@@ -541,7 +553,7 @@
                 'amani@Hiwarat': 'amani',
                 'almuiz@Hiwarat': 'almuiz',
                 'Mstra@123': '2019ITIBB0139',
-                '11423': 'Ahmed Almostafa'
+                '1423': 'Ahmed Almostafa'
             };
             
             if (users[password]) {
