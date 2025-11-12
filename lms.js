@@ -91,27 +91,33 @@
                 lectures: [
                     {
                         id: `lecture-1`,
-                        name: `Lecture 1: Introduction to E-Commerce (1)`,
-                        podbeanUrl: `https://www.podbean.com/player-v2/?i=fpjgu-19633f7-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=ffffff&logo_link=episode_page&btn-skin=3267a3`,
+                        name: `Lecture 1: Introduction`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=m7pd5-19bcd7e-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `ecq1.html`
                     },
                     {
                         id: `lecture-2`,
-                        name: `Lecture 2: Introduction to E-Commerce (2)`,
-                        podbeanUrl: `https://www.podbean.com/player-v2/?i=itriu-196f192-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=ffffff&logo_link=episode_page&btn-skin=3267a3`,
+                        name: `Lecture 2: E-Commerce Business Models and Concepts (1)`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=9ynt6-19bcd82-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `ecq2.html`
                     },
                     {
                         id: `lecture-3`,
-                        name: `Lecture 3: E-commerce Business Models and Concept (1)`,
-                        podbeanUrl: `https://www.podbean.com/player-v2/?i=wxbdr-196f233-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=ffffff&logo_link=episode_page&btn-skin=3267a3`,
+                        name: `Lecture 3: E-commerce Business Models and Concept (2)`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=9eskw-19bce5f-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `ecq3.html`
                     },
                     {
                         id: `lecture-4`,
-                        name: `Lecture 4: E-commerce Business Models and Concept (2)`,
-                        podbeanUrl: `https://www.podbean.com/player-v2/?i=ptbie-196f249-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=ffffff&logo_link=episode_page&btn-skin=3267a3`,
+                        name: `Lecture 4: Building an E-commerce Presence (1)`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=aj2ac-19bf6bb-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `ecq4.html`
+                    },
+                    {
+                        id: `lecture-5`,
+                        name: `Lecture 5: Building an E-commerce Presence (2)`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=8t3iz-19bf72e-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `ecq5.html`
                     },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({

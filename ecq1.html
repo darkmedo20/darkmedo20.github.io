@@ -3,31 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Commerce Quiz - Chapter 1</title>
+    <title>E-commerce Introduction Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        /* FONT: Open Sans for optimal readability at small sizes */
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+        
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Open Sans', sans-serif;
+            /* CHANGE: Body background set to #1B1B1B */
+            background-color: #1B1B1B; 
+            overflow-x: hidden; 
         }
+
         .option-label {
             display: block;
-            padding: 1rem;
+            padding: 0.6rem 1rem; 
             border: 1px solid #4a5568;
-            border-radius: 0.75rem;
+            border-radius: 0.75rem; 
             cursor: pointer;
             transition: all 0.2s ease-in-out;
-            margin-bottom: 1rem;
-            color: #d1d5db; /* Lighter text color for dark theme */
+            margin-bottom: 0.75rem;
+            color: #d1d5db;
+            text-align: left;
+            font-size: 0.9rem; 
         }
-        .option-label:hover {
-            background-color: #374151;
+        .option-label:not(.answered):hover {
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
+            background-color: #111827; 
             border-color: #60a5fa;
         }
         .option-label.selected {
-            background-color: #1e3a8a;
-            border-color: #3b82f6;
-            color: #ffffff;
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
+            background-color: #111827; 
+            border-color: #60a5fa;
         }
         .option-label.correct {
             background-color: #14532d;
@@ -39,45 +48,94 @@
             border-color: #ef4444;
             color: #ffffff;
         }
+        .option-label.disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        
+        /* === UNIFIED BUTTON SIZE/PADDING (Applies to all three buttons) === */
         .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
             font-weight: 600;
             transition: all 0.2s ease-in-out;
-            border: none;
+            border: none; 
             cursor: pointer;
+            display: inline-block;
+            font-size: 0.8rem;
         }
+        /* === END UNIFIED BUTTON SIZE/PADDING === */
+
+        /* Primary buttons (Check Answer, Next) are orange/yellow */
         .btn-primary {
-            background-color: #3b82f6;
-            color: white;
+            background-color: #FCA300; 
+            color: #111827; 
+            border: none;
         }
-        .btn-primary:hover {
-            background-color: #2563eb;
+        .btn-primary:hover:not(:disabled) {
+            background-color: #e59400; 
         }
+
+        /* Secondary button (Previous) remains gray/transparent */
         .btn-secondary {
-            background-color: #4b5563;
-            color: #d1d5db;
+            background-color: transparent;
+            color: #9ca3af; 
+            border: 1px solid #4a5568; 
         }
-        .btn-secondary:hover {
-            background-color: #6b7280;
+        .btn-secondary:hover:not(:disabled) {
+            background-color: #111827; 
+            color: #ffffff;
+            border-color: #9ca3af; 
+        }
+        /* Style for disabled buttons */
+        .btn:disabled {
+            opacity: 0.4; 
+            cursor: not-allowed;
+        }
+
+        .explanation {
+            margin-top: 0.75rem; 
+            padding: 0.75rem; 
+            border-left: 5px solid #3b82f6;
+            /* CHANGE: Explanation background set to #1B1B1B */
+            background-color: #1B1B1B;
+            color: #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.85rem; 
         }
     </style>
 </head>
-<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+<body class="bg-[#1B1B1B] p-4">
 
-    <main id="quiz-container" class="w-full max-w-3xl">
-        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <div id="all-questions-container" class="space-y-8"></div>
-            <div class="text-center mt-10">
-                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+    <main id="quiz-container" class="w-full mx-auto max-w-2xl">
+        <div id="quiz-content" class="bg-[#1B1B1B] p-4"> 
+            
+            <div id="question-navigation" class="text-left text-sm font-medium text-gray-400 mb-4">
+                <span id="current-question-number"></span> / <span id="total-questions"></span>
+            </div>
+            
+            <div id="current-question-container" class="space-y-6"> 
+                </div>
+
+            <div id="feedback-area" class="mt-3 hidden"> 
+                <div id="explanation-text" class="explanation"></div>
+            </div>
+
+            <div class="flex flex-wrap justify-between items-start mt-8 gap-3"> 
+                <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+                
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 ml-auto">
+                    <button id="check-answer-btn" class="btn btn-primary">Check Answer</button>
+                    <button id="next-btn" class="btn btn-primary" disabled>Next</button>
+                </div>
             </div>
         </div>
 
-        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
-            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
-            <div id="results-summary" class="space-y-6"></div>
-            <div class="text-center mt-8">
+        <div id="results-screen" class="hidden bg-[#1B1B1B] p-4"> 
+            <h2 class="text-xl font-bold text-white text-center mb-3">Quiz Complete!</h2>
+            <p id="score-text" class="text-lg text-gray-300 text-center font-semibold mb-6"></p>
+            <div id="results-summary" class="space-y-4"></div>
+            <div class="text-center mt-6">
                 <button id="restart-btn" class="btn btn-primary">Retake Quiz</button>
             </div>
         </div>
@@ -85,332 +143,313 @@
 
     <script>
         const quizData = [
-    {
-        "question": "Which of the following best defines e-commerce?",
-        "answerOptions": [
             {
-                "text": "The use of the Internet to conduct business transactions, including web and mobile apps.",
-                "rationale": "This is the correct definition, as e-commerce refers to digitally enabled commercial transactions between and among organizations and individuals.",
-                "isCorrect": true
+                question: "What is the formal definition of e-commerce?",
+                answerOptions: [
+                    { text: "Online shopping through websites only", isCorrect: false },
+                    { text: "Digitally enabled commercial transactions between organizations and individuals", isCorrect: true },
+                    { text: "Any business activity using computers", isCorrect: false },
+                    { text: "Social media marketing and advertising", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "E-commerce is formally defined as <strong>digitally enabled commercial transactions between and among organizations and individuals</strong>, including transactions via web and mobile browsers and apps."
             },
             {
-                "text": "The use of digital technologies to manage processes within a firm only.",
-                "rationale": "This refers to e-business, not e-commerce, since e-commerce involves external transactions across organizational boundaries.",
-                "isCorrect": false
+                question: "What is the key difference between e-commerce and e-business?",
+                answerOptions: [
+                    { text: "E-business includes transactions across organizational boundaries", isCorrect: false },
+                    { text: "E-commerce involves transactions across firm boundaries, while e-business focuses on internal digital processes", isCorrect: true },
+                    { text: "E-business is only for large corporations", isCorrect: false },
+                    { text: "There is no significant difference between them", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>E-commerce primarily involves transactions that cross firm boundaries</strong>, while <strong>e-business involves the application of digital technologies to business processes within the firm</strong>."
             },
             {
-                "text": "The process of marketing products on social media platforms.",
-                "rationale": "While social media marketing is part of e-commerce, it does not capture the full scope of digitally enabled commercial transactions.",
-                "isCorrect": false
+                question: "Which of the following is NOT one of the eight unique features of e-commerce technology?",
+                answerOptions: [
+                    { text: "Ubiquity", isCorrect: false },
+                    { text: "Information richness", isCorrect: false },
+                    { text: "Physical presence", isCorrect: true },
+                    { text: "Personalization/customization", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The eight unique features of e-commerce technology are: <strong>Ubiquity, Global reach, Universal standards, Information richness, Interactivity, Information density, Personalization/customization, and Social technology</strong>. Physical presence is not one of them."
             },
             {
-                "text": "Only buying and selling through mobile applications.",
-                "rationale": "This is specifically mobile commerce (m-commerce), which is a subset of e-commerce.",
-                "isCorrect": false
+                question: "What does 'ubiquity' mean in the context of e-commerce?",
+                answerOptions: [
+                    { text: "Available just about everywhere, at all times", isCorrect: true },
+                    { text: "Transactions cross cultural and national boundaries", isCorrect: false },
+                    { text: "Standards shared by all nations", isCorrect: false },
+                    { text: "Complexity and content of a message", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>Ubiquity</strong> means e-commerce is available just about everywhere, at all times, creating a virtual marketspace and reducing transaction costs."
+            },
+            {
+                question: "Which type of e-commerce involves transactions between two businesses?",
+                answerOptions: [
+                    { text: "B2C (Business-to-Consumer)", isCorrect: false },
+                    { text: "B2B (Business-to-Business)", isCorrect: true },
+                    { text: "C2C (Consumer-to-Consumer)", isCorrect: false },
+                    { text: "M-commerce (Mobile commerce)", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>B2B (Business-to-Business)</strong> e-commerce involves transactions between two or more businesses. It's the largest form of e-commerce, dwarfing B2C in terms of transaction volume."
+            },
+            {
+                question: "What is the relationship between B2B and B2C e-commerce in terms of size?",
+                answerOptions: [
+                    { text: "B2C is about 10 times larger than B2B", isCorrect: false },
+                    { text: "B2B is about 10 times larger than B2C", isCorrect: true },
+                    { text: "They are approximately the same size", isCorrect: false },
+                    { text: "B2C is slightly larger than B2B", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>B2B e-commerce is about 10 times the size of B2C e-commerce</strong>. In 2020, B2B e-commerce was projected to be over $9 trillion compared to B2C's $600 billion."
+            },
+            {
+                question: "What characteristic distinguishes digital goods from physical goods?",
+                answerOptions: [
+                    { text: "They are more expensive to produce", isCorrect: false },
+                    { text: "They can be delivered over a digital network", isCorrect: true },
+                    { text: "They have higher marketing costs", isCorrect: false },
+                    { text: "They require physical storage", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>Digital goods can be delivered over a digital network</strong>. The cost of producing the first unit is almost the entire cost of the product, while costs of delivery over the Internet are very low."
+            },
+            {
+                question: "Which of the following is a key driver of social e-commerce growth?",
+                answerOptions: [
+                    { text: "Lower production costs", isCorrect: false },
+                    { text: "Social sign-on and network notification", isCorrect: true },
+                    { text: "Increased physical store presence", isCorrect: false },
+                    { text: "Traditional advertising methods", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "Social e-commerce growth is driven by factors including <strong>social sign-on, network notification, online collaborative shopping tools, social search, and integrated social commerce tools</strong> like Buy buttons."
+            },
+            {
+                question: "What is 'local e-commerce' focused on?",
+                answerOptions: [
+                    { text: "Global market expansion", isCorrect: false },
+                    { text: "Engaging consumers based on their current geographic location", isCorrect: true },
+                    { text: "Business transactions within the same building", isCorrect: false },
+                    { text: "Government-to-business transactions", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>Local e-commerce focuses on engaging the consumer based on their current geographic location</strong>. Local merchants use online marketing techniques to drive consumers to their physical stores."
+            },
+            {
+                question: "Which concept refers to the ease with which consumers can find out the variety of prices in a market?",
+                answerOptions: [
+                    { text: "Cost transparency", isCorrect: false },
+                    { text: "Price transparency", isCorrect: true },
+                    { text: "Information asymmetry", isCorrect: false },
+                    { text: "Market segmentation", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>Price transparency</strong> refers to the ease with which consumers can find out the variety of prices in a market, while <strong>cost transparency</strong> refers to the ability to discover the actual costs merchants pay for products."
             }
-        ],
-        "type": "radio"
-    },
-    {
-        "question": "What is the primary distinction between e-business and e-commerce?",
-        "answerOptions": [
-            {
-                "text": "E-business focuses on internal processes, while e-commerce involves commercial transactions across organizational boundaries.",
-                "rationale": "This is the correct distinction: e-business is about internal digital processes, whereas e-commerce extends beyond the firm.",
-                "isCorrect": true
-            },
-            {
-                "text": "E-business is more profitable than e-commerce.",
-                "rationale": "Profitability is not the key distinction between the two concepts.",
-                "isCorrect": false
-            },
-            {
-                "text": "E-commerce is limited to mobile platforms, while e-business is not.",
-                "rationale": "E-commerce includes many platforms (web, apps), not just mobile.",
-                "isCorrect": false
-            },
-            {
-                "text": "There is no difference; the terms are interchangeable.",
-                "rationale": "The lecture specifically differentiates the two terms.",
-                "isCorrect": false
-            }
-        ],
-        "type": "radio"
-    },
-    {
-        "question": "Which of the following are technological building blocks of e-commerce? (Select all that apply)",
-        "answerOptions": [
-            {
-                "text": "Internet",
-                "rationale": "The Internet is the core infrastructure enabling e-commerce.",
-                "isCorrect": true
-            },
-            {
-                "text": "World Wide Web",
-                "rationale": "The Web, including HTML and search systems, is a key enabler of e-commerce.",
-                "isCorrect": true
-            },
-            {
-                "text": "Mobile platforms (apps, smartphones, tablets)",
-                "rationale": "Mobile devices and apps provide access to e-commerce anywhere, making them a crucial technological building block.",
-                "isCorrect": true
-            },
-            {
-                "text": "Traditional print advertising",
-                "rationale": "Print ads are offline marketing tools, not technological building blocks of e-commerce.",
-                "isCorrect": false
-            }
-        ],
-        "type": "checkbox"
-    },
-    {
-        "question": "Which statement best describes the Deep Web compared to the Surface Web?",
-        "answerOptions": [
-            {
-                "text": "The Deep Web contains content not indexed by standard search engines and is much larger than the Surface Web.",
-                "rationale": "This is correct: the Deep Web includes databases and hidden resources, making it far larger than the Surface Web.",
-                "isCorrect": true
-            },
-            {
-                "text": "The Surface Web is 500 times larger than the Deep Web.",
-                "rationale": "This reverses the fact; the Deep Web is significantly larger than the Surface Web.",
-                "isCorrect": false
-            },
-            {
-                "text": "Both the Deep Web and Surface Web are the same in size and content.",
-                "rationale": "They are different in both scope and content availability.",
-                "isCorrect": false
-            },
-            {
-                "text": "The Deep Web only includes illegal activities and dark web content.",
-                "rationale": "This is incorrect; the Deep Web mainly consists of databases, private content, and resources not indexed by search engines.",
-                "isCorrect": false
-            }
-        ],
-        "type": "radio"
-    },
-    {
-        "question": "Which of the following are unique features of e-commerce technology? (Select all that apply)",
-        "answerOptions": [
-            {
-                "text": "Ubiquity",
-                "rationale": "E-commerce is accessible almost everywhere, anytime.",
-                "isCorrect": true
-            },
-            {
-                "text": "Global reach",
-                "rationale": "E-commerce crosses cultural and national boundaries.",
-                "isCorrect": true
-            },
-            {
-                "text": "Universal standards",
-                "rationale": "Standards are shared worldwide, reducing costs.",
-                "isCorrect": true
-            },
-            {
-                "text": "Seasonal availability",
-                "rationale": "This is not a unique feature of e-commerce technology.",
-                "isCorrect": false
-            }
-        ],
-        "type": "checkbox"
-    },
-    {
-        "question": "What is an example of interactivity in e-commerce technology?",
-        "answerOptions": [
-            {
-                "text": "Using a chat window to interact with customer support on a website.",
-                "rationale": "This represents interactivity, allowing two-way communication between merchant and consumer.",
-                "isCorrect": true
-            },
-            {
-                "text": "Watching a pre-recorded video advertisement.",
-                "rationale": "This is a one-way communication example, not interactivity.",
-                "isCorrect": false
-            },
-            {
-                "text": "Reading a static blog article.",
-                "rationale": "This does not involve two-way interaction.",
-                "isCorrect": false
-            },
-            {
-                "text": "Listening to a podcast.",
-                "rationale": "This is also a one-way communication channel.",
-                "isCorrect": false
-            }
-        ],
-        "type": "radio"
-    },
-    {
-        "question": "Which of the following types of e-commerce involve transactions directly between consumers?",
-        "answerOptions": [
-            {
-                "text": "Consumer-to-Consumer (C2C)",
-                "rationale": "C2C refers to individuals selling directly to other individuals, often through platforms like eBay.",
-                "isCorrect": true
-            },
-            {
-                "text": "Business-to-Business (B2B)",
-                "rationale": "B2B involves businesses transacting with each other, not consumers.",
-                "isCorrect": false
-            },
-            {
-                "text": "Business-to-Consumer (B2C)",
-                "rationale": "B2C involves businesses selling to individuals, not consumers selling to each other.",
-                "isCorrect": false
-            },
-            {
-                "text": "Local e-commerce",
-                "rationale": "Local e-commerce is based on geographic targeting, not strictly consumer-to-consumer.",
-                "isCorrect": false
-            }
-        ],
-        "type": "radio"
-    },
-    {
-        "question": "Which of the following are examples of personalization/customization in e-commerce? (Select all that apply)",
-        "answerOptions": [
-            {
-                "text": "Recommending products based on past purchases.",
-                "rationale": "This is personalization, tailoring messages to user interests.",
-                "isCorrect": true
-            },
-            {
-                "text": "Allowing a customer to design their own product variant (e.g., customized shoes).",
-                "rationale": "This is customization, changing the product based on user preferences.",
-                "isCorrect": true
-            },
-            {
-                "text": "Broadcasting the same advertisement to all customers.",
-                "rationale": "This is not personalization, since the message is not tailored.",
-                "isCorrect": false
-            },
-            {
-                "text": "Showing trending products to all visitors equally.",
-                "rationale": "This is not true personalization, as it is not user-specific.",
-                "isCorrect": false
-            }
-        ],
-        "type": "checkbox"
-    },
-    {
-        "question": "What is the projected size of B2B e-commerce in the U.S. by 2020 (excluding EDI transactions)?",
-        "answerOptions": [
-            {
-                "text": "Over $9 trillion",
-                "rationale": "According to the lecture, B2B e-commerce in the U.S. was projected to exceed $9 trillion by 2020.",
-                "isCorrect": true
-            },
-            {
-                "text": "About $900 billion",
-                "rationale": "This underestimates the projection by an order of magnitude.",
-                "isCorrect": false
-            },
-            {
-                "text": "$90 trillion",
-                "rationale": "This grossly overestimates the actual projection.",
-                "isCorrect": false
-            },
-            {
-                "text": "Less than B2C e-commerce",
-                "rationale": "B2B e-commerce dwarfs B2C in size; this is incorrect.",
-                "isCorrect": false
-            }
-        ],
-        "type": "radio"
-    },
-    {
-        "question": "Which of the following best describes social e-commerce?",
-        "answerOptions": [
-            {
-                "text": "E-commerce enabled by social networks and online social relationships.",
-                "rationale": "This is the correct definition: social e-commerce leverages social connections and platforms to drive transactions.",
-                "isCorrect": true
-            },
-            {
-                "text": "Only marketing products on Instagram or Facebook.",
-                "rationale": "While social media platforms are part of social e-commerce, the concept is broader and includes collaborative shopping, social sign-ons, and more.",
-                "isCorrect": false
-            },
-            {
-                "text": "Using mobile phones to buy goods and services.",
-                "rationale": "This describes m-commerce, not social e-commerce.",
-                "isCorrect": false
-            },
-            {
-                "text": "Local merchants targeting nearby customers.",
-                "rationale": "This describes local e-commerce, not social e-commerce.",
-                "isCorrect": false
-            }
-        ],
-        "type": "radio"
-    }
-];
+        ];
 
-        const userAnswers = new Array(quizData.length).fill(null);
+        let currentQuestionIndex = 0;
+        // Stores user's selected answer and correctness status: { selected: string | string[] | null, isCorrect: boolean | null, answered: boolean }
+        const userAnswers = quizData.map(() => ({ selected: null, isCorrect: null, answered: false }));
         
         const quizContentEl = document.getElementById('quiz-content');
-        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const currentQuestionContainerEl = document.getElementById('current-question-container');
         const resultsScreenEl = document.getElementById('results-screen');
-        const submitBtn = document.getElementById('submit-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const checkAnswerBtn = document.getElementById('check-answer-btn');
         const restartBtn = document.getElementById('restart-btn');
+        const feedbackAreaEl = document.getElementById('feedback-area');
+        const explanationTextEl = document.getElementById('explanation-text');
+        const currentQuestionNumberEl = document.getElementById('current-question-number');
+        const totalQuestionsEl = document.getElementById('total-questions');
 
-        function renderAllQuestions() {
-            quizData.forEach((question, questionIndex) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'mb-8'; 
-                questionDiv.innerHTML = `
-                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
-                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
-                `;
-                
-                const optionsContainer = questionDiv.querySelector('.options-container');
+        totalQuestionsEl.textContent = quizData.length;
 
-                question.answerOptions.forEach(option => {
-                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
-                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
-                    
-                    const optionEl = document.createElement('label');
-                    optionEl.className = 'option-label flex items-center';
-                    optionEl.setAttribute('for', optionId);
-
-                    optionEl.innerHTML = `
-                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
-                        <span>${option.text}</span>
-                    `;
-                    optionsContainer.appendChild(optionEl);
-
-                    const inputEl = optionEl.querySelector('input');
-                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
-                });
-
-                allQuestionsContainerEl.appendChild(questionDiv);
-            });
+        // Helper to calculate current score
+        function calculateScore() {
+            return userAnswers.filter(a => a.isCorrect === true).length;
         }
 
-        function handleOptionSelect(e, questionIndex) {
-            const currentQuestion = quizData[questionIndex];
-            const target = e.target;
+        function renderQuestion(index) {
+            const questionData = quizData[index];
+            const userAnswer = userAnswers[index];
+            currentQuestionContainerEl.innerHTML = `
+                <div class="question-item" data-index="${index}">
+                    <h2 class="text-base font-semibold text-gray-300 mb-4">${questionData.question}</h2>
+                    <div class="options-container space-y-3"></div>
+                </div>
+            `;
             
+            currentQuestionNumberEl.textContent = index + 1;
+
+            const optionsContainer = currentQuestionContainerEl.querySelector('.options-container');
+            const isAnswered = userAnswer.answered;
+            const inputType = questionData.type === 'radio' ? 'radio' : 'checkbox';
+
+            questionData.answerOptions.forEach((option, optionIndex) => {
+                const optionId = `q${index}-o${optionIndex}`;
+                
+                const optionEl = document.createElement('label');
+                optionEl.className = 'option-label flex items-center';
+                optionEl.setAttribute('for', optionId);
+
+                optionEl.innerHTML = `
+                    <input type="${inputType}" id="${optionId}" name="q${index}" value="${option.text}" class="mr-3" ${isAnswered ? 'disabled' : ''}>
+                    <span>${option.text}</span>
+                `;
+                optionsContainer.appendChild(optionEl);
+
+                const inputEl = optionEl.querySelector('input');
+                
+                // Set initial selection/state
+                if (questionData.type === 'radio') {
+                    if (userAnswer.selected === option.text) {
+                        inputEl.checked = true;
+                        optionEl.classList.add('selected');
+                    }
+                } else { // checkbox
+                    if (Array.isArray(userAnswer.selected) && userAnswer.selected.includes(option.text)) {
+                        inputEl.checked = true;
+                        optionEl.classList.add('selected');
+                    }
+                }
+
+                // Apply correctness styling if already answered
+                if (isAnswered) {
+                    optionEl.classList.add('answered', 'disabled');
+                    if (option.isCorrect) {
+                        optionEl.classList.add('correct');
+                    } else if (inputEl.checked) {
+                        optionEl.classList.add('incorrect');
+                    }
+                }
+
+                inputEl.addEventListener('change', (e) => handleOptionSelect(e, index));
+            });
+
+            // Update navigation buttons
+            prevBtn.disabled = index === 0;
+
+            // Next button logic
+            if (index === quizData.length - 1) {
+                // Last question: always change text to "Done" and enable button
+                nextBtn.textContent = 'Done';
+                nextBtn.disabled = false; 
+            } else {
+                // Not last question: always set text to "Next" and enable button (to allow skipping)
+                nextBtn.textContent = 'Next';
+                nextBtn.disabled = false;
+            }
+
+            // Update check button state and feedback
+            if (isAnswered) {
+                checkAnswerBtn.disabled = true;
+                feedbackAreaEl.classList.remove('hidden');
+                explanationTextEl.innerHTML = questionData.fullExplanation;
+            } else {
+                // Not answered yet
+                checkAnswerBtn.disabled = !userAnswer.selected || (Array.isArray(userAnswer.selected) && userAnswer.selected.length === 0);
+                feedbackAreaEl.classList.add('hidden');
+            }
+        }
+
+        function handleOptionSelect(e, index) {
+            const currentQuestion = quizData[index];
+            const target = e.target;
+            const labelEl = target.closest('label');
+            
+            if (userAnswers[index].answered) return;
+
             if (currentQuestion.type === 'radio') {
-                userAnswers[questionIndex] = target.value;
-                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                userAnswers[index].selected = target.value;
+                document.querySelectorAll(`input[name="q${index}"]`).forEach(input => {
                     input.closest('label').classList.remove('selected');
                 });
-                target.closest('label').classList.add('selected');
-            } else { // checkbox
-                if (!Array.isArray(userAnswers[questionIndex])) {
-                    userAnswers[questionIndex] = [];
+                labelEl.classList.add('selected');
+            } else { 
+                if (!Array.isArray(userAnswers[index].selected)) {
+                    userAnswers[index].selected = [];
                 }
-                const answerSet = new Set(userAnswers[questionIndex]);
+                let answerSet = new Set(userAnswers[index].selected);
                 if (target.checked) {
                     answerSet.add(target.value);
-                    target.closest('label').classList.add('selected');
+                    labelEl.classList.add('selected');
                 } else {
                     answerSet.delete(target.value);
-                    target.closest('label').classList.remove('selected');
+                    labelEl.classList.remove('selected');
                 }
-                userAnswers[questionIndex] = Array.from(answerSet);
+                userAnswers[index].selected = Array.from(answerSet);
+            }
+            
+            // Enable Check Answer button only if an option is selected
+            checkAnswerBtn.disabled = !userAnswers[index].selected || (Array.isArray(userAnswers[index].selected) && userAnswers[index].selected.length === 0);
+        }
+
+        function checkAnswer() {
+            const questionData = quizData[currentQuestionIndex];
+            const userAnswer = userAnswers[currentQuestionIndex];
+            
+            // Allow checking only if an answer is selected and not already answered
+            if (!userAnswer.selected || userAnswer.answered) return;
+
+            userAnswer.answered = true;
+            
+            const correctAnswers = questionData.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+            let isCorrect = false;
+
+            if (questionData.type === 'radio') {
+                isCorrect = userAnswer.selected === correctAnswers[0];
+            } else { 
+                const userAnswerSet = new Set(userAnswer.selected);
+                const correctAnswerSet = new Set(correctAnswers);
+                isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+            }
+            
+            userAnswer.isCorrect = isCorrect;
+            
+            const inputs = document.querySelectorAll(`input[name="q${currentQuestionIndex}"]`);
+            inputs.forEach(input => {
+                const labelEl = input.closest('label');
+                labelEl.classList.add('answered', 'disabled');
+                input.disabled = true;
+
+                const optionText = input.value;
+                const isUserSelected = input.checked;
+                const isCorrectOption = correctAnswers.includes(optionText);
+
+                if (isCorrectOption) {
+                    labelEl.classList.add('correct');
+                } else if (isUserSelected && !isCorrectOption) {
+                    labelEl.classList.add('incorrect');
+                }
+                labelEl.classList.remove('selected'); 
+            });
+            
+            checkAnswerBtn.disabled = true;
+            feedbackAreaEl.classList.remove('hidden');
+            explanationTextEl.innerHTML = questionData.fullExplanation;
+        }
+
+        function navigate(direction) {
+            if (direction === 'next') {
+                if (currentQuestionIndex < quizData.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion(currentQuestionIndex);
+                } else if (currentQuestionIndex === quizData.length - 1) {
+                    // Last question, "Done" button clicked, show results.
+                    showResults(); 
+                }
+            } else if (direction === 'prev' && currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion(currentQuestionIndex);
             }
         }
 
@@ -418,53 +457,55 @@
             quizContentEl.classList.add('hidden');
             resultsScreenEl.classList.remove('hidden');
 
-            let score = 0;
+            const score = calculateScore();
             const resultsSummaryEl = document.getElementById('results-summary');
             resultsSummaryEl.innerHTML = '';
 
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+            
             quizData.forEach((question, index) => {
                 const userAnswer = userAnswers[index];
-                let isCorrect = false;
+                const isCorrect = userAnswer.isCorrect;
+                
                 const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
-                
-                if (question.type === 'radio') {
-                    isCorrect = userAnswer === correctAnswers[0];
-                } else { // checkbox
-                    const userAnswerSet = new Set(userAnswer);
-                    const correctAnswerSet = new Set(correctAnswers);
-                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
-                }
-                
-                if (isCorrect) score++;
+                const userAnswerText = Array.isArray(userAnswer.selected) ? userAnswer.selected.join(', ') : userAnswer.selected || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                const explanationText = question.fullExplanation || "No explanation available.";
 
                 const resultItem = document.createElement('div');
-                resultItem.className = 'p-4 border rounded-lg';
-                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
-
-                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
-                const correctAnswerText = correctAnswers.join(', ');
-                const correctOption = question.answerOptions.find(opt => opt.isCorrect);
+                resultItem.className = 'p-3 border rounded-lg';
+                
+                // Styling based on whether it was answered and if correct
+                if (userAnswer.answered) {
+                    resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+                } else {
+                    // Style for skipped/unanswered question
+                    resultItem.classList.add('border-gray-500', 'bg-gray-700');
+                }
+                
 
                 resultItem.innerHTML = `
-                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
-                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
-                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
-                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctOption.rationale}</p>
+                    <p class="font-semibold text-sm text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-xs mt-1 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-xs mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    ${userAnswer.answered ? `<p class="text-xs mt-2 text-gray-300">Explanation: ${explanationText}</p>` : '<p class="text-xs mt-2 text-gray-300 font-bold">Question was not answered.</p>'}
                 `;
                 resultsSummaryEl.appendChild(resultItem);
             });
 
-            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
         }
 
-        submitBtn.addEventListener('click', showResults);
+        checkAnswerBtn.addEventListener('click', checkAnswer);
+        prevBtn.addEventListener('click', () => navigate('prev'));
+        nextBtn.addEventListener('click', () => navigate('next'));
         
         restartBtn.addEventListener('click', () => {
-            location.reload();
+            // Simple page reload to reset the state
+            location.reload(); 
         });
 
         // Initial render
-        renderAllQuestions();
+        renderQuestion(currentQuestionIndex);
     </script>
 </body>
 </html>

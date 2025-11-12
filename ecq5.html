@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Building E-commerce Presence Quiz</title>
+    <title>E-commerce Architecture & Mobile Presence Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         /* FONT: Open Sans for optimal readability at small sizes */
@@ -144,114 +144,114 @@
     <script>
         const quizData = [
             {
-                question: "What is the first step in building an e-commerce presence according to the lecture?",
+                question: "What is the main difference between two-tier and multi-tier e-commerce architecture?",
                 answerOptions: [
-                    { text: "Developing a detailed budget", isCorrect: false },
-                    { text: "Creating a vision and mission statement", isCorrect: true },
-                    { text: "Choosing the right technology platform", isCorrect: false },
-                    { text: "Hiring a development team", isCorrect: false }
+                    { text: "Two-tier uses more servers than multi-tier", isCorrect: false },
+                    { text: "Multi-tier includes application servers and backend systems, while two-tier has only web and database servers", isCorrect: true },
+                    { text: "Two-tier is more expensive than multi-tier", isCorrect: false },
+                    { text: "Multi-tier is only for small websites", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "The first step in building an e-commerce presence is <strong>creating a vision</strong>, which includes a mission statement, target audience, intended market space, strategic analysis, marketing matrix, development timeline, and preliminary budget."
+                fullExplanation: "<strong>Two-tier architecture</strong> consists of web server and database server only, while <strong>multi-tier architecture</strong> adds a middle-tier layer with application servers and connects to backend corporate systems, providing more functionality and scalability."
             },
             {
-                question: "Which of the following is NOT typically part of the initial e-commerce vision?",
+                question: "Which web server software currently holds the largest market share according to the lecture?",
                 answerOptions: [
-                    { text: "Mission statement", isCorrect: false },
-                    { text: "Target audience identification", isCorrect: false },
-                    { text: "Detailed programming code", isCorrect: true },
-                    { text: "Strategic analysis", isCorrect: false }
+                    { text: "Microsoft IIS", isCorrect: false },
+                    { text: "Apache", isCorrect: true },
+                    { text: "Nginx", isCorrect: false },
+                    { text: "Google Web Server", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "The initial vision focuses on strategic elements like mission statement, target audience, market space, strategic analysis, marketing matrix, timeline, and budget - not detailed programming code, which comes later in the development process."
+                fullExplanation: "<strong>Apache</strong> is the leading web server software with 51% of the market, working with UNIX and Linux operating systems, while Microsoft IIS holds about 12% of the market and is Windows-based."
             },
             {
-                question: "What does SWOT analysis stand for in e-commerce planning?",
+                question: "What are the three core components provided by e-commerce merchant server software?",
                 answerOptions: [
-                    { text: "Strengths, Weaknesses, Opportunities, Threats", isCorrect: true },
-                    { text: "Sales, Web, Operations, Technology", isCorrect: false },
-                    { text: "Strategic, Web, Organizational, Technical", isCorrect: false },
-                    { text: "System, Workflow, Optimization, Testing", isCorrect: false }
+                    { text: "Firewall, VPN, and encryption", isCorrect: false },
+                    { text: "Online catalog, shopping cart, and credit card processing", isCorrect: true },
+                    { text: "Email server, file server, and database server", isCorrect: false },
+                    { text: "CMS, CRM, and ERP", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "SWOT analysis stands for <strong>Strengths, Weaknesses, Opportunities, Threats</strong>. It helps businesses understand their internal capabilities and external market conditions when planning e-commerce presence."
+                fullExplanation: "E-commerce merchant server software provides three core components: <strong>online catalog</strong> (product listings), <strong>shopping cart</strong> (selection management), and <strong>credit card processing</strong> (payment verification and processing)."
             },
             {
-                question: "What is the Systems Development Life Cycle (SDLC) methodology used for?",
+                question: "Which of the following is NOT listed as a common website feature that annoys customers?",
                 answerOptions: [
-                    { text: "Marketing and advertising campaigns", isCorrect: false },
-                    { text: "Understanding business objectives and designing appropriate solutions", isCorrect: true },
-                    { text: "Financial budgeting and accounting", isCorrect: false },
-                    { text: "Human resources management", isCorrect: false }
+                    { text: "Fast loading pages", isCorrect: true },
+                    { text: "Pop-up and pop-under ads", isCorrect: false },
+                    { text: "Requiring registration before ordering", isCorrect: false },
+                    { text: "Links that don't work", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "The <strong>Systems Development Life Cycle (SDLC)</strong> is a methodology for understanding business objectives of a system and designing an appropriate solution. It includes five major steps: systems analysis/planning, systems design, building the system, testing, and implementation."
+                fullExplanation: "<strong>Fast loading pages</strong> are actually a positive feature, while pop-up ads, forced registration, broken links, slow loading pages, and confusing navigation are among the features that annoy customers according to the lecture."
             },
             {
-                question: "Which phase of the e-commerce presence timeline typically includes developing a mobile plan?",
+                question: "What is the primary method used to achieve personalization on e-commerce websites?",
                 answerOptions: [
-                    { text: "Phase 1: Planning", isCorrect: false },
-                    { text: "Phase 3: Web Implementation", isCorrect: false },
-                    { text: "Phase 5: Social Media Implementation", isCorrect: false },
-                    { text: "Phase 6: Mobile Plan", isCorrect: true }
+                    { text: "IP address tracking", isCorrect: false },
+                    { text: "Cookies", isCorrect: true },
+                    { text: "User registration", isCorrect: false },
+                    { text: "Browser fingerprinting", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "According to the e-commerce presence timeline, <strong>Phase 6</strong> specifically focuses on developing a mobile plan and considering options for porting the website to mobile devices."
+                fullExplanation: "<strong>Cookies</strong> are the primary method used to achieve personalization, allowing websites to treat people based on personal qualities and prior history with the site by storing user-specific information."
             },
             {
-                question: "What is the main difference between logical design and physical design in system design?",
+                question: "What is the key difference between personalization and customization?",
                 answerOptions: [
-                    { text: "Logical design costs more than physical design", isCorrect: false },
-                    { text: "Logical design specifies actual components, physical design shows data flow", isCorrect: false },
-                    { text: "Logical design shows data flow and functions, physical design specifies actual components", isCorrect: true },
-                    { text: "They are essentially the same thing", isCorrect: false }
+                    { text: "Personalization changes the product, customization changes the user experience", isCorrect: false },
+                    { text: "Customization changes the product, personalization treats users based on their history", isCorrect: true },
+                    { text: "They are essentially the same thing", isCorrect: false },
+                    { text: "Personalization is for B2B, customization for B2C", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "<strong>Logical design</strong> involves data flow diagrams, processing functions, and databases, while <strong>physical design</strong> specifies actual physical and software components, models, and implementation details."
+                fullExplanation: "<strong>Personalization</strong> is the ability to treat people based on personal qualities and prior history with the site, while <strong>customization</strong> is the ability to change the product itself to better fit the needs of the customer."
             },
             {
-                question: "What is 'co-location' in the context of website hosting?",
+                question: "Which of the following is NOT one of the three types of m-commerce software?",
                 answerOptions: [
-                    { text: "Sharing office space with the hosting company", isCorrect: false },
-                    { text: "Firm purchases/leases web server but it's located at vendor's facility", isCorrect: true },
-                    { text: "Hosting multiple websites on the same server", isCorrect: false },
-                    { text: "Using cloud services from multiple providers", isCorrect: false }
+                    { text: "Mobile Web site", isCorrect: false },
+                    { text: "Mobile Web app", isCorrect: false },
+                    { text: "Native app", isCorrect: false },
+                    { text: "Desktop app", isCorrect: true }
                 ],
                 type: 'radio',
-                fullExplanation: "<strong>Co-location</strong> occurs when a firm purchases or leases a web server (maintaining control over its operation) but the server is physically located at the vendor's facility, which provides infrastructure and connectivity."
+                fullExplanation: "The three types of m-commerce software are: <strong>Mobile Web site</strong> (responsive design), <strong>Mobile Web app</strong> (browser-based application), and <strong>Native app</strong> (device-specific application). Desktop apps are not considered m-commerce software."
             },
             {
-                question: "Which type of testing involves verifying that the system meets the original business objectives?",
+                question: "What is the main advantage of native mobile apps over mobile web apps?",
                 answerOptions: [
-                    { text: "Unit testing", isCorrect: false },
-                    { text: "System testing", isCorrect: false },
-                    { text: "Acceptance testing", isCorrect: true },
-                    { text: "Performance testing", isCorrect: false }
+                    { text: "They are less expensive to develop", isCorrect: false },
+                    { text: "They can use device hardware and work offline", isCorrect: true },
+                    { text: "They don't require any programming", isCorrect: false },
+                    { text: "They work on all mobile platforms without modification", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "<strong>Acceptance testing</strong> verifies that the business objectives of the system as originally conceived are actually working, ensuring the system meets the intended business needs."
+                fullExplanation: "The main advantage of <strong>native apps</strong> is that they can utilize device hardware features (camera, GPS, etc.) and work offline, while mobile web apps are typically less expensive to develop but have limited device integration."
             },
             {
-                question: "According to the lecture, what percentage of a typical e-commerce website budget is allocated to marketing?",
+                question: "What does RWD stand for in mobile web design?",
                 answerOptions: [
-                    { text: "15%", isCorrect: false },
-                    { text: "25%", isCorrect: false },
-                    { text: "35%", isCorrect: true },
-                    { text: "45%", isCorrect: false }
+                    { text: "Rapid Web Development", isCorrect: false },
+                    { text: "Responsive Web Design", isCorrect: true },
+                    { text: "Remote Web Deployment", isCorrect: false },
+                    { text: "Regional Web Distribution", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "According to the e-commerce presence budget breakdown, <strong>35%</strong> is typically allocated to marketing, while design takes 15% and content development takes 30%."
+                fullExplanation: "<strong>RWD stands for Responsive Web Design</strong>, which uses CSS to adjust the layout of a site according to the device's screen resolution, providing an optimal viewing experience across different devices."
             },
             {
-                question: "What is the relationship between development costs and maintenance costs for e-commerce sites?",
+                question: "Which mobile design approach is considered the most efficient according to the lecture?",
                 answerOptions: [
-                    { text: "Maintenance costs are typically much lower than development costs", isCorrect: false },
-                    { text: "Maintenance costs are similar to development costs annually", isCorrect: true },
-                    { text: "Maintenance costs are typically double the development costs", isCorrect: false },
-                    { text: "There is no consistent relationship between the two", isCorrect: false }
+                    { text: "Desktop-first design", isCorrect: false },
+                    { text: "Mobile-first design", isCorrect: true },
+                    { text: "Adaptive Web Design", isCorrect: false },
+                    { text: "Responsive Web Design", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "Maintenance costs are <strong>similar to development costs annually</strong>. For example, a $40,000 e-commerce site may require about $40,000 annually to maintain and upkeep, as systems break down unpredictably and require ongoing maintenance."
+                fullExplanation: "<strong>Mobile-first design</strong> is considered the most efficient approach, where the mobile version is designed first, followed by the desktop version. This ensures optimal performance and user experience on mobile devices, which are increasingly the primary access method."
             }
         ];
 
