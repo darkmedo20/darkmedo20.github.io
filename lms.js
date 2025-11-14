@@ -119,6 +119,12 @@
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=8t3iz-19bf72e-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `ecq5.html`
                     },
+                    {
+                        id: `lecture-6`,
+                        name: `Lecture 6: E-commerce Security and Payment Systems (1)`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=8hz9e-19c17b0-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `ecq6.html`
+                    },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
                         id: `lecture-${i + 2}`,
@@ -244,6 +250,12 @@
                         name: `Lecture 9: DHCP + Samba Servers`,
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=iq438-19bb3be-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `naq9.html`
+                    },
+                    {
+                        id: `lecture-10`,
+                        name: `Lecture 10: NFS + Appache Web Server`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=byrbe-19c1895-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `naq10.html`
                     },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
@@ -468,7 +480,7 @@
             
             subject.lectures.forEach((lecture, index) => {
                 const card = document.createElement('div');
-                card.classList.add('p-4', 'rounded-lg', 'shadow', 'cursor-pointer', 'hover:shadow-md', 'transition-shadow', 'transition-colors', 'duration-300', 'border-2', 'border-custom-orange');
+                card.classList.add('lecture-card', 'p-4', 'rounded-lg', 'shadow', 'cursor-pointer', 'transition-shadow', 'transition-colors', 'duration-300', 'border-2', 'border-custom-orange');
                 
                 // Apply theme-specific classes for the lecture card background/text
                 const cardBaseClasses = isLight ? ['bg-white'] : ['bg-gray-900'];

@@ -54,6 +54,16 @@
             background-repeat: no-repeat;
             background-size: contain;
         }
+        /* NEW: Hover Blink Animation */
+        @keyframes hover-blink {
+            0% { box-shadow: 0 0 5px #FCA303; }
+            50% { box-shadow: 0 0 15px #FCA303, 0 0 20px #FCA303; }
+            100% { box-shadow: 0 0 5px #FCA303; }
+        }
+
+        .lecture-card:hover {
+            animation: hover-blink 1.5s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="bg-black text-white transition-colors duration-300">

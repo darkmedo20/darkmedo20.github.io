@@ -54,6 +54,17 @@
             background-repeat: no-repeat;
             background-size: contain;
         }
+
+        /* NEW: Hover Blink Animation */
+        @keyframes hover-blink {
+            0% { box-shadow: 0 0 5px #FCA303; }
+            50% { box-shadow: 0 0 15px #FCA303, 0 0 20px #FCA303; }
+            100% { box-shadow: 0 0 5px #FCA303; }
+        }
+
+        .lecture-card:hover {
+            animation: hover-blink 1.5s ease-in-out infinite;
+        }
     </style>
 </head>
 <body class="bg-black text-white transition-colors duration-300">
@@ -160,7 +171,7 @@
             'inputField': 'bg-gray-700 text-white border-gray-600',
             'quizFullBtn': 'bg-gray-700 hover:bg-gray-600 text-white',
             'themeToggleHover': 'hover:bg-gray-700',
-            'checkboxLabel': 'text-gray-400', // NEW
+            'checkboxLabel': 'text-gray-400',
         };
 
         const LIGHT_MODE_CLASSES = {
@@ -177,7 +188,7 @@
             'inputField': 'bg-gray-50 text-gray-800 border-gray-300',
             'quizFullBtn': 'bg-gray-300 hover:bg-gray-400 text-gray-800',
             'themeToggleHover': 'hover:bg-gray-300',
-            'checkboxLabel': 'text-gray-500', // NEW
+            'checkboxLabel': 'text-gray-500',
         };
 
         const showMessage = (message, duration = 3000, isError = false) => {
@@ -316,7 +327,7 @@
             const sunIcon = document.getElementById('sun-icon');
             const moonIcon = document.getElementById('moon-icon');
             const toggleIcons = document.querySelectorAll('.sidebar-toggle-icon');
-            const checkboxLabel = document.getElementById('showPasswordLabel'); // NEW
+            const checkboxLabel = document.getElementById('showPasswordLabel');
 
             // Helper to swap classes on an element
             const swapClasses = (element, modeKey, oppositeModeKey) => {
@@ -388,7 +399,7 @@
                 icon.classList.add(isLightMode ? 'text-black' : 'text-white');
             });
 
-            // NEW: Apply theme to checkbox label
+            // Apply theme to checkbox label
             swapClasses(checkboxLabel, 'checkboxLabel');
 
 
@@ -428,7 +439,8 @@
             
             subject.lectures.forEach((lecture, index) => {
                 const card = document.createElement('div');
-                card.classList.add('p-4', 'rounded-lg', 'shadow', 'cursor-pointer', 'hover:shadow-md', 'transition-shadow', 'transition-colors', 'duration-300', 'border-2', 'border-custom-orange');
+                // MODIFIED: Added 'lecture-card' and removed 'hover:shadow-md'
+                card.classList.add('lecture-card', 'p-4', 'rounded-lg', 'shadow', 'cursor-pointer', 'transition-shadow', 'transition-colors', 'duration-300', 'border-2', 'border-custom-orange');
                 
                 // Apply theme-specific classes for the lecture card background/text
                 const cardBaseClasses = isLight ? ['bg-white'] : ['bg-gray-900'];
@@ -439,7 +451,11 @@
                 card.innerHTML = `
                     <h3 class="font-semibold text-lg ${cardTitleColor}">${lecture.name}</h3>
                 `;
-                card.addEventListener('click', () => displayLecture(subject.name, index));
+                
+                card.addEventListener('click', () => {
+                    displayLecture(subject.name, index);
+                });
+                
                 lectureListDiv.appendChild(card);
             });
             
@@ -640,7 +656,7 @@
                 }
             });
 
-            // NEW: Set up "Show Password" toggle listener
+            // Set up "Show Password" toggle listener
             const showPasswordToggle = document.getElementById('showPasswordToggle');
             const passwordInput = document.getElementById('passwordInput');
             showPasswordToggle.addEventListener('change', () => {
