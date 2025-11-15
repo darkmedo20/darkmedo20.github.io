@@ -215,6 +215,18 @@
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=8hmed-19babf2-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `dmq8.html`
                     },
+                    {
+                        id: `lecture-9`,
+                        name: `Lecture 9: Evaluation`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=udebf-19c2d3d-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `dmq9.html`
+                    },
+                    {
+                        id: `lecture-10`,
+                        name: `Lecture 10: Clustering`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=aajbi-19c2d43-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `dmq10.html`
+                    },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
                         id: `lecture-${i + 2}`,
