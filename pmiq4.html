@@ -3,39 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار أخلاقيات السايبر - المحاضرة الأولى</title>
+    <title>اختبار الخصوصية في مجال السايبر</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* FONT: Open Sans for optimal readability at small sizes */
-        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+        /* FONT: Tajawal for Arabic support */
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
         
         body {
-            font-family: 'Open Sans', sans-serif;
-            /* CHANGE: Body background set to #1B1B1B */
-            background-color: #1B1B1B; 
-            overflow-x: hidden; 
+            font-family: 'Tajawal', sans-serif;
+            background-color: #1B1B1B;
+            overflow-x: hidden;
         }
 
         .option-label {
             display: block;
-            padding: 0.6rem 1rem; 
+            padding: 0.6rem 1rem;
             border: 1px solid #4a5568;
-            border-radius: 0.75rem; 
+            border-radius: 0.75rem;
             cursor: pointer;
             transition: all 0.2s ease-in-out;
             margin-bottom: 0.75rem;
             color: #d1d5db;
             text-align: right;
-            font-size: 0.9rem; 
+            font-size: 0.9rem;
         }
         .option-label:not(.answered):hover {
-            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
-            background-color: #111827; 
+            background-color: #111827;
             border-color: #60a5fa;
         }
         .option-label.selected {
-            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
-            background-color: #111827; 
+            background-color: #111827;
             border-color: #60a5fa;
         }
         .option-label.correct {
@@ -53,86 +50,71 @@
             opacity: 0.8;
         }
         
-        /* === UNIFIED BUTTON SIZE/PADDING (Applies to all three buttons) === */
         .btn {
             padding: 0.4rem 0.8rem;
             border-radius: 0.5rem;
             font-weight: 600;
             transition: all 0.2s ease-in-out;
-            border: none; 
+            border: none;
             cursor: pointer;
             display: inline-block;
             font-size: 0.8rem;
         }
-        /* === END UNIFIED BUTTON SIZE/PADDING === */
 
-        /* Primary buttons (Check Answer, Next) are orange/yellow */
         .btn-primary {
-            background-color: #FCA300; 
-            color: #111827; 
+            background-color: #FCA300;
+            color: #111827;
             border: none;
         }
         .btn-primary:hover:not(:disabled) {
-            background-color: #e59400; 
+            background-color: #e59400;
         }
 
-        /* Secondary button (Previous) remains gray/transparent */
         .btn-secondary {
             background-color: transparent;
-            color: #9ca3af; 
-            border: 1px solid #4a5568; 
+            color: #9ca3af;
+            border: 1px solid #4a5568;
         }
         .btn-secondary:hover:not(:disabled) {
-            background-color: #111827; 
+            background-color: #111827;
             color: #ffffff;
-            border-color: #9ca3af; 
+            border-color: #9ca3af;
         }
-        /* Style for disabled buttons */
+        
         .btn:disabled {
-            opacity: 0.4; 
+            opacity: 0.4;
             cursor: not-allowed;
         }
 
         .explanation {
-            margin-top: 0.75rem; 
-            padding: 0.75rem; 
+            margin-top: 0.75rem;
+            padding: 0.75rem;
             border-right: 5px solid #3b82f6;
-            /* CHANGE: Explanation background set to #1B1B1B */
             background-color: #1B1B1B;
             color: #d1d5db;
             border-radius: 0.5rem;
-            font-size: 0.85rem; 
+            font-size: 0.85rem;
             text-align: right;
-        }
-        
-        /* RTL specific styles */
-        .rtl-text {
-            text-align: right;
-            direction: rtl;
-        }
-        .question-text {
-            text-align: right;
-            line-height: 1.6;
         }
     </style>
 </head>
 <body class="bg-[#1B1B1B] p-4">
 
     <main id="quiz-container" class="w-full mx-auto max-w-2xl">
-        <div id="quiz-content" class="bg-[#1B1B1B] p-4"> 
+        <div id="quiz-content" class="bg-[#1B1B1B] p-4">
             
             <div id="question-navigation" class="text-right text-sm font-medium text-gray-400 mb-4">
                 <span id="current-question-number"></span> / <span id="total-questions"></span>
             </div>
             
-            <div id="current-question-container" class="space-y-6"> 
-                </div>
+            <div id="current-question-container" class="space-y-6">
+            </div>
 
-            <div id="feedback-area" class="mt-3 hidden"> 
+            <div id="feedback-area" class="mt-3 hidden">
                 <div id="explanation-text" class="explanation"></div>
             </div>
 
-            <div class="flex flex-wrap justify-between items-start mt-8 gap-3"> 
+            <div class="flex flex-wrap justify-between items-start mt-8 gap-3">
                 <button id="prev-btn" class="btn btn-secondary" disabled>السابق</button>
                 
                 <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 sm:space-x-reverse ml-auto">
@@ -142,7 +124,7 @@
             </div>
         </div>
 
-        <div id="results-screen" class="hidden bg-[#1B1B1B] p-4"> 
+        <div id="results-screen" class="hidden bg-[#1B1B1B] p-4">
             <h2 class="text-xl font-bold text-white text-center mb-3">تم الانتهاء من الاختبار!</h2>
             <p id="score-text" class="text-lg text-gray-300 text-center font-semibold mb-6"></p>
             <div id="results-summary" class="space-y-4"></div>
@@ -155,119 +137,118 @@
     <script>
         const quizData = [
             {
-                question: "ما المقصود بمصطلح 'السايبر' وفقاً للمحاضرة؟",
+                question: "ما هي العوامل التي أثرت بها التكنولوجيا على الخصوصية من حيث الكمية؟",
                 answerOptions: [
-                    { text: "مجال يقتصر على أجهزة الحاسوب فقط", isCorrect: false },
-                    { text: "كل مجالات الحاسوب والاتصالات من معدات وبرمجيات وشبكات وإجراءات والمتعاملين معها", isCorrect: true },
-                    { text: "الإنترنت فقط", isCorrect: false },
-                    { text: "التكنولوجيا العسكرية فقط", isCorrect: false }
+                    { text: "كمية المعلومات الشخصية التي يمكن جمعها أصبحت هائلة", isCorrect: true },
+                    { text: "سرعة تراسل المعلومات أصبحت بطيئة", isCorrect: false },
+                    { text: "المعلومات تحفظ لفترات قصيرة فقط", isCorrect: false },
+                    { text: "تداول المعلومات أصبح محدوداً بالنصوص فقط", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "تعني كلمة <strong>السايبر</strong> كل مجالات الحاسوب والاتصالات من معدات وبرمجيات وشبكات وإجراءات والمتعاملين معها والبنية المحيطة بها."
+                fullExplanation: "التكنولوجيا أثرت على الخصوصية من حيث <strong>الكمية</strong> حيث أصبحت كمية المعلومات الشخصية التي يمكن جمعها هائلة ولا تحدها سعة مكانية."
             },
             {
-                question: "ما الفرق بين 'المثل' و'الأخلاق' و'الأعراف'؟",
+                question: "ما المقصود بخصوصية النفاذ (الوصول)؟",
                 answerOptions: [
-                    { text: "كلها مصطلحات مترادفة لنفس المعنى", isCorrect: false },
-                    { text: "المثل (Ethics) - الأخلاق (Morals) - الأعراف (Norms)", isCorrect: true },
-                    { text: "المثل (Morals) - الأخلاق (Ethics) - الأعراف (Norms)", isCorrect: false },
-                    { text: "المثل (Norms) - الأخلاق (Ethics) - الأعراف (Morals)", isCorrect: false }
+                    { text: "التحرر من التدخل في الحيز الشخصي دون إذن", isCorrect: true },
+                    { text: "التحكم في تدفق المعلومات الشخصية", isCorrect: false },
+                    { text: "حرية اتخاذ القرارات دون تأثير", isCorrect: false },
+                    { text: "حماية المعلومات المالية فقط", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "المصطلحات المذكورة في المحاضرة هي: <strong>المثل (Ethics)</strong>، <strong>الأخلاق (Morals)</strong>، <strong>الأعراف (Norms)</strong>."
+                fullExplanation: "خصوصية النفاذ تعني <strong>ترك الشخص في حاله وعدم التدخل في خصوصياته</strong> أي التحرر من التدخل في الحيز الشخصي دون إذنه."
             },
             {
-                question: "ما هي أخلاقيات السايبر (Cyber Ethics)؟",
+                question: "ما هي أنواع الخصوصية الثلاثة المذكورة في المحاضرة؟",
                 answerOptions: [
-                    { text: "المثل والأخلاقيات المتعلقة والناشئة بسبب المعلومات والاتصالات والسايبر بتعريفها الواسع", isCorrect: true },
-                    { text: "مجموعة القوانين التي تحكم استخدام الإنترنت فقط", isCorrect: false },
-                    { text: "المبادئ الأخلاقية للمبرمجين فقط", isCorrect: false },
-                    { text: "القواعد الأخلاقية للشركات التقنية فقط", isCorrect: false }
+                    { text: "خصوصية النفاذ، خصوصية القرار، خصوصية المعلومات", isCorrect: true },
+                    { text: "خصوصية المنزل، خصوصية العمل، خصوصية التواصل", isCorrect: false },
+                    { text: "خصوصية البيانات، خصوصية الهوية، خصوصية الموقع", isCorrect: false },
+                    { text: "خصوصية النص، خصوصية الصورة، خصوصية الصوت", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "<strong>أخلاقيات السايبر</strong> هي المثل والأخلاقيات المتعلقة والناشئة بسبب المعلومات والاتصالات والسايبر بتعريفها الواسع، وهي أكثر شمولاً من مصطلح أخلاقيات الحاسوب وأخلاقيات الإنترنت."
+                fullExplanation: "الخصوصية تنقسم إلى ثلاثة أنواع: <strong>خصوصية النفاذ (الوصول)، خصوصية القرار، وخصوصية المعلومات</strong>."
             },
             {
-                question: "هل أدخلت تكنولوجيا السايبر قضايا أخلاقية جديدة وفقاً للمحاضرة؟",
+                question: "ما هو الـ Cookie في سياق الخصوصية الإلكترونية؟",
                 answerOptions: [
-                    { text: "نعم، أدخلت قضايا أخلاقية جديدة تماماً", isCorrect: false },
-                    { text: "لا، لكنها أوجدت اختلافاً في المدى والمقدار وأدخلت بعض الجرائم المتميزة", isCorrect: true },
-                    { text: "لا، كل القضايا الأخلاقية كانت موجودة من قبل", isCorrect: false },
-                    { text: "نعم، كل القضايا الأخلاقية الحالية جديدة بسبب السايبر", isCorrect: false }
+                    { text: "ملف صغير يخزن معلومات تخص المستخدم في جهازه", isCorrect: true },
+                    { text: "برنامج لحماية البيانات الشخصية", isCorrect: false },
+                    { text: "نظام تشفير للمعلومات السرية", isCorrect: false },
+                    { text: "أداة لمنع الوصول غير المصرح به", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "أوجدت السايبر <strong>اختلافاً في المدى والمقدار</strong>، فالنشاط باستخدام الإنترنت يؤثر في جوانب عديدة ويصل إلى أعداد كبيرة من الناس. كما أدخلت بعض الجرائم المتميزة التي لم تنشأ لولا السايبر مثل جرائم اقتحام المواقع وانتحال الشخصية عبر الإنترنت."
+                fullExplanation: "الـ <strong>Cookie</strong> هو ملف صغير تخزنه تطبيقات الويب في القرص الصلب الخاص بالمستخدم ويحتوي على معلومات تخص المستخدم، غالباً دون علمه."
             },
             {
-                question: "ما السبب الرئيسي الذي يجعل أخلاقيات السايبر متميزة عن أخلاقيات التكنولوجيا الأخرى؟",
+                question: "ما هي المخاطر الرئيسية التي تهدد الخصوصية في مجال السايبر؟",
                 answerOptions: [
-                    { text: "لأنها تتعلق بالحاسوب فقط", isCorrect: false },
-                    { text: "لأن تكنولوجيا الحاسوب والبرمجيات قابلة للتشكل حسب التطبيق المعني وقد نتعامل مع أنشطة إنسانية لا حصر لها في مناطق لم تنشأ فيها قواعد وضوابط للسلوك", isCorrect: true },
-                    { text: "لأنها أسرع من غيرها", isCorrect: false },
-                    { text: "لأنها أرخص من غيرها", isCorrect: false }
+                    { text: "جمع البيانات، تبادل البيانات، بحث/تقييم البيانات", isCorrect: true },
+                    { text: "سرقة الهوية، الاختراق، التصيد", isCorrect: false },
+                    { text: "الفيروسات، البرمجيات الخبيثة، هجمات الحرمان من الخدمة", isCorrect: false },
+                    { text: "التجسس، التنصت، الاحتيال", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "تكنولوجيا السايبر <strong>قابلة للتشكل</strong> حسب التطبيق المعني فتدخل في وظائف عديدة، ولذلك قد نتعامل مع أنشطة إنسانية لا حصر لها في مناطق <strong>لم تنشأ فيها قواعد وضوابط للسلوك</strong>."
+                fullExplanation: "تكنولوجيا السايبر تهدد الخصوصية من ثلاثة جوانب رئيسية: <strong>جمع البيانات، تبادل البيانات، وبحث/تقييم البيانات (Data Mining)</strong>."
             },
             {
-                question: "ما الفرق بين الدراسات الوصفية والدراسات العرفية في أخلاقيات السايبر؟",
+                question: "ما المقصود بـ Data Mining في سياق الخصوصية؟",
                 answerOptions: [
-                    { text: "الوصفية تصف الحالة وتحللها، بينما العرفية تعرض ما يجب فعله", isCorrect: true },
-                    { text: "الوصفية تقدم الحلول، بينما العرفية تصف المشكلة", isCorrect: false },
-                    { text: "كلاهما نفس الشيء", isCorrect: false },
-                    { text: "الوصفية للفلسفة فقط، والعرفية للقانون فقط", isCorrect: false }
+                    { text: "البحث في البيانات لاكتشاف أنماط واستخلاص نتائج", isCorrect: true },
+                    { text: "تدمير البيانات الشخصية", isCorrect: false },
+                    { text: "نقل البيانات بين القواعد المختلفة", isCorrect: false },
+                    { text: "حذف المعلومات السرية", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "<strong>الدراسات الوصفية</strong> تصف الحالة وتحللها (دون إصدار حلول أو أحكام)، بينما <strong>الدراسات العرفية</strong> تبحث في الحل وما يجب فعله وفقاً للأعراف والقوانين السائدة."
+                fullExplanation: "<strong>Data Mining</strong> يعني البحث في البيانات لاكتشاف أنماط واستخلاص نتائج لمساعدة متخذي القرار، وقد تكون النتائج غير واضحة أو متوقعة."
             },
             {
-                question: "ما الخطوة الأولى في تحليل قضية أخلاقية وفقاً للمحاضرة؟",
+                question: "ما هي أداة تعزيز الخصوصية المذكورة في المحاضرة؟",
                 answerOptions: [
-                    { text: "استشارة الزملاء", isCorrect: false },
-                    { text: "تبني النظرة الأخلاقية القائمة على المساواة والعدل والاحترام", isCorrect: true },
-                    { text: "البحث عن حالات سابقة", isCorrect: false },
-                    { text: "الوصف التفصيلي للحالة", isCorrect: false }
+                    { text: "برامج لإخفاء الهوية وأدوات لإزالة الـ Cookies", isCorrect: true },
+                    { text: "جدران النار ومضادات الفيروسات", isCorrect: false },
+                    { text: "أنظمة التشغيل الآمنة", isCorrect: false },
+                    { text: "شبكات VPN فقط", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "الخطوة الأولى هي <strong>تبني النظرة الأخلاقية</strong> التي تبني على ثلاثة أسس: <strong>المساواة، العدل، الاحترام</strong>."
+                fullExplanation: "من أدوات تعزيز الخصوصية <strong>برامج إخفاء الهوية وأدوات مثل Cutter Cookie للتخلص من الـ Cookies</strong>."
             },
             {
-                question: "ما الأسباب التي تدفع الشركات للالتزام بالأخلاقيات وفقاً للمحاضرة؟",
+                question: "ما المقصود بسرقة الهوية؟",
                 answerOptions: [
-                    { text: "لأنها مكلفة وغير مربحة", isCorrect: false },
-                    { text: "لأنها إلزامية قانونياً فقط", isCorrect: false },
-                    { text: "لأنها تؤدي لزيادة الربحية وتحسين السمعة وتجنب المشاكل", isCorrect: true },
-                    { text: "لأنها تزيد من تعقيد العمل", isCorrect: false }
+                    { text: "إساءة استخدام هوية الشخص لأغراض غير مشروعة", isCorrect: true },
+                    { text: "نسخ بيانات الهوية الاحتياطية", isCorrect: false },
+                    { text: "إنشاء هوية مزيفة جديدة", isCorrect: false },
+                    { text: "تغيير كلمة المرور فقط", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "التعامل الأخلاقي يؤدي <strong>لزيادة الربحية</strong> لأنه يبني سمعة طيبة ويكسب ثقة المجتمع، كما أن الشركة ستتجنب الغرامات والمشاكل. المستوى الأخلاقي للعاملين يؤدي لجودة المنتج."
+                fullExplanation: "سرقة الهوية تعني <strong>إساءة استخدام هوية الشخص (اسمه، عنوانه، رقم رخصة القيادة، إلخ)</strong> للقيام بأعمال مباحة لصاحب الهوية وغير متاحة للمستخدم."
             },
             {
-                question: "ما المجالات المعرفية التي تتضمنها أخلاقيات السايبر؟",
+                question: "ما هو القلق الرئيسي من دمج القيود المحوسبة (Merging Computerized Records)؟",
                 answerOptions: [
-                    { text: "علوم الحاسوب فقط", isCorrect: false },
-                    { text: "الفلسفة فقط", isCorrect: false },
-                    { text: "علوم الحاسوب، الفلسفة، العلوم الاجتماعية، القانون، والأخلاقيات المهنية", isCorrect: true },
-                    { text: "الاقتصاد فقط", isCorrect: false }
+                    { text: "تناقص دقة المعلومات وعدم التحكم في تبادلها", isCorrect: true },
+                    { text: "زيادة تكاليف التخزين", isCorrect: false },
+                    { text: "صعوبة الوصول إلى المعلومات", isCorrect: false },
+                    { text: "فقدان البيانات بالكامل", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "أخلاقيات السايبر مجال معرفي واسع يشمل: <strong>علوم الحاسوب، الفلسفة، العلوم الاجتماعية، القانون، والأخلاقيات المهنية</strong>."
+                fullExplanation: "القلق من دمج القيود المحوسبة يأتي من <strong>تناقص دقة المعلومات</strong> لأننا نجهل الظرف الذي جمعت فيه، و<strong>عدم إعطاء صاحبها التحكم فيها</strong>."
             },
             {
-                question: "ما المقصود بـ ICT؟",
+                question: "كيف يمكن لمحركات البحث التأثير على الخصوصية؟",
                 answerOptions: [
-                    { text: "نظام الاتصالات الدولية", isCorrect: false },
-                    { text: "تكنولوجيا الاتصالات والمعلومات (Information and Communication Technology)", isCorrect: true },
-                    { text: "التحكم في تكنولوجيا الإنترنت", isCorrect: false },
-                    { text: "إدارة تكنولوجيا الحاسوب", isCorrect: false }
+                    { text: "تجمع معلومات من عدة مواقع وتكوين ملامح عن الشخص", isCorrect: true },
+                    { text: "تحذف المعلومات الشخصية تلقائياً", isCorrect: false },
+                    { text: "تشفر جميع البيانات التي تجمعها", isCorrect: false },
+                    { text: "تطلب الإذن قبل أي عملية جمع بيانات", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "<strong>ICT</strong> هي اختصار لـ <strong>Information and Communication Technology</strong> أي تكنولوجيا الاتصالات والمعلومات، وهي العامل الرئيسي في ثورة المعلومات."
+                fullExplanation: "محركات البحث <strong>تجمع معلومات من عدة مواقع</strong> بعضها بعلم صاحبها وبعضها دون علمه، و<strong>يمكن تكوين ملامح عن الشخص</strong> وهوياته واهتماماته بسهولة."
             }
         ];
 
         let currentQuestionIndex = 0;
-        // Stores user's selected answer and correctness status: { selected: string | string[] | null, isCorrect: boolean | null, answered: boolean }
         const userAnswers = quizData.map(() => ({ selected: null, isCorrect: null, answered: false }));
         
         const quizContentEl = document.getElementById('quiz-content');
@@ -284,7 +265,6 @@
 
         totalQuestionsEl.textContent = quizData.length;
 
-        // Helper to calculate current score
         function calculateScore() {
             return userAnswers.filter(a => a.isCorrect === true).length;
         }
@@ -294,7 +274,7 @@
             const userAnswer = userAnswers[index];
             currentQuestionContainerEl.innerHTML = `
                 <div class="question-item" data-index="${index}">
-                    <h2 class="text-base font-semibold text-gray-300 mb-4 question-text">${questionData.question}</h2>
+                    <h2 class="text-base font-semibold text-gray-300 mb-4 text-right">${questionData.question}</h2>
                     <div class="options-container space-y-3"></div>
                 </div>
             `;
@@ -309,31 +289,29 @@
                 const optionId = `q${index}-o${optionIndex}`;
                 
                 const optionEl = document.createElement('label');
-                optionEl.className = 'option-label flex items-center rtl-text';
+                optionEl.className = 'option-label flex items-center';
                 optionEl.setAttribute('for', optionId);
 
                 optionEl.innerHTML = `
-                    <span class="mr-3 flex-1">${option.text}</span>
+                    <span class="flex-1 text-right">${option.text}</span>
                     <input type="${inputType}" id="${optionId}" name="q${index}" value="${option.text}" class="ml-3" ${isAnswered ? 'disabled' : ''}>
                 `;
                 optionsContainer.appendChild(optionEl);
 
                 const inputEl = optionEl.querySelector('input');
                 
-                // Set initial selection/state
                 if (questionData.type === 'radio') {
                     if (userAnswer.selected === option.text) {
                         inputEl.checked = true;
                         optionEl.classList.add('selected');
                     }
-                } else { // checkbox
+                } else {
                     if (Array.isArray(userAnswer.selected) && userAnswer.selected.includes(option.text)) {
                         inputEl.checked = true;
                         optionEl.classList.add('selected');
                     }
                 }
 
-                // Apply correctness styling if already answered
                 if (isAnswered) {
                     optionEl.classList.add('answered', 'disabled');
                     if (option.isCorrect) {
@@ -346,27 +324,21 @@
                 inputEl.addEventListener('change', (e) => handleOptionSelect(e, index));
             });
 
-            // Update navigation buttons
             prevBtn.disabled = index === 0;
 
-            // Next button logic
             if (index === quizData.length - 1) {
-                // Last question: always change text to "Done" and enable button
                 nextBtn.textContent = 'إنهاء';
-                nextBtn.disabled = false; 
+                nextBtn.disabled = false;
             } else {
-                // Not last question: always set text to "Next" and enable button (to allow skipping)
                 nextBtn.textContent = 'التالي';
                 nextBtn.disabled = false;
             }
 
-            // Update check button state and feedback
             if (isAnswered) {
                 checkAnswerBtn.disabled = true;
                 feedbackAreaEl.classList.remove('hidden');
                 explanationTextEl.innerHTML = questionData.fullExplanation;
             } else {
-                // Not answered yet
                 checkAnswerBtn.disabled = !userAnswer.selected || (Array.isArray(userAnswer.selected) && userAnswer.selected.length === 0);
                 feedbackAreaEl.classList.add('hidden');
             }
@@ -385,7 +357,7 @@
                     input.closest('label').classList.remove('selected');
                 });
                 labelEl.classList.add('selected');
-            } else { 
+            } else {
                 if (!Array.isArray(userAnswers[index].selected)) {
                     userAnswers[index].selected = [];
                 }
@@ -400,7 +372,6 @@
                 userAnswers[index].selected = Array.from(answerSet);
             }
             
-            // Enable Check Answer button only if an option is selected
             checkAnswerBtn.disabled = !userAnswers[index].selected || (Array.isArray(userAnswers[index].selected) && userAnswers[index].selected.length === 0);
         }
 
@@ -408,7 +379,6 @@
             const questionData = quizData[currentQuestionIndex];
             const userAnswer = userAnswers[currentQuestionIndex];
             
-            // Allow checking only if an answer is selected and not already answered
             if (!userAnswer.selected || userAnswer.answered) return;
 
             userAnswer.answered = true;
@@ -418,7 +388,7 @@
 
             if (questionData.type === 'radio') {
                 isCorrect = userAnswer.selected === correctAnswers[0];
-            } else { 
+            } else {
                 const userAnswerSet = new Set(userAnswer.selected);
                 const correctAnswerSet = new Set(correctAnswers);
                 isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
@@ -441,7 +411,7 @@
                 } else if (isUserSelected && !isCorrectOption) {
                     labelEl.classList.add('incorrect');
                 }
-                labelEl.classList.remove('selected'); 
+                labelEl.classList.remove('selected');
             });
             
             checkAnswerBtn.disabled = true;
@@ -455,8 +425,7 @@
                     currentQuestionIndex++;
                     renderQuestion(currentQuestionIndex);
                 } else if (currentQuestionIndex === quizData.length - 1) {
-                    // Last question, "Done" button clicked, show results.
-                    showResults(); 
+                    showResults();
                 }
             } else if (direction === 'prev' && currentQuestionIndex > 0) {
                 currentQuestionIndex--;
@@ -484,16 +453,13 @@
                 const explanationText = question.fullExplanation || "لا يوجد شرح متوفر.";
 
                 const resultItem = document.createElement('div');
-                resultItem.className = 'p-3 border rounded-lg rtl-text';
+                resultItem.className = 'p-3 border rounded-lg text-right';
                 
-                // Styling based on whether it was answered and if correct
                 if (userAnswer.answered) {
                     resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
                 } else {
-                    // Style for skipped/unanswered question
                     resultItem.classList.add('border-gray-500', 'bg-gray-700');
                 }
-                
 
                 resultItem.innerHTML = `
                     <p class="font-semibold text-sm text-white">${index + 1}. ${question.question}</p>
@@ -503,7 +469,6 @@
                 `;
                 resultsSummaryEl.appendChild(resultItem);
             });
-
         }
 
         checkAnswerBtn.addEventListener('click', checkAnswer);
@@ -511,11 +476,9 @@
         nextBtn.addEventListener('click', () => navigate('next'));
         
         restartBtn.addEventListener('click', () => {
-            // Simple page reload to reset the state
-            location.reload(); 
+            location.reload();
         });
 
-        // Initial render
         renderQuestion(currentQuestionIndex);
     </script>
 </body>

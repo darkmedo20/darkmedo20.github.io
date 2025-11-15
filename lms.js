@@ -401,6 +401,42 @@
                         podbeanUrl: `https://www.podbean.com/player-v2/?i=kvh5g-1980677-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
                         quizUrl: `pmiq3.html`
                     },
+                    {
+                        id: `lecture-4`,
+                        name: `Lecture 4: الخصوصية في مجال السايبر `,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=i9bft-19c2d62-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        quizUrl: `pmiq4.html`
+                    },
+                    {
+                        id: `lecture-5`,
+                        name: `Lecture 5: أمن السايبر    `,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=ccjjv-19c2df9-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=ff6d00`,
+                        quizUrl: `pmiq5.html`
+                    },
+                    {
+                        id: `lecture-6`,
+                        name: `Lecture 6: الملكية الفكرية `,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=dqme7-19c2fc1-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=ff6d00`,
+                        quizUrl: `pmiq6.html`
+                    },
+                    {
+                        id: `lecture-7`,
+                        name: `Lecture 7: تنظيم فضاء السايبر - 1`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=8k9ye-19c2fcb-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=ff6d00`,
+                        quizUrl: `pmiq7.html`
+                    },
+                    {
+                        id: `lecture-8`,
+                        name: `Lecture 8: تنظيم فضاء السايبر - 2`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=fci5a-19c3009-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=ff6d00`,
+                        quizUrl: `pmiq8.html`
+                    },
+                    {
+                        id: `lecture-9`,
+                        name: `Lecture 9: المجتمع والهوية`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=fci5a-19c3009-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=ff6d00`,
+                        quizUrl: `pmiq9.html`
+                    },
                     /*
                     ...Array.from({ length: 11 }, (_, i) => ({
                         id: `lecture-${i + 2}`,
