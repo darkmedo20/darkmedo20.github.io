@@ -398,7 +398,7 @@
                     {
                         id: `lecture-3`,
                         name: `Lecture 3: الأخلاق المهنية وقواعد السلوك الأخلاقية`,
-                        podbeanUrl: `https://www.podbean.com/player-v2/?i=kvh5g-1980677-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=3267a3`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=ee66t-19c32ea-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=ff6d00`,
                         quizUrl: `pmiq3.html`
                     },
                     {
