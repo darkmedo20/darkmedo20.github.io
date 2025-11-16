@@ -691,6 +691,7 @@
                 'amani@Hiwarat': 'amani',
                 'almuiz@Hiwarat': 'almuiz',
                 'Mstra@123': '2019ITIBB0139',
+                'aHmed@hiwarat1': 'Ahmed Abdalghani',
                 '1423': 'Ahmed Almostafa'
             };
             

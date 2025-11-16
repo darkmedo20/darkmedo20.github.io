@@ -3,31 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HCI: Lecture 3 - The Computer</title>
+    <title>HCI: Computer Systems Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        /* FONT: Open Sans for optimal readability at small sizes */
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+        
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Open Sans', sans-serif;
+            /* CHANGE: Body background set to #1B1B1B */
+            background-color: #1B1B1B; 
+            overflow-x: hidden; 
         }
+
         .option-label {
             display: block;
-            padding: 1rem;
+            padding: 0.6rem 1rem; 
             border: 1px solid #4a5568;
-            border-radius: 0.75rem;
+            border-radius: 0.75rem; 
             cursor: pointer;
             transition: all 0.2s ease-in-out;
-            margin-bottom: 1rem;
-            color: #d1d5db; /* Lighter text color for dark theme */
+            margin-bottom: 0.75rem;
+            color: #d1d5db;
+            text-align: left;
+            font-size: 0.9rem; 
         }
-        .option-label:hover {
-            background-color: #374151;
+        .option-label:not(.answered):hover {
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
+            background-color: #111827; 
             border-color: #60a5fa;
         }
         .option-label.selected {
-            background-color: #1e3a8a;
-            border-color: #3b82f6;
-            color: #ffffff;
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
+            background-color: #111827; 
+            border-color: #60a5fa;
         }
         .option-label.correct {
             background-color: #14532d;
@@ -39,38 +48,94 @@
             border-color: #ef4444;
             color: #ffffff;
         }
+        .option-label.disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        
+        /* === UNIFIED BUTTON SIZE/PADDING (Applies to all three buttons) === */
         .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
             font-weight: 600;
             transition: all 0.2s ease-in-out;
-            border: none;
+            border: none; 
             cursor: pointer;
+            display: inline-block;
+            font-size: 0.8rem;
         }
+        /* === END UNIFIED BUTTON SIZE/PADDING === */
+
+        /* Primary buttons (Check Answer, Next) are orange/yellow */
         .btn-primary {
-            background-color: #3b82f6;
-            color: white;
+            background-color: #FCA300; 
+            color: #111827; 
+            border: none;
         }
-        .btn-primary:hover {
-            background-color: #2563eb;
+        .btn-primary:hover:not(:disabled) {
+            background-color: #e59400; 
+        }
+
+        /* Secondary button (Previous) remains gray/transparent */
+        .btn-secondary {
+            background-color: transparent;
+            color: #9ca3af; 
+            border: 1px solid #4a5568; 
+        }
+        .btn-secondary:hover:not(:disabled) {
+            background-color: #111827; 
+            color: #ffffff;
+            border-color: #9ca3af; 
+        }
+        /* Style for disabled buttons */
+        .btn:disabled {
+            opacity: 0.4; 
+            cursor: not-allowed;
+        }
+
+        .explanation {
+            margin-top: 0.75rem; 
+            padding: 0.75rem; 
+            border-left: 5px solid #3b82f6;
+            /* CHANGE: Explanation background set to #1B1B1B */
+            background-color: #1B1B1B;
+            color: #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.85rem; 
         }
     </style>
 </head>
-<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+<body class="bg-[#1B1B1B] p-4">
 
-    <main id="quiz-container" class="w-full max-w-3xl">
-        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <div id="all-questions-container" class="space-y-8"></div>
-            <div class="text-center mt-10">
-                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+    <main id="quiz-container" class="w-full mx-auto max-w-2xl">
+        <div id="quiz-content" class="bg-[#1B1B1B] p-4"> 
+            
+            <div id="question-navigation" class="text-left text-sm font-medium text-gray-400 mb-4">
+                <span id="current-question-number"></span> / <span id="total-questions"></span>
+            </div>
+            
+            <div id="current-question-container" class="space-y-6"> 
+                </div>
+
+            <div id="feedback-area" class="mt-3 hidden"> 
+                <div id="explanation-text" class="explanation"></div>
+            </div>
+
+            <div class="flex flex-wrap justify-between items-start mt-8 gap-3"> 
+                <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+                
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 ml-auto">
+                    <button id="check-answer-btn" class="btn btn-primary">Check Answer</button>
+                    <button id="next-btn" class="btn btn-primary" disabled>Next</button>
+                </div>
             </div>
         </div>
 
-        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
-            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
-            <div id="results-summary" class="space-y-6"></div>
-            <div class="text-center mt-8">
+        <div id="results-screen" class="hidden bg-[#1B1B1B] p-4"> 
+            <h2 class="text-xl font-bold text-white text-center mb-3">Quiz Complete!</h2>
+            <p id="score-text" class="text-lg text-gray-300 text-center font-semibold mb-6"></p>
+            <div id="results-summary" class="space-y-4"></div>
+            <div class="text-center mt-6">
                 <button id="restart-btn" class="btn btn-primary">Retake Quiz</button>
             </div>
         </div>
@@ -79,331 +144,312 @@
     <script>
         const quizData = [
             {
-                question: "When we interact with computers, the main objective is similar to human communication. What is this main objective?",
+                question: "What is the fundamental goal of interaction between humans and computers according to the lecture?",
                 answerOptions: [
-                    {
-                        text: "To establish a cognitive model.",
-                        rationale: "Establishing a cognitive model is part of understanding the user (human) side, not the main objective of the interaction itself.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "To transfer information.",
-                        rationale: "The lecture states: 'The main objective is transferring information,' which flows back and forth between the user and the computer.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "To execute binary code.",
-                        rationale: "This is a low-level computer operation, not the high-level objective of HCI.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "To provide multimodal feedback.",
-                        rationale: "This is a feature of advanced I/O, not the core objective of all interaction.",
-                        isCorrect: false
-                    }
+                    { text: "To make computers faster", isCorrect: false },
+                    { text: "Transferring information through two-way exchange", isCorrect: true },
+                    { text: "To reduce hardware costs", isCorrect: false },
+                    { text: "To eliminate the need for input devices", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "The main objective is transferring information through a two-way exchange between user and computer, similar to human communication where information flows back and forth with each party responding to the other."
             },
             {
-                question: "In the context of the I/O Model of Interaction, which of the following are the key elements? (Select all that apply)",
+                question: "Which of the following is NOT mentioned as a traditional input device category?",
                 answerOptions: [
-                    {
-                        text: "The I/O devices (e.g., screen, keyboard, speaker, microphone).",
-                        rationale: "I/O devices are the core components that receive and present information.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "The physical manipulation/senses involved (e.g., typing, viewing, touching).",
-                        rationale: "The physical manipulation and senses involved are part of the I/O Model, describing how the user interacts with the devices.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "The user's long-term memory capacity.",
-                        rationale: "This is a concept from the Human side (Lecture 2), not the Computer/I/O Model.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The central processing unit (CPU).",
-                        rationale: "The CPU is the internal processing unit, not part of the I/O interface that directly mediates interaction.",
-                        isCorrect: false
-                    }
+                    { text: "Keyboard-based text entry", isCorrect: false },
+                    { text: "Touchscreens", isCorrect: false },
+                    { text: "Brain-computer interfaces", isCorrect: true },
+                    { text: "Pointing and selection devices", isCorrect: false }
                 ],
-                type: 'checkbox'
+                type: 'radio',
+                fullExplanation: "Brain-computer interfaces are categorized as emerging input technologies, not traditional input devices. Traditional categories include keyboards, touchscreens, pointing devices, speech input, gestural input, and biometric input."
             },
             {
-                question: "Which term is used to describe the integration of multiple input and output channels, such as combining voice commands, touch gestures, and haptic feedback?",
+                question: "What HCI consideration is specifically mentioned for touchscreen devices?",
                 answerOptions: [
-                    {
-                        text: "Context-Aware Interaction",
-                        rationale: "Context-aware interaction uses AI to sense the environment and adjust, but doesn't specifically mean combining multiple channels.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Single-Stream Processing",
-                        rationale: "This term is the opposite, referring to one channel at a time.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Multimodality",
-                        rationale: "The lecture defines 'Multimodality' as combining 'multiple I/O channels... to create a richer, more expressive form of interaction.'",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Perceptual Modeling",
-                        rationale: "This relates to how the human perceives the input, not the combination of I/O channels.",
-                        isCorrect: false
-                    }
+                    { text: "Occlusion (finger covering screen)", isCorrect: true },
+                    { text: "Fitts' Law application", isCorrect: false },
+                    { text: "Ambient noise handling", isCorrect: false },
+                    { text: "Gorilla arm problem", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "For touchscreens, key HCI considerations include discoverability of gestures, occlusion (finger covering screen), and ergonomics of prolonged use."
             },
             {
-                question: "The evolution of the User Interface (UI) can be broadly categorized into three main stages. Which of the following lists these stages in the correct historical order?",
+                question: "Which principle is specifically associated with pointing and selection devices?",
                 answerOptions: [
-                    {
-                        text: "Graphical User Interface (GUI), Command Line Interface (CLI), Natural/Multimodal UI",
-                        rationale: "The order is incorrect; CLI came first.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Command Line Interface (CLI), Graphical User Interface (GUI), Natural/Multimodal UI",
-                        rationale: "The lecture lists the evolution as: 1. Command Line Interface, 2. Graphical User Interface, 3. Natural/Multimodal UI.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Batch Processing, CLI, GUI",
-                        rationale: "Batch Processing is a very early form of computing but is not listed as the three main UI stages.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Natural/Multimodal UI, CLI, GUI",
-                        rationale: "The order is incorrect; Natural/Multimodal UI is the current, most advanced stage.",
-                        isCorrect: false
-                    }
+                    { text: "Fitts' Law", isCorrect: true },
+                    { text: "Hick's Law", isCorrect: false },
+                    { text: "Miller's Law", isCorrect: false },
+                    { text: "Gestalt Principles", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "Fitts' Law relates to pointing time and is a key HCI consideration for pointing and selection devices, addressing the precision vs. speed trade-offs."
             },
             {
-                question: "The evolution of computer hardware has a significant impact on HCI design. Which of the following are effects of this evolution mentioned in the lecture? (Select all that apply)",
+                question: "What is the 'gorilla arm problem' associated with?",
                 answerOptions: [
-                    {
-                        text: "Faster CPUs allow for more complex and responsive UI interactions.",
-                        rationale: "Faster CPUs enable more complex UIs to run without delays.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "More memory (RAM) enables applications to handle larger datasets and keep more data immediately accessible.",
-                        rationale: "Increased memory allows for larger, more functional applications and data handling.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Cheaper and larger storage capacity has limited the reliance on cloud services.",
-                        rationale: "Cheaper storage has made data storage easier but hasn't limited the reliance on cloud services; in fact, the two often work together.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Cheaper storage allows for the use of rich media (video, high-res images) in interfaces.",
-                        rationale: "Cheaper storage directly enables richer, more engaging interfaces with high-quality media.",
-                        isCorrect: true
-                    }
+                    { text: "Keyboard typing fatigue", isCorrect: false },
+                    { text: "Physical fatigue from prolonged gestural input", isCorrect: true },
+                    { text: "Eye strain from VR headsets", isCorrect: false },
+                    { text: "Hearing damage from loud audio", isCorrect: false }
                 ],
-                type: 'checkbox'
+                type: 'radio',
+                fullExplanation: "The 'gorilla arm problem' refers to physical fatigue that occurs with prolonged use of gestural input devices where users must hold their arms up for extended periods."
             },
             {
-                question: "The final and most advanced stage of UI evolution mentioned is the 'Natural/Multimodal UI'. What is its main characteristic?",
+                question: "Which of the following is an example of sensor-based and context-aware input?",
                 answerOptions: [
-                    {
-                        text: "It requires the user to memorize precise commands and syntax.",
-                        rationale: "This is the characteristic of the Command Line Interface (CLI).",
-                        isCorrect: false
-                    },
-                    {
-                        text: "It uses only a single, large touchscreen for all interaction.",
-                        rationale: "It uses multiple channels (multimodal), not just a single touchscreen.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "It is a seamless and adaptive experience that uses various I/O devices (voice, gesture, gaze) based on the user's need and context.",
-                        rationale: "This stage allows for a seamless, adaptive experience that uses the most natural input/output channels for the situation.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "It relies heavily on the WIMP paradigm (Windows, Icons, Menus, Pointer).",
-                        rationale: "This is the characteristic of the Graphical User Interface (GUI).",
-                        isCorrect: false
-                    }
+                    { text: "QWERTY keyboard", isCorrect: false },
+                    { text: "Computer mouse", isCorrect: false },
+                    { text: "Smartphone accelerometers for motion detection", isCorrect: true },
+                    { text: "Traditional printer", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "Sensor-based and context-aware input uses sensors like accelerometers and gyroscopes in smartphones for motion detection, enabling 'invisible' or 'zero UI' interaction where the system reacts without explicit commands."
             },
             {
-                question: "Artificial Intelligence (AI) plays a key role in the newest type of interfaces, such as smart homes or AR glasses. What primary shift does AI for Context-Aware & Proactive Interfaces cause in interaction style?",
+                question: "What type of output device provides feedback through touch or force?",
                 answerOptions: [
-                    {
-                        text: "It focuses interaction strictly on keyboard and mouse input.",
-                        rationale: "AI-powered interfaces move away from traditional I/O devices toward natural input.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "It restricts the system to synchronous active transactions.",
-                        rationale: "AI enables complex, often asynchronous, interactions.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "It moves from command-based to anticipatory interaction.",
-                        rationale: "AI allows systems to sense context and proactively adjust, moving from the user issuing commands to the system anticipating needs.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "It primarily reduces system latency and improves CPU speed.",
-                        rationale: "This is the effect of hardware evolution, not AI's impact on interaction style.",
-                        isCorrect: false
-                    }
+                    { text: "Visual displays", isCorrect: false },
+                    { text: "Audio output", isCorrect: false },
+                    { text: "Haptic feedback", isCorrect: true },
+                    { text: "Printed output", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "Haptic (tactile) feedback provides output through touch or force to simulate physical interaction, such as vibrations in smartphones or force-feedback joysticks."
             },
             {
-                question: "AI as a Bridge Between Humans & Machines represents the highest level of AI's role in HCI. What is the nature of the interaction at this level?",
+                question: "Which emerging output technology uses eye-tracking for foveated rendering?",
                 answerOptions: [
-                    {
-                        text: "Transactional, focusing only on efficient data processing.",
-                        rationale: "The highest level moves beyond simple transactional interaction.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Dialog-like, turning computers from tools into collaborators.",
-                        rationale: "The lecture states this highest level turns computers from 'tools into collaborators' and interaction becomes 'dialog-like rather than transactional.'",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Command-based, requiring precise instructions.",
-                        rationale: "This is a feature of older interfaces (CLI).",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Sensory-only, relying entirely on haptic and gaze tracking.",
-                        rationale: "It uses all modes, but the key is the collaborative relationship, not just the I/O.",
-                        isCorrect: false
-                    }
+                    { text: "Traditional LCD displays", isCorrect: false },
+                    { text: "Printed output", isCorrect: false },
+                    { text: "Immersive visual displays like VR headsets", isCorrect: true },
+                    { text: "Audio speakers", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "Immersive visual displays like VR headsets use eye-tracking for foveated rendering, where only the area where the user is looking is rendered in high resolution to optimize performance."
             },
             {
-                question: "Which is a major challenge or risk associated with AI-Powered Context-Aware & Proactive Interfaces (e.g., smart homes adjusting settings automatically)?",
+                question: "What role does AI play as an 'input interpreter'?",
                 answerOptions: [
-                    {
-                        text: "It increases the cognitive load on the user.",
-                        rationale: "Proactive interfaces typically reduce user effort by anticipating needs.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "It risks being intrusive if poorly designed.",
-                        rationale: "The lecture notes that this system 'reduces user effort but risks being intrusive if poorly designed.'",
-                        isCorrect: true
-                    },
-                    {
-                        text: "It prevents the use of multimodal I/O channels.",
-                        rationale: "AI often enables more complex multimodal interaction.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "It is incompatible with modern GPU architectures.",
-                        rationale: "This is a technical hardware concern and not the primary HCI design impact mentioned.",
-                        isCorrect: false
-                    }
+                    { text: "It processes raw input to understand meaning rather than just data", isCorrect: true },
+                    { text: "It makes computers physically smaller", isCorrect: false },
+                    { text: "It reduces the cost of hardware", isCorrect: false },
+                    { text: "It eliminates the need for output devices", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "AI as an input interpreter processes raw input to understand meaning rather than just data, enabling technologies like natural language processing, gesture recognition, and emotion recognition."
             },
             {
-                question: "Which of the following describes the key function of the Motor system in the Model Human Processor (MHP)?",
+                question: "What is a key impact of AI-powered multimodal interaction?",
                 answerOptions: [
-                    {
-                        text: "Processes and interprets information, making decisions.",
-                        rationale: "This is the function of the Cognitive system.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Takes in sensory information (like seeing, hearing, or touching).",
-                        rationale: "This is the function of the Perceptual system.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Controls physical actions (like typing, clicking, or moving a mouse).",
-                        rationale: "The Motor system is responsible for controlling physical actions.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Stores and retrieves data for long periods.",
-                        rationale: "This is the function of Long-Term Memory.",
-                        isCorrect: false
-                    }
+                    { text: "It makes interfaces slower", isCorrect: false },
+                    { text: "It supports richer, more natural communication", isCorrect: true },
+                    { text: "It reduces hardware requirements", isCorrect: false },
+                    { text: "It eliminates traditional input devices", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "AI-powered multimodal interaction supports richer, more natural communication by enabling the fusion of multiple input and output channels simultaneously, though it requires careful design to avoid cognitive overload."
             }
         ];
 
-        const userAnswers = new Array(quizData.length).fill(null);
+        let currentQuestionIndex = 0;
+        // Stores user's selected answer and correctness status: { selected: string | string[] | null, isCorrect: boolean | null, answered: boolean }
+        const userAnswers = quizData.map(() => ({ selected: null, isCorrect: null, answered: false }));
         
         const quizContentEl = document.getElementById('quiz-content');
-        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const currentQuestionContainerEl = document.getElementById('current-question-container');
         const resultsScreenEl = document.getElementById('results-screen');
-        const submitBtn = document.getElementById('submit-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const checkAnswerBtn = document.getElementById('check-answer-btn');
         const restartBtn = document.getElementById('restart-btn');
+        const feedbackAreaEl = document.getElementById('feedback-area');
+        const explanationTextEl = document.getElementById('explanation-text');
+        const currentQuestionNumberEl = document.getElementById('current-question-number');
+        const totalQuestionsEl = document.getElementById('total-questions');
 
-        function renderAllQuestions() {
-            quizData.forEach((question, questionIndex) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'mb-8'; 
-                questionDiv.innerHTML = `
-                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
-                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
-                `;
-                
-                const optionsContainer = questionDiv.querySelector('.options-container');
+        totalQuestionsEl.textContent = quizData.length;
 
-                question.answerOptions.forEach(option => {
-                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
-                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
-                    
-                    const optionEl = document.createElement('label');
-                    optionEl.className = 'option-label flex items-center';
-                    optionEl.setAttribute('for', optionId);
-
-                    optionEl.innerHTML = `
-                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
-                        <span>${option.text}</span>
-                    `;
-                    optionsContainer.appendChild(optionEl);
-
-                    const inputEl = optionEl.querySelector('input');
-                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
-                });
-
-                allQuestionsContainerEl.appendChild(questionDiv);
-            });
+        // Helper to calculate current score
+        function calculateScore() {
+            return userAnswers.filter(a => a.isCorrect === true).length;
         }
 
-        function handleOptionSelect(e, questionIndex) {
-            const currentQuestion = quizData[questionIndex];
-            const target = e.target;
+        function renderQuestion(index) {
+            const questionData = quizData[index];
+            const userAnswer = userAnswers[index];
+            currentQuestionContainerEl.innerHTML = `
+                <div class="question-item" data-index="${index}">
+                    <h2 class="text-base font-semibold text-gray-300 mb-4">${questionData.question}</h2>
+                    <div class="options-container space-y-3"></div>
+                </div>
+            `;
             
+            currentQuestionNumberEl.textContent = index + 1;
+
+            const optionsContainer = currentQuestionContainerEl.querySelector('.options-container');
+            const isAnswered = userAnswer.answered;
+            const inputType = questionData.type === 'radio' ? 'radio' : 'checkbox';
+
+            questionData.answerOptions.forEach((option, optionIndex) => {
+                const optionId = `q${index}-o${optionIndex}`;
+                
+                const optionEl = document.createElement('label');
+                optionEl.className = 'option-label flex items-center';
+                optionEl.setAttribute('for', optionId);
+
+                optionEl.innerHTML = `
+                    <input type="${inputType}" id="${optionId}" name="q${index}" value="${option.text}" class="mr-3" ${isAnswered ? 'disabled' : ''}>
+                    <span>${option.text}</span>
+                `;
+                optionsContainer.appendChild(optionEl);
+
+                const inputEl = optionEl.querySelector('input');
+                
+                // Set initial selection/state
+                if (questionData.type === 'radio') {
+                    if (userAnswer.selected === option.text) {
+                        inputEl.checked = true;
+                        optionEl.classList.add('selected');
+                    }
+                } else { // checkbox
+                    if (Array.isArray(userAnswer.selected) && userAnswer.selected.includes(option.text)) {
+                        inputEl.checked = true;
+                        optionEl.classList.add('selected');
+                    }
+                }
+
+                // Apply correctness styling if already answered
+                if (isAnswered) {
+                    optionEl.classList.add('answered', 'disabled');
+                    if (option.isCorrect) {
+                        optionEl.classList.add('correct');
+                    } else if (inputEl.checked) {
+                        optionEl.classList.add('incorrect');
+                    }
+                }
+
+                inputEl.addEventListener('change', (e) => handleOptionSelect(e, index));
+            });
+
+            // Update navigation buttons
+            prevBtn.disabled = index === 0;
+
+            // Next button logic
+            if (index === quizData.length - 1) {
+                // Last question: always change text to "Done" and enable button
+                nextBtn.textContent = 'Done';
+                nextBtn.disabled = false; 
+            } else {
+                // Not last question: always set text to "Next" and enable button (to allow skipping)
+                nextBtn.textContent = 'Next';
+                nextBtn.disabled = false;
+            }
+
+            // Update check button state and feedback
+            if (isAnswered) {
+                checkAnswerBtn.disabled = true;
+                feedbackAreaEl.classList.remove('hidden');
+                explanationTextEl.innerHTML = questionData.fullExplanation;
+            } else {
+                // Not answered yet
+                checkAnswerBtn.disabled = !userAnswer.selected || (Array.isArray(userAnswer.selected) && userAnswer.selected.length === 0);
+                feedbackAreaEl.classList.add('hidden');
+            }
+        }
+
+        function handleOptionSelect(e, index) {
+            const currentQuestion = quizData[index];
+            const target = e.target;
+            const labelEl = target.closest('label');
+            
+            if (userAnswers[index].answered) return;
+
             if (currentQuestion.type === 'radio') {
-                userAnswers[questionIndex] = target.value;
-                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                userAnswers[index].selected = target.value;
+                document.querySelectorAll(`input[name="q${index}"]`).forEach(input => {
                     input.closest('label').classList.remove('selected');
                 });
-                target.closest('label').classList.add('selected');
-            } else { // checkbox
-                if (!Array.isArray(userAnswers[questionIndex])) {
-                    userAnswers[questionIndex] = [];
+                labelEl.classList.add('selected');
+            } else { 
+                if (!Array.isArray(userAnswers[index].selected)) {
+                    userAnswers[index].selected = [];
                 }
-                const answerSet = new Set(userAnswers[questionIndex]);
+                let answerSet = new Set(userAnswers[index].selected);
                 if (target.checked) {
                     answerSet.add(target.value);
-                    target.closest('label').classList.add('selected');
+                    labelEl.classList.add('selected');
                 } else {
                     answerSet.delete(target.value);
-                    target.closest('label').classList.remove('selected');
+                    labelEl.classList.remove('selected');
                 }
-                userAnswers[questionIndex] = Array.from(answerSet);
+                userAnswers[index].selected = Array.from(answerSet);
+            }
+            
+            // Enable Check Answer button only if an option is selected
+            checkAnswerBtn.disabled = !userAnswers[index].selected || (Array.isArray(userAnswers[index].selected) && userAnswers[index].selected.length === 0);
+        }
+
+        function checkAnswer() {
+            const questionData = quizData[currentQuestionIndex];
+            const userAnswer = userAnswers[currentQuestionIndex];
+            
+            // Allow checking only if an answer is selected and not already answered
+            if (!userAnswer.selected || userAnswer.answered) return;
+
+            userAnswer.answered = true;
+            
+            const correctAnswers = questionData.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+            let isCorrect = false;
+
+            if (questionData.type === 'radio') {
+                isCorrect = userAnswer.selected === correctAnswers[0];
+            } else { 
+                const userAnswerSet = new Set(userAnswer.selected);
+                const correctAnswerSet = new Set(correctAnswers);
+                isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+            }
+            
+            userAnswer.isCorrect = isCorrect;
+            
+            const inputs = document.querySelectorAll(`input[name="q${currentQuestionIndex}"]`);
+            inputs.forEach(input => {
+                const labelEl = input.closest('label');
+                labelEl.classList.add('answered', 'disabled');
+                input.disabled = true;
+
+                const optionText = input.value;
+                const isUserSelected = input.checked;
+                const isCorrectOption = correctAnswers.includes(optionText);
+
+                if (isCorrectOption) {
+                    labelEl.classList.add('correct');
+                } else if (isUserSelected && !isCorrectOption) {
+                    labelEl.classList.add('incorrect');
+                }
+                labelEl.classList.remove('selected'); 
+            });
+            
+            checkAnswerBtn.disabled = true;
+            feedbackAreaEl.classList.remove('hidden');
+            explanationTextEl.innerHTML = questionData.fullExplanation;
+        }
+
+        function navigate(direction) {
+            if (direction === 'next') {
+                if (currentQuestionIndex < quizData.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion(currentQuestionIndex);
+                } else if (currentQuestionIndex === quizData.length - 1) {
+                    // Last question, "Done" button clicked, show results.
+                    showResults(); 
+                }
+            } else if (direction === 'prev' && currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion(currentQuestionIndex);
             }
         }
 
@@ -411,55 +457,55 @@
             quizContentEl.classList.add('hidden');
             resultsScreenEl.classList.remove('hidden');
 
-            let score = 0;
+            const score = calculateScore();
             const resultsSummaryEl = document.getElementById('results-summary');
             resultsSummaryEl.innerHTML = '';
 
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+            
             quizData.forEach((question, index) => {
                 const userAnswer = userAnswers[index];
-                let isCorrect = false;
+                const isCorrect = userAnswer.isCorrect;
+                
                 const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
-                
-                if (question.type === 'radio') {
-                    isCorrect = userAnswer === correctAnswers[0];
-                } else { // checkbox
-                    const userAnswerSet = new Set(userAnswer);
-                    const correctAnswerSet = new Set(correctAnswers);
-                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
-                }
-                
-                if (isCorrect) score++;
+                const userAnswerText = Array.isArray(userAnswer.selected) ? userAnswer.selected.join(', ') : userAnswer.selected || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                const explanationText = question.fullExplanation || "No explanation available.";
 
                 const resultItem = document.createElement('div');
-                resultItem.className = 'p-4 border rounded-lg';
-                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
-
-                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
-                const correctAnswerText = correctAnswers.join(', ');
+                resultItem.className = 'p-3 border rounded-lg';
                 
-                // Find the rationale for the correct answer
-                const correctRationale = question.answerOptions.find(opt => opt.isCorrect)?.rationale || "No rationale available.";
+                // Styling based on whether it was answered and if correct
+                if (userAnswer.answered) {
+                    resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+                } else {
+                    // Style for skipped/unanswered question
+                    resultItem.classList.add('border-gray-500', 'bg-gray-700');
+                }
+                
 
                 resultItem.innerHTML = `
-                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
-                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
-                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
-                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctRationale}</p>
+                    <p class="font-semibold text-sm text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-xs mt-1 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-xs mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    ${userAnswer.answered ? `<p class="text-xs mt-2 text-gray-300">Explanation: ${explanationText}</p>` : '<p class="text-xs mt-2 text-gray-300 font-bold">Question was not answered.</p>'}
                 `;
                 resultsSummaryEl.appendChild(resultItem);
             });
 
-            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
         }
 
-        submitBtn.addEventListener('click', showResults);
+        checkAnswerBtn.addEventListener('click', checkAnswer);
+        prevBtn.addEventListener('click', () => navigate('prev'));
+        nextBtn.addEventListener('click', () => navigate('next'));
         
         restartBtn.addEventListener('click', () => {
-            location.reload();
+            // Simple page reload to reset the state
+            location.reload(); 
         });
 
         // Initial render
-        renderAllQuestions();
+        renderQuestion(currentQuestionIndex);
     </script>
 </body>
 </html>

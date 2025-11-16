@@ -3,31 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Introduction to HCI Quiz</title>
+    <title>Human-Computer Interaction Introduction Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        /* FONT: Open Sans for optimal readability at small sizes */
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+        
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Open Sans', sans-serif;
+            /* CHANGE: Body background set to #1B1B1B */
+            background-color: #1B1B1B; 
+            overflow-x: hidden; 
         }
+
         .option-label {
             display: block;
-            padding: 1rem;
+            padding: 0.6rem 1rem; 
             border: 1px solid #4a5568;
-            border-radius: 0.75rem;
+            border-radius: 0.75rem; 
             cursor: pointer;
             transition: all 0.2s ease-in-out;
-            margin-bottom: 1rem;
-            color: #d1d5db; /* Lighter text color for dark theme */
+            margin-bottom: 0.75rem;
+            color: #d1d5db;
+            text-align: left;
+            font-size: 0.9rem; 
         }
-        .option-label:hover {
-            background-color: #374151;
+        .option-label:not(.answered):hover {
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
+            background-color: #111827; 
             border-color: #60a5fa;
         }
         .option-label.selected {
-            background-color: #1e3a8a;
-            border-color: #3b82f6;
-            color: #ffffff;
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
+            background-color: #111827; 
+            border-color: #60a5fa;
         }
         .option-label.correct {
             background-color: #14532d;
@@ -39,45 +48,94 @@
             border-color: #ef4444;
             color: #ffffff;
         }
+        .option-label.disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        
+        /* === UNIFIED BUTTON SIZE/PADDING (Applies to all three buttons) === */
         .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
             font-weight: 600;
             transition: all 0.2s ease-in-out;
-            border: none;
+            border: none; 
             cursor: pointer;
+            display: inline-block;
+            font-size: 0.8rem;
         }
+        /* === END UNIFIED BUTTON SIZE/PADDING === */
+
+        /* Primary buttons (Check Answer, Next) are orange/yellow */
         .btn-primary {
-            background-color: #3b82f6;
-            color: white;
+            background-color: #FCA300; 
+            color: #111827; 
+            border: none;
         }
-        .btn-primary:hover {
-            background-color: #2563eb;
+        .btn-primary:hover:not(:disabled) {
+            background-color: #e59400; 
         }
+
+        /* Secondary button (Previous) remains gray/transparent */
         .btn-secondary {
-            background-color: #4b5563;
-            color: #d1d5db;
+            background-color: transparent;
+            color: #9ca3af; 
+            border: 1px solid #4a5568; 
         }
-        .btn-secondary:hover {
-            background-color: #6b7280;
+        .btn-secondary:hover:not(:disabled) {
+            background-color: #111827; 
+            color: #ffffff;
+            border-color: #9ca3af; 
+        }
+        /* Style for disabled buttons */
+        .btn:disabled {
+            opacity: 0.4; 
+            cursor: not-allowed;
+        }
+
+        .explanation {
+            margin-top: 0.75rem; 
+            padding: 0.75rem; 
+            border-left: 5px solid #3b82f6;
+            /* CHANGE: Explanation background set to #1B1B1B */
+            background-color: #1B1B1B;
+            color: #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.85rem; 
         }
     </style>
 </head>
-<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+<body class="bg-[#1B1B1B] p-4">
 
-    <main id="quiz-container" class="w-full max-w-3xl">
-        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <div id="all-questions-container" class="space-y-8"></div>
-            <div class="text-center mt-10">
-                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+    <main id="quiz-container" class="w-full mx-auto max-w-2xl">
+        <div id="quiz-content" class="bg-[#1B1B1B] p-4"> 
+            
+            <div id="question-navigation" class="text-left text-sm font-medium text-gray-400 mb-4">
+                <span id="current-question-number"></span> / <span id="total-questions"></span>
+            </div>
+            
+            <div id="current-question-container" class="space-y-6"> 
+                </div>
+
+            <div id="feedback-area" class="mt-3 hidden"> 
+                <div id="explanation-text" class="explanation"></div>
+            </div>
+
+            <div class="flex flex-wrap justify-between items-start mt-8 gap-3"> 
+                <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+                
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 ml-auto">
+                    <button id="check-answer-btn" class="btn btn-primary">Check Answer</button>
+                    <button id="next-btn" class="btn btn-primary" disabled>Next</button>
+                </div>
             </div>
         </div>
 
-        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
-            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
-            <div id="results-summary" class="space-y-6"></div>
-            <div class="text-center mt-8">
+        <div id="results-screen" class="hidden bg-[#1B1B1B] p-4"> 
+            <h2 class="text-xl font-bold text-white text-center mb-3">Quiz Complete!</h2>
+            <p id="score-text" class="text-lg text-gray-300 text-center font-semibold mb-6"></p>
+            <div id="results-summary" class="space-y-4"></div>
+            <div class="text-center mt-6">
                 <button id="restart-btn" class="btn btn-primary">Retake Quiz</button>
             </div>
         </div>
@@ -88,329 +146,310 @@
             {
                 question: "What is the primary focus of Human-Computer Interaction (HCI)?",
                 answerOptions: [
-                    {
-                        text: "Developing faster computer hardware and processors.",
-                        rationale: "While hardware performance is important for computing, HCI's main focus is on the user's interaction with the technology, not the internal components themselves.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Designing, evaluating, and implementing interactive computing systems for human use.",
-                        rationale: "This option accurately summarizes the core definition of HCI provided in the lecture, encompassing the design process and its focus on the human user.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Writing complex algorithms and software code.",
-                        rationale: "Writing code is a part of implementing systems, but HCI is a broader field concerned with the entire user-facing experience, not just the programming logic.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Marketing new technology products to consumers.",
-                        rationale: "Marketing is a business function that happens after a product is developed; HCI is involved in the actual design and development process to ensure the product is usable.",
-                        isCorrect: false
-                    }
+                    { text: "Designing faster computer processors", isCorrect: false },
+                    { text: "Study and practice designing, evaluating, and implementing interactive computing systems for human use", isCorrect: true },
+                    { text: "Developing advanced programming languages", isCorrect: false },
+                    { text: "Creating complex database systems", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "HCI is an interdisciplinary field focused on study and practice designing, evaluating, and implementing interactive computing systems for human use, and studying major phenomena surrounding them."
             },
             {
-                question: "What is the key difference between an 'interface' and an 'interaction' in HCI?",
+                question: "What is the key difference between 'interaction' and 'interface' in HCI?",
                 answerOptions: [
-                    {
-                        text: "An interface is the abstract model of a task, while an interaction is the physical hardware used.",
-                        rationale: "This reverses the definitions. The 'interaction' is the abstract model (e.g., 'select an item'), not the interface.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "An interface is the technical realization (hardware/software), while an interaction is the abstract model of how a user performs a task.",
-                        rationale: "This correctly distinguishes the two terms, where the interaction is the conceptual method and the interface is the tool (like a mouse or touchscreen) used to achieve it.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "There is no difference; the terms are used interchangeably.",
-                        rationale: "The lecture material explicitly distinguishes between these two concepts as fundamental to understanding HCI.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "An interface refers only to software, while an interaction refers only to hardware.",
-                        rationale: "An interface can be either hardware (a mouse) or software (a delete button), so this definition is too narrow.",
-                        isCorrect: false
-                    }
+                    { text: "Interaction refers to hardware, interface refers to software", isCorrect: false },
+                    { text: "Interaction is the abstract model, interface is the technical realization", isCorrect: true },
+                    { text: "Interface is the user's goal, interaction is the method", isCorrect: false },
+                    { text: "They are synonymous terms in HCI", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "An interaction refers to an abstract model by which humans interact with computing devices, while an interface is a choice of technical realization (hardware or software) of such an interaction model."
             },
             {
-                question: "Which of the following are key factors of Usability? (Select all that apply)",
+                question: "Which of the following is NOT one of the three core components of HCI?",
                 answerOptions: [
-                    {
-                        text: "Effectiveness",
-                        rationale: "Effectiveness is one of the five core factors of Usability.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Efficiency",
-                        rationale: "Efficiency is one of the five core factors of Usability.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Satisfaction",
-                        rationale: "Satisfaction is one of the five core factors of Usability.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Brand Loyalty",
-                        rationale: "Brand Loyalty is a component of User Experience (UX), which is a broader concept than Usability.",
-                        isCorrect: false
-                    }
+                    { text: "Human", isCorrect: false },
+                    { text: "Computer", isCorrect: false },
+                    { text: "Interaction", isCorrect: false },
+                    { text: "Business Strategy", isCorrect: true }
                 ],
-                type: 'checkbox'
+                type: 'radio',
+                fullExplanation: "The three core components of HCI are: Human (understanding human capabilities and limitations), Computer (the technology itself), and Interaction (the communication channel between user and computer)."
             },
             {
-                question: "Which design philosophy places the user and their needs at the center of every phase of the design process?",
+                question: "What is the main characteristic of User-Centered Design (UCD)?",
                 answerOptions: [
-                    {
-                        text: "Technology-Centered Design",
-                        rationale: "This approach prioritizes technical capabilities over user needs, which is the opposite of the philosophy in question.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "User-Centered Design (UCD)",
-                        rationale: "UCD is defined as an iterative process that revolves around user needs, expectations, and feedback from start to finish.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Agile Development",
-                        rationale: "Agile is a project management methodology for software development, and while it is iterative and can incorporate UCD, it is not itself a design philosophy focused on the user.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Feature-Driven Design",
-                        rationale: "This approach focuses on building out a list of features, which may or may not be guided by a deep understanding of user needs.",
-                        isCorrect: false
-                    }
+                    { text: "Focusing on technical possibilities first", isCorrect: false },
+                    { text: "Involving users throughout the design process", isCorrect: true },
+                    { text: "Designing for expert users only", isCorrect: false },
+                    { text: "Minimizing development costs above all else", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "User-Centered Design is an iterative design process that focuses on users and their needs in each phase, involving users throughout the design process via research and design techniques."
             },
             {
-                 question: "Which of the following is NOT one of the three core components of HCI?",
-                 answerOptions: [
-                    {
-                        text: "The Human",
-                        rationale: "Understanding human capabilities and limitations (cognitive, physical) is a fundamental component of HCI.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The Computer",
-                        rationale: "Understanding the technology, including its hardware and software, is a central part of the HCI model.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The Interaction",
-                        rationale: "The communication channel between the user and the computer is the third essential component of HCI.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The Market",
-                        rationale: "While market needs influence product development, the core academic components of HCI focus on the relationship between the user, the computer, and their interaction.",
-                        isCorrect: true
-                    }
-                 ],
-                 type: 'radio'
-            },
-            {
-                question: "How does User Experience (UX) differ from Usability?",
+                question: "Which usability factor measures how quickly users can perform tasks once they have learned the system?",
                 answerOptions: [
-                    {
-                        text: "UX is only about the visual design and aesthetics of a product.",
-                        rationale: "While aesthetics are part of UX, UX is much broader, encompassing all aspects of the user's interaction and feelings about the product and company.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Usability is a component of UX, which also includes the user's overall feelings, perceptions, and satisfaction with the entire product and company.",
-                        rationale: "This correctly identifies that usability is a part of the larger picture of UX, which covers the entire journey and relationship a user has with a service.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "UX and Usability are the same concept.",
-                        rationale: "The lecture notes specify that UX is a broader concept than usability, using the Tirhal app as an example.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Usability focuses on user emotions, while UX focuses on task completion speed.",
-                        rationale: "This reverses the primary focus of the two concepts. Usability is more concerned with efficiency and effectiveness, while UX is more holistic and includes emotions.",
-                        isCorrect: false
-                    }
+                    { text: "Effectiveness", isCorrect: false },
+                    { text: "Efficiency", isCorrect: true },
+                    { text: "Satisfaction", isCorrect: false },
+                    { text: "Learnability", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "Efficiency measures how quickly users can perform tasks once they have learned the system, such as whether booking a ticket takes 2 minutes instead of 10."
             },
             {
-                question: "What is the main goal of Accessibility in HCI?",
+                question: "How does User Experience (UX) differ from usability?",
                 answerOptions: [
-                    {
-                        text: "To make software affordable for everyone.",
-                        rationale: "Economic access is an important issue, but in the context of HCI, 'Accessibility' refers to making technology usable by people with disabilities.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "To ensure products are usable by people of all abilities and disabilities.",
-                        rationale: "This is the core definition of accessibility, which aims to remove barriers for users with visual, auditory, physical, cognitive, and other disabilities.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "To ensure a product is available in multiple languages.",
-                        rationale: "This is known as internationalization or localization, which is a different (though also important) concept from accessibility.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "To make user interfaces more visually attractive.",
-                        rationale: "Aesthetics are a design goal, but accessibility is specifically focused on function and removing barriers to use.",
-                        isCorrect: false
-                    }
+                    { text: "UX is narrower than usability", isCorrect: false },
+                    { text: "UX includes all aspects of end-user interaction, while usability focuses on ease of use", isCorrect: true },
+                    { text: "UX only applies to mobile applications", isCorrect: false },
+                    { text: "Usability is more important than UX", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "UX is a broader concept than usability. It includes all aspects of the end-user's interaction with the company, its services, and its products, while usability focuses specifically on ease of use and learning."
             },
             {
-                question: "In interaction design, what is the purpose of 'Feedback'?",
+                question: "What is the primary goal of accessibility in HCI?",
                 answerOptions: [
-                    {
-                        text: "To collect user opinions and reviews after they use a product.",
-                        rationale: "Collecting user reviews is a form of feedback for the company, but in interaction design, 'feedback' refers to the system's immediate response to a user's action.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "To provide users with information about what action has been done and what has been accomplished.",
-                        rationale: "This is the correct definition. Feedback, like a progress bar or a confirmation message, keeps the user informed about the system's state.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "To display advertisements to the user.",
-                        rationale: "Advertisements are a form of output, but they are not considered feedback in response to a user's direct action.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "To prevent the user from making errors.",
-                        rationale: "While good feedback can help users notice and correct errors, its primary purpose is to communicate the result of an action, not prevent it entirely.",
-                        isCorrect: false
-                    }
+                    { text: "Make systems faster", isCorrect: false },
+                    { text: "Remove barriers so all users can achieve their goals", isCorrect: true },
+                    { text: "Reduce development costs", isCorrect: false },
+                    { text: "Make interfaces more colorful", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "Accessibility ensures that products and services are usable by people of all abilities and disabilities, removing barriers so that all users can achieve their goals."
             },
             {
-                question: "Why is 'Consistency' an important principle in interface design?",
+                question: "Which HCI principle ensures that users always know the outcome of their actions?",
                 answerOptions: [
-                    {
-                        text: "It makes the interface look more creative and interesting.",
-                        rationale: "Inconsistency, or high variety, might be seen as creative by some, but consistency is valued for its effect on usability, not creativity.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "It reduces the development time for an application.",
-                        rationale: "While using consistent components can sometimes speed up development, the primary reason for this principle is to benefit the end-user.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "It makes the system predictable and easier to learn, as users can transfer knowledge from one part to another.",
-                        rationale: "This is the core benefit of consistency. When elements behave the same way throughout an interface, users don't have to constantly relearn how to do things.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "It ensures the application will work on all devices and screen sizes.",
-                        rationale: "Ensuring an app works on different devices is called responsive design. Consistency is about the similarity of design elements within the interface itself.",
-                        isCorrect: false
-                    }
+                    { text: "Consistency", isCorrect: false },
+                    { text: "Feedback", isCorrect: true },
+                    { text: "Accessibility", isCorrect: false },
+                    { text: "User-Centered Design", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "Feedback provides users with information about what action has been done and what has been accomplished, ensuring users always know the outcome of their actions."
             },
             {
-                question: "Which of the following are recognized challenges in HCI? (Select all that apply)",
+                question: "What is one of the key strengths of HCI mentioned in the lecture?",
                 answerOptions: [
-                    {
-                        text: "Subjectivity in User Preferences",
-                        rationale: "User preferences and behaviors can vary widely, making it challenging to design interfaces that universally satisfy all users.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Rapid Technological Change",
-                        rationale: "HCI faces the challenge of keeping up with rapid technological advancements, which can impact interface design and user interaction patterns.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Ethical Considerations (e.g., privacy, bias)",
-                        rationale: "HCI must navigate ethical issues such as privacy concerns, algorithmic bias, and the ethical implications of persuasive design techniques.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Slow Internet Speeds",
-                        rationale: "While this is a technical challenge, it is not a core HCI challenge related to human-computer interaction principles.",
-                        isCorrect: false
-                    }
+                    { text: "It focuses only on technical specifications", isCorrect: false },
+                    { text: "It employs an interdisciplinary approach", isCorrect: true },
+                    { text: "It eliminates the need for user testing", isCorrect: false },
+                    { text: "It prioritizes developer preferences over user needs", isCorrect: false }
                 ],
-                type: 'checkbox'
+                type: 'radio',
+                fullExplanation: "HCI integrates insights from psychology, cognitive science, design, computer science, and other disciplines to understand human behavior and improve system design."
+            },
+            {
+                question: "Which of the following is mentioned as a challenge in HCI?",
+                answerOptions: [
+                    { text: "Lack of technological advancement", isCorrect: false },
+                    { text: "Subjectivity in user preferences", isCorrect: true },
+                    { text: "Too few evaluation methods", isCorrect: false },
+                    { text: "Limited application areas", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "User preferences and behaviors can vary widely, making it challenging to design interfaces that universally satisfy all users, such as the preference for dark mode vs. light mode."
             }
         ];
 
-        const userAnswers = new Array(quizData.length).fill(null);
+        let currentQuestionIndex = 0;
+        // Stores user's selected answer and correctness status: { selected: string | string[] | null, isCorrect: boolean | null, answered: boolean }
+        const userAnswers = quizData.map(() => ({ selected: null, isCorrect: null, answered: false }));
         
         const quizContentEl = document.getElementById('quiz-content');
-        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const currentQuestionContainerEl = document.getElementById('current-question-container');
         const resultsScreenEl = document.getElementById('results-screen');
-        const submitBtn = document.getElementById('submit-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const checkAnswerBtn = document.getElementById('check-answer-btn');
         const restartBtn = document.getElementById('restart-btn');
+        const feedbackAreaEl = document.getElementById('feedback-area');
+        const explanationTextEl = document.getElementById('explanation-text');
+        const currentQuestionNumberEl = document.getElementById('current-question-number');
+        const totalQuestionsEl = document.getElementById('total-questions');
 
-        function renderAllQuestions() {
-            quizData.forEach((question, questionIndex) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'mb-8'; 
-                questionDiv.innerHTML = `
-                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
-                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
-                `;
-                
-                const optionsContainer = questionDiv.querySelector('.options-container');
+        totalQuestionsEl.textContent = quizData.length;
 
-                question.answerOptions.forEach(option => {
-                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
-                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
-                    
-                    const optionEl = document.createElement('label');
-                    optionEl.className = 'option-label flex items-center';
-                    optionEl.setAttribute('for', optionId);
-
-                    optionEl.innerHTML = `
-                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
-                        <span>${option.text}</span>
-                    `;
-                    optionsContainer.appendChild(optionEl);
-
-                    const inputEl = optionEl.querySelector('input');
-                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
-                });
-
-                allQuestionsContainerEl.appendChild(questionDiv);
-            });
+        // Helper to calculate current score
+        function calculateScore() {
+            return userAnswers.filter(a => a.isCorrect === true).length;
         }
 
-        function handleOptionSelect(e, questionIndex) {
-            const currentQuestion = quizData[questionIndex];
-            const target = e.target;
+        function renderQuestion(index) {
+            const questionData = quizData[index];
+            const userAnswer = userAnswers[index];
+            currentQuestionContainerEl.innerHTML = `
+                <div class="question-item" data-index="${index}">
+                    <h2 class="text-base font-semibold text-gray-300 mb-4">${questionData.question}</h2>
+                    <div class="options-container space-y-3"></div>
+                </div>
+            `;
             
+            currentQuestionNumberEl.textContent = index + 1;
+
+            const optionsContainer = currentQuestionContainerEl.querySelector('.options-container');
+            const isAnswered = userAnswer.answered;
+            const inputType = questionData.type === 'radio' ? 'radio' : 'checkbox';
+
+            questionData.answerOptions.forEach((option, optionIndex) => {
+                const optionId = `q${index}-o${optionIndex}`;
+                
+                const optionEl = document.createElement('label');
+                optionEl.className = 'option-label flex items-center';
+                optionEl.setAttribute('for', optionId);
+
+                optionEl.innerHTML = `
+                    <input type="${inputType}" id="${optionId}" name="q${index}" value="${option.text}" class="mr-3" ${isAnswered ? 'disabled' : ''}>
+                    <span>${option.text}</span>
+                `;
+                optionsContainer.appendChild(optionEl);
+
+                const inputEl = optionEl.querySelector('input');
+                
+                // Set initial selection/state
+                if (questionData.type === 'radio') {
+                    if (userAnswer.selected === option.text) {
+                        inputEl.checked = true;
+                        optionEl.classList.add('selected');
+                    }
+                } else { // checkbox
+                    if (Array.isArray(userAnswer.selected) && userAnswer.selected.includes(option.text)) {
+                        inputEl.checked = true;
+                        optionEl.classList.add('selected');
+                    }
+                }
+
+                // Apply correctness styling if already answered
+                if (isAnswered) {
+                    optionEl.classList.add('answered', 'disabled');
+                    if (option.isCorrect) {
+                        optionEl.classList.add('correct');
+                    } else if (inputEl.checked) {
+                        optionEl.classList.add('incorrect');
+                    }
+                }
+
+                inputEl.addEventListener('change', (e) => handleOptionSelect(e, index));
+            });
+
+            // Update navigation buttons
+            prevBtn.disabled = index === 0;
+
+            // Next button logic
+            if (index === quizData.length - 1) {
+                // Last question: always change text to "Done" and enable button
+                nextBtn.textContent = 'Done';
+                nextBtn.disabled = false; 
+            } else {
+                // Not last question: always set text to "Next" and enable button (to allow skipping)
+                nextBtn.textContent = 'Next';
+                nextBtn.disabled = false;
+            }
+
+            // Update check button state and feedback
+            if (isAnswered) {
+                checkAnswerBtn.disabled = true;
+                feedbackAreaEl.classList.remove('hidden');
+                explanationTextEl.innerHTML = questionData.fullExplanation;
+            } else {
+                // Not answered yet
+                checkAnswerBtn.disabled = !userAnswer.selected || (Array.isArray(userAnswer.selected) && userAnswer.selected.length === 0);
+                feedbackAreaEl.classList.add('hidden');
+            }
+        }
+
+        function handleOptionSelect(e, index) {
+            const currentQuestion = quizData[index];
+            const target = e.target;
+            const labelEl = target.closest('label');
+            
+            if (userAnswers[index].answered) return;
+
             if (currentQuestion.type === 'radio') {
-                userAnswers[questionIndex] = target.value;
-                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                userAnswers[index].selected = target.value;
+                document.querySelectorAll(`input[name="q${index}"]`).forEach(input => {
                     input.closest('label').classList.remove('selected');
                 });
-                target.closest('label').classList.add('selected');
-            } else { // checkbox
-                if (!Array.isArray(userAnswers[questionIndex])) {
-                    userAnswers[questionIndex] = [];
+                labelEl.classList.add('selected');
+            } else { 
+                if (!Array.isArray(userAnswers[index].selected)) {
+                    userAnswers[index].selected = [];
                 }
-                const answerSet = new Set(userAnswers[questionIndex]);
+                let answerSet = new Set(userAnswers[index].selected);
                 if (target.checked) {
                     answerSet.add(target.value);
-                    target.closest('label').classList.add('selected');
+                    labelEl.classList.add('selected');
                 } else {
                     answerSet.delete(target.value);
-                    target.closest('label').classList.remove('selected');
+                    labelEl.classList.remove('selected');
                 }
-                userAnswers[questionIndex] = Array.from(answerSet);
+                userAnswers[index].selected = Array.from(answerSet);
+            }
+            
+            // Enable Check Answer button only if an option is selected
+            checkAnswerBtn.disabled = !userAnswers[index].selected || (Array.isArray(userAnswers[index].selected) && userAnswers[index].selected.length === 0);
+        }
+
+        function checkAnswer() {
+            const questionData = quizData[currentQuestionIndex];
+            const userAnswer = userAnswers[currentQuestionIndex];
+            
+            // Allow checking only if an answer is selected and not already answered
+            if (!userAnswer.selected || userAnswer.answered) return;
+
+            userAnswer.answered = true;
+            
+            const correctAnswers = questionData.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+            let isCorrect = false;
+
+            if (questionData.type === 'radio') {
+                isCorrect = userAnswer.selected === correctAnswers[0];
+            } else { 
+                const userAnswerSet = new Set(userAnswer.selected);
+                const correctAnswerSet = new Set(correctAnswers);
+                isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+            }
+            
+            userAnswer.isCorrect = isCorrect;
+            
+            const inputs = document.querySelectorAll(`input[name="q${currentQuestionIndex}"]`);
+            inputs.forEach(input => {
+                const labelEl = input.closest('label');
+                labelEl.classList.add('answered', 'disabled');
+                input.disabled = true;
+
+                const optionText = input.value;
+                const isUserSelected = input.checked;
+                const isCorrectOption = correctAnswers.includes(optionText);
+
+                if (isCorrectOption) {
+                    labelEl.classList.add('correct');
+                } else if (isUserSelected && !isCorrectOption) {
+                    labelEl.classList.add('incorrect');
+                }
+                labelEl.classList.remove('selected'); 
+            });
+            
+            checkAnswerBtn.disabled = true;
+            feedbackAreaEl.classList.remove('hidden');
+            explanationTextEl.innerHTML = questionData.fullExplanation;
+        }
+
+        function navigate(direction) {
+            if (direction === 'next') {
+                if (currentQuestionIndex < quizData.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion(currentQuestionIndex);
+                } else if (currentQuestionIndex === quizData.length - 1) {
+                    // Last question, "Done" button clicked, show results.
+                    showResults(); 
+                }
+            } else if (direction === 'prev' && currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion(currentQuestionIndex);
             }
         }
 
@@ -418,53 +457,55 @@
             quizContentEl.classList.add('hidden');
             resultsScreenEl.classList.remove('hidden');
 
-            let score = 0;
+            const score = calculateScore();
             const resultsSummaryEl = document.getElementById('results-summary');
             resultsSummaryEl.innerHTML = '';
 
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+            
             quizData.forEach((question, index) => {
                 const userAnswer = userAnswers[index];
-                let isCorrect = false;
+                const isCorrect = userAnswer.isCorrect;
+                
                 const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
-                
-                if (question.type === 'radio') {
-                    isCorrect = userAnswer === correctAnswers[0];
-                } else { // checkbox
-                    const userAnswerSet = new Set(userAnswer);
-                    const correctAnswerSet = new Set(correctAnswers);
-                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
-                }
-                
-                if (isCorrect) score++;
+                const userAnswerText = Array.isArray(userAnswer.selected) ? userAnswer.selected.join(', ') : userAnswer.selected || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                const explanationText = question.fullExplanation || "No explanation available.";
 
                 const resultItem = document.createElement('div');
-                resultItem.className = 'p-4 border rounded-lg';
-                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
-
-                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
-                const correctAnswerText = correctAnswers.join(', ');
-                const correctOption = question.answerOptions.find(opt => opt.isCorrect);
+                resultItem.className = 'p-3 border rounded-lg';
+                
+                // Styling based on whether it was answered and if correct
+                if (userAnswer.answered) {
+                    resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+                } else {
+                    // Style for skipped/unanswered question
+                    resultItem.classList.add('border-gray-500', 'bg-gray-700');
+                }
+                
 
                 resultItem.innerHTML = `
-                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
-                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
-                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
-                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctOption.rationale}</p>
+                    <p class="font-semibold text-sm text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-xs mt-1 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-xs mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    ${userAnswer.answered ? `<p class="text-xs mt-2 text-gray-300">Explanation: ${explanationText}</p>` : '<p class="text-xs mt-2 text-gray-300 font-bold">Question was not answered.</p>'}
                 `;
                 resultsSummaryEl.appendChild(resultItem);
             });
 
-            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
         }
 
-        submitBtn.addEventListener('click', showResults);
+        checkAnswerBtn.addEventListener('click', checkAnswer);
+        prevBtn.addEventListener('click', () => navigate('prev'));
+        nextBtn.addEventListener('click', () => navigate('next'));
         
         restartBtn.addEventListener('click', () => {
-            location.reload();
+            // Simple page reload to reset the state
+            location.reload(); 
         });
 
         // Initial render
-        renderAllQuestions();
+        renderQuestion(currentQuestionIndex);
     </script>
 </body>
 </html>
