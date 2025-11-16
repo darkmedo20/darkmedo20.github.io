@@ -3,36 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار الخصوصية في مجال السايبر</title>
+    <title>اختبار الخصوصية في مجال السايبر - المحاضرة الرابعة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* FONT: Tajawal for Arabic support */
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
         
         body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: #1B1B1B;
-            overflow-x: hidden;
+            font-family: 'Open Sans', sans-serif;
+            background-color: #1B1B1B; 
+            overflow-x: hidden; 
         }
 
         .option-label {
             display: block;
-            padding: 0.6rem 1rem;
+            padding: 0.6rem 1rem; 
             border: 1px solid #4a5568;
-            border-radius: 0.75rem;
+            border-radius: 0.75rem; 
             cursor: pointer;
             transition: all 0.2s ease-in-out;
             margin-bottom: 0.75rem;
             color: #d1d5db;
             text-align: right;
-            font-size: 0.9rem;
+            font-size: 0.9rem; 
         }
         .option-label:not(.answered):hover {
-            background-color: #111827;
+            background-color: #111827; 
             border-color: #60a5fa;
         }
         .option-label.selected {
-            background-color: #111827;
+            background-color: #111827; 
             border-color: #60a5fa;
         }
         .option-label.correct {
@@ -55,66 +54,72 @@
             border-radius: 0.5rem;
             font-weight: 600;
             transition: all 0.2s ease-in-out;
-            border: none;
+            border: none; 
             cursor: pointer;
             display: inline-block;
             font-size: 0.8rem;
         }
 
         .btn-primary {
-            background-color: #FCA300;
-            color: #111827;
+            background-color: #FCA300; 
+            color: #111827; 
             border: none;
         }
         .btn-primary:hover:not(:disabled) {
-            background-color: #e59400;
+            background-color: #e59400; 
         }
 
         .btn-secondary {
             background-color: transparent;
-            color: #9ca3af;
-            border: 1px solid #4a5568;
+            color: #9ca3af; 
+            border: 1px solid #4a5568; 
         }
         .btn-secondary:hover:not(:disabled) {
-            background-color: #111827;
+            background-color: #111827; 
             color: #ffffff;
-            border-color: #9ca3af;
+            border-color: #9ca3af; 
         }
-        
         .btn:disabled {
-            opacity: 0.4;
+            opacity: 0.4; 
             cursor: not-allowed;
         }
 
         .explanation {
-            margin-top: 0.75rem;
-            padding: 0.75rem;
+            margin-top: 0.75rem; 
+            padding: 0.75rem; 
             border-right: 5px solid #3b82f6;
             background-color: #1B1B1B;
             color: #d1d5db;
             border-radius: 0.5rem;
-            font-size: 0.85rem;
+            font-size: 0.85rem; 
             text-align: right;
+        }
+        
+        .rtl-text {
+            text-align: right;
+            direction: rtl;
+        }
+        .question-text {
+            text-align: right;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body class="bg-[#1B1B1B] p-4">
-
     <main id="quiz-container" class="w-full mx-auto max-w-2xl">
-        <div id="quiz-content" class="bg-[#1B1B1B] p-4">
-            
+        <div id="quiz-content" class="bg-[#1B1B1B] p-4"> 
             <div id="question-navigation" class="text-right text-sm font-medium text-gray-400 mb-4">
                 <span id="current-question-number"></span> / <span id="total-questions"></span>
             </div>
             
-            <div id="current-question-container" class="space-y-6">
+            <div id="current-question-container" class="space-y-6"> 
             </div>
 
-            <div id="feedback-area" class="mt-3 hidden">
+            <div id="feedback-area" class="mt-3 hidden"> 
                 <div id="explanation-text" class="explanation"></div>
             </div>
 
-            <div class="flex flex-wrap justify-between items-start mt-8 gap-3">
+            <div class="flex flex-wrap justify-between items-start mt-8 gap-3"> 
                 <button id="prev-btn" class="btn btn-secondary" disabled>السابق</button>
                 
                 <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 sm:space-x-reverse ml-auto">
@@ -124,7 +129,7 @@
             </div>
         </div>
 
-        <div id="results-screen" class="hidden bg-[#1B1B1B] p-4">
+        <div id="results-screen" class="hidden bg-[#1B1B1B] p-4"> 
             <h2 class="text-xl font-bold text-white text-center mb-3">تم الانتهاء من الاختبار!</h2>
             <p id="score-text" class="text-lg text-gray-300 text-center font-semibold mb-6"></p>
             <div id="results-summary" class="space-y-4"></div>
@@ -135,121 +140,136 @@
     </main>
 
     <script>
+        // دالة لخلط العناصر في مصفوفة (خوارزمية فيشر-ييتس)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
         const quizData = [
             {
-                question: "ما هي العوامل التي أثرت بها التكنولوجيا على الخصوصية من حيث الكمية؟",
+                question: "كيف أثرت التكنولوجيا على الخصوصية من حيث الكمية؟",
                 answerOptions: [
-                    { text: "كمية المعلومات الشخصية التي يمكن جمعها أصبحت هائلة", isCorrect: true },
-                    { text: "سرعة تراسل المعلومات أصبحت بطيئة", isCorrect: false },
-                    { text: "المعلومات تحفظ لفترات قصيرة فقط", isCorrect: false },
-                    { text: "تداول المعلومات أصبح محدوداً بالنصوص فقط", isCorrect: false }
+                    { text: "قللت من كمية المعلومات الشخصية التي يمكن جمعها", isCorrect: false },
+                    { text: "أصبحت كمية المعلومات الشخصية التي يمكن جمعها هائلة ولا تحدها سعة مكانية", isCorrect: true },
+                    { text: "لم تؤثر على كمية المعلومات المجمعة", isCorrect: false },
+                    { text: "جعلت جمع المعلومات أكثر تكلفة", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "التكنولوجيا أثرت على الخصوصية من حيث <strong>الكمية</strong> حيث أصبحت كمية المعلومات الشخصية التي يمكن جمعها هائلة ولا تحدها سعة مكانية."
-            },
-            {
-                question: "ما المقصود بخصوصية النفاذ (الوصول)؟",
-                answerOptions: [
-                    { text: "التحرر من التدخل في الحيز الشخصي دون إذن", isCorrect: true },
-                    { text: "التحكم في تدفق المعلومات الشخصية", isCorrect: false },
-                    { text: "حرية اتخاذ القرارات دون تأثير", isCorrect: false },
-                    { text: "حماية المعلومات المالية فقط", isCorrect: false }
-                ],
-                type: 'radio',
-                fullExplanation: "خصوصية النفاذ تعني <strong>ترك الشخص في حاله وعدم التدخل في خصوصياته</strong> أي التحرر من التدخل في الحيز الشخصي دون إذنه."
+                fullExplanation: "أثرت التكنولوجيا على الخصوصية من حيث <strong>الكمية</strong> فأصبحت كمية المعلومات الشخصية التي يمكن جمعها <strong>هائلة ولا تحدها سعة مكانية</strong>."
             },
             {
                 question: "ما هي أنواع الخصوصية الثلاثة المذكورة في المحاضرة؟",
                 answerOptions: [
+                    { text: "الخصوصية المالية، الصحية، التعليمية", isCorrect: false },
                     { text: "خصوصية النفاذ، خصوصية القرار، خصوصية المعلومات", isCorrect: true },
-                    { text: "خصوصية المنزل، خصوصية العمل، خصوصية التواصل", isCorrect: false },
-                    { text: "خصوصية البيانات، خصوصية الهوية، خصوصية الموقع", isCorrect: false },
-                    { text: "خصوصية النص، خصوصية الصورة، خصوصية الصوت", isCorrect: false }
+                    { text: "الخصوصية الشخصية، العائلية، المهنية", isCorrect: false },
+                    { text: "الخصوصية المكانية، الزمانية، السلوكية", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "الخصوصية تنقسم إلى ثلاثة أنواع: <strong>خصوصية النفاذ (الوصول)، خصوصية القرار، وخصوصية المعلومات</strong>."
+                fullExplanation: "أنواع الخصوصية الثلاثة هي: <strong>خصوصية النفاذ (الوصول)</strong>، <strong>خصوصية القرار</strong>، <strong>خصوصية المعلومات</strong>."
             },
             {
-                question: "ما هو الـ Cookie في سياق الخصوصية الإلكترونية؟",
+                question: "ما هي المخاطر الثلاثة التي تهدد الخصوصية في مجال السايبر؟",
                 answerOptions: [
-                    { text: "ملف صغير يخزن معلومات تخص المستخدم في جهازه", isCorrect: true },
-                    { text: "برنامج لحماية البيانات الشخصية", isCorrect: false },
-                    { text: "نظام تشفير للمعلومات السرية", isCorrect: false },
-                    { text: "أداة لمنع الوصول غير المصرح به", isCorrect: false }
+                    { text: "القرصنة، الفيروسات، الاحتيال", isCorrect: false },
+                    { text: "جمع البيانات، تبادل البيانات، بحث/تنقيب البيانات", isCorrect: true },
+                    { text: "التجسس، الاختراق، التزوير", isCorrect: false },
+                    { text: "البرمجيات الخبيثة، التصيد، انتحال الشخصية", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "الـ <strong>Cookie</strong> هو ملف صغير تخزنه تطبيقات الويب في القرص الصلب الخاص بالمستخدم ويحتوي على معلومات تخص المستخدم، غالباً دون علمه."
+                fullExplanation: "المخاطر الثلاثة التي تهدد الخصوصية هي: <strong>جمع البيانات</strong>، <strong>تبادل البيانات</strong>، <strong>بحث/تقييم البيانات (Data Mining)</strong>."
             },
             {
-                question: "ما هي المخاطر الرئيسية التي تهدد الخصوصية في مجال السايبر؟",
+                question: "ما هي الكوكيز (Cookies) وكيف تؤثر على الخصوصية؟",
                 answerOptions: [
-                    { text: "جمع البيانات، تبادل البيانات، بحث/تقييم البيانات", isCorrect: true },
-                    { text: "سرقة الهوية، الاختراق، التصيد", isCorrect: false },
-                    { text: "الفيروسات، البرمجيات الخبيثة، هجمات الحرمان من الخدمة", isCorrect: false },
-                    { text: "التجسس، التنصت، الاحتيال", isCorrect: false }
+                    { text: "برامج حماية تزيد من الخصوصية", isCorrect: false },
+                    { text: "ملفات صغيرة تخزن معلومات تخص المستخدم دون علمه في كثير من الأحيان", isCorrect: true },
+                    { text: "أجهزة تخزين خارجية للمعلومات", isCorrect: false },
+                    { text: "برامج تشفير للمعلومات", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "تكنولوجيا السايبر تهدد الخصوصية من ثلاثة جوانب رئيسية: <strong>جمع البيانات، تبادل البيانات، وبحث/تقييم البيانات (Data Mining)</strong>."
+                fullExplanation: "<strong>الكوكيز (Cookies)</strong> هي ملفات صغيرة تخزنها تطبيقات الويب في جهاز المستخدم تحتوي على معلومات تخصه، وتخزن غالباً دون علم المستخدم مما <strong>يخرق خصوصيته</strong>."
             },
             {
-                question: "ما المقصود بـ Data Mining في سياق الخصوصية؟",
+                question: "ما المقصود بمرج القيود المحوسبة (Merging Computerized Records)؟",
                 answerOptions: [
-                    { text: "البحث في البيانات لاكتشاف أنماط واستخلاص نتائج", isCorrect: true },
-                    { text: "تدمير البيانات الشخصية", isCorrect: false },
-                    { text: "نقل البيانات بين القواعد المختلفة", isCorrect: false },
-                    { text: "حذف المعلومات السرية", isCorrect: false }
+                    { text: "حذف المعلومات من قواعد البيانات", isCorrect: false },
+                    { text: "دمج معلومات من عدة قواعد بيانات مختلفة المصادر", isCorrect: true },
+                    { text: "نسخ المعلومات احتياطياً", isCorrect: false },
+                    { text: "تشفير المعلومات في قواعد البيانات", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "<strong>Data Mining</strong> يعني البحث في البيانات لاكتشاف أنماط واستخلاص نتائج لمساعدة متخذي القرار، وقد تكون النتائج غير واضحة أو متوقعة."
+                fullExplanation: "<strong>مرج القيود المحوسبة</strong> يعني دمج معلومات من عدة قواعد بيانات مختلفة المصادر، حيث تؤخذ معلومات من مصدر وتضاف إلى معلومات من مصدر آخر."
             },
             {
-                question: "ما هي أداة تعزيز الخصوصية المذكورة في المحاضرة؟",
+                question: "ما هو التنقيب في البيانات (Data Mining) وكيف يؤثر على الخصوصية؟",
                 answerOptions: [
-                    { text: "برامج لإخفاء الهوية وأدوات لإزالة الـ Cookies", isCorrect: true },
-                    { text: "جدران النار ومضادات الفيروسات", isCorrect: false },
-                    { text: "أنظمة التشغيل الآمنة", isCorrect: false },
-                    { text: "شبكات VPN فقط", isCorrect: false }
+                    { text: "عملية تنظيف البيانات من الأخطاء", isCorrect: false },
+                    { text: "البحث في البيانات لاكتشاف أنماط واستخلاص نتائج قد تضر بالأفراد", isCorrect: true },
+                    { text: "نسخ البيانات لأغراض النسخ الاحتياطي", isCorrect: false },
+                    { text: "تحليل البيانات لتحسين أداء الأنظمة", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "من أدوات تعزيز الخصوصية <strong>برامج إخفاء الهوية وأدوات مثل Cutter Cookie للتخلص من الـ Cookies</strong>."
+                fullExplanation: "<strong>التنقيب في البيانات</strong> هو البحث في البيانات لاكتشاف أنماط واستخلاص نتائج لمساعدة متخذي القرار، وقد <strong>يضر بالأفراد</strong> حيث قد ينتج عن ذلك ضم الشخص لمجموعات ليس له بها علاقة."
+            },
+            {
+                question: "ما الفرق بين المعلومات الشخصية العامة والخاصة؟",
+                answerOptions: [
+                    { text: "المعلومات العامة مجانية والخاصة مدفوعة", isCorrect: false },
+                    { text: "المعلومات العامة متاحة للجمهور والخاصة غير متاحة للجمهور", isCorrect: true },
+                    { text: "المعلومات العامة أقل دقة من الخاصة", isCorrect: false },
+                    { text: "لا يوجد فرق بينهما", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>المعلومات الشخصية العامة</strong> متاحة للجمهور وتخزن في مواقع متاحة للجمهور، بينما <strong>المعلومات الشخصية الخاصة</strong> غير معلنة وليست للإعلان."
+            },
+            {
+                question: "كيف تؤثر محركات البحث على الخصوصية؟",
+                answerOptions: [
+                    { text: "تحمي الخصوصية بشكل كامل", isCorrect: false },
+                    { text: "تجمع معلومات من عدة مواقع ويمكن تكوين ملامح عن الشخص بسهولة", isCorrect: true },
+                    { text: "تمنع جمع المعلومات الشخصية", isCorrect: false },
+                    { text: "توفر الخصوصية المطلقة للمستخدمين", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>محركات البحث</strong> تجمع معلومات من عدة مواقع بعضها بعلم صاحبها وبعضها دون علمه، ويمكن <strong>تكوين ملامح عن الشخص</strong> وهوياته واهتماماته بسهولة."
+            },
+            {
+                question: "ما هي أدوات تعزيز الخصوصية (Privacy Enhancing Tools)؟",
+                answerOptions: [
+                    { text: "برامج لجمع المزيد من المعلومات الشخصية", isCorrect: false },
+                    { text: "نظم وتطبيقات تستخدم لتعزيز الخصوصية مثل برامج لإخفاء الهوية", isCorrect: true },
+                    { text: "أدوات لزيادة سرعة الإنترنت فقط", isCorrect: false },
+                    { text: "برامج لتحسين جودة الصور", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "<strong>أدوات تعزيز الخصوصية</strong> هي نظم وتطبيقات تستخدم لتعزيز الخصوصية مثل برامج لإخفاء الهوية، وبرامج للتخلص من الكوكيز."
             },
             {
                 question: "ما المقصود بسرقة الهوية؟",
                 answerOptions: [
-                    { text: "إساءة استخدام هوية الشخص لأغراض غير مشروعة", isCorrect: true },
-                    { text: "نسخ بيانات الهوية الاحتياطية", isCorrect: false },
-                    { text: "إنشاء هوية مزيفة جديدة", isCorrect: false },
-                    { text: "تغيير كلمة المرور فقط", isCorrect: false }
+                    { text: "نسخ معلومات عامة من الإنترنت", isCorrect: false },
+                    { text: "إساءة استخدام هوية الشخص للقيام بأعمال غير مشروعة", isCorrect: true },
+                    { text: "تغيير كلمة المرور لحساب شخصي", isCorrect: false },
+                    { text: "استخدام اسم مستعار في الإنترنت", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "سرقة الهوية تعني <strong>إساءة استخدام هوية الشخص (اسمه، عنوانه، رقم رخصة القيادة، إلخ)</strong> للقيام بأعمال مباحة لصاحب الهوية وغير متاحة للمستخدم."
-            },
-            {
-                question: "ما هو القلق الرئيسي من دمج القيود المحوسبة (Merging Computerized Records)؟",
-                answerOptions: [
-                    { text: "تناقص دقة المعلومات وعدم التحكم في تبادلها", isCorrect: true },
-                    { text: "زيادة تكاليف التخزين", isCorrect: false },
-                    { text: "صعوبة الوصول إلى المعلومات", isCorrect: false },
-                    { text: "فقدان البيانات بالكامل", isCorrect: false }
-                ],
-                type: 'radio',
-                fullExplanation: "القلق من دمج القيود المحوسبة يأتي من <strong>تناقص دقة المعلومات</strong> لأننا نجهل الظرف الذي جمعت فيه، و<strong>عدم إعطاء صاحبها التحكم فيها</strong>."
-            },
-            {
-                question: "كيف يمكن لمحركات البحث التأثير على الخصوصية؟",
-                answerOptions: [
-                    { text: "تجمع معلومات من عدة مواقع وتكوين ملامح عن الشخص", isCorrect: true },
-                    { text: "تحذف المعلومات الشخصية تلقائياً", isCorrect: false },
-                    { text: "تشفر جميع البيانات التي تجمعها", isCorrect: false },
-                    { text: "تطلب الإذن قبل أي عملية جمع بيانات", isCorrect: false }
-                ],
-                type: 'radio',
-                fullExplanation: "محركات البحث <strong>تجمع معلومات من عدة مواقع</strong> بعضها بعلم صاحبها وبعضها دون علمه، و<strong>يمكن تكوين ملامح عن الشخص</strong> وهوياته واهتماماته بسهولة."
+                fullExplanation: "<strong>سرقة الهوية</strong> هي إساءة استخدام هوية الشخص (اسمه، عنوانه، رقم رخصة القيادة...) والغرض القيام بعمل غير مشروع لصاحب الهوية."
             }
         ];
 
         let currentQuestionIndex = 0;
-        const userAnswers = quizData.map(() => ({ selected: null, isCorrect: null, answered: false }));
+        // تخزين إجابات المستخدم مع ترتيب الخيارات لكل سؤال
+        const userAnswers = quizData.map(() => ({ 
+            selected: null, 
+            isCorrect: null, 
+            answered: false,
+            shuffledOptions: [] // سيتم تعبئتها عند عرض السؤال
+        }));
         
         const quizContentEl = document.getElementById('quiz-content');
         const currentQuestionContainerEl = document.getElementById('current-question-container');
@@ -265,6 +285,7 @@
 
         totalQuestionsEl.textContent = quizData.length;
 
+        // Helper to calculate current score
         function calculateScore() {
             return userAnswers.filter(a => a.isCorrect === true).length;
         }
@@ -272,9 +293,15 @@
         function renderQuestion(index) {
             const questionData = quizData[index];
             const userAnswer = userAnswers[index];
+            
+            // إذا لم يتم خلط الخيارات بعد، قم بخلطها
+            if (userAnswer.shuffledOptions.length === 0) {
+                userAnswer.shuffledOptions = shuffleArray([...questionData.answerOptions]);
+            }
+            
             currentQuestionContainerEl.innerHTML = `
                 <div class="question-item" data-index="${index}">
-                    <h2 class="text-base font-semibold text-gray-300 mb-4 text-right">${questionData.question}</h2>
+                    <h2 class="text-base font-semibold text-gray-300 mb-4 question-text">${questionData.question}</h2>
                     <div class="options-container space-y-3"></div>
                 </div>
             `;
@@ -285,33 +312,36 @@
             const isAnswered = userAnswer.answered;
             const inputType = questionData.type === 'radio' ? 'radio' : 'checkbox';
 
-            questionData.answerOptions.forEach((option, optionIndex) => {
+            // استخدام الخيارات المخلوطة بدلاً من الأصلية
+            userAnswer.shuffledOptions.forEach((option, optionIndex) => {
                 const optionId = `q${index}-o${optionIndex}`;
                 
                 const optionEl = document.createElement('label');
-                optionEl.className = 'option-label flex items-center';
+                optionEl.className = 'option-label flex items-center rtl-text';
                 optionEl.setAttribute('for', optionId);
 
                 optionEl.innerHTML = `
-                    <span class="flex-1 text-right">${option.text}</span>
+                    <span class="mr-3 flex-1">${option.text}</span>
                     <input type="${inputType}" id="${optionId}" name="q${index}" value="${option.text}" class="ml-3" ${isAnswered ? 'disabled' : ''}>
                 `;
                 optionsContainer.appendChild(optionEl);
 
                 const inputEl = optionEl.querySelector('input');
                 
+                // Set initial selection/state
                 if (questionData.type === 'radio') {
                     if (userAnswer.selected === option.text) {
                         inputEl.checked = true;
                         optionEl.classList.add('selected');
                     }
-                } else {
+                } else { // checkbox
                     if (Array.isArray(userAnswer.selected) && userAnswer.selected.includes(option.text)) {
                         inputEl.checked = true;
                         optionEl.classList.add('selected');
                     }
                 }
 
+                // Apply correctness styling if already answered
                 if (isAnswered) {
                     optionEl.classList.add('answered', 'disabled');
                     if (option.isCorrect) {
@@ -324,21 +354,27 @@
                 inputEl.addEventListener('change', (e) => handleOptionSelect(e, index));
             });
 
+            // Update navigation buttons
             prevBtn.disabled = index === 0;
 
+            // Next button logic
             if (index === quizData.length - 1) {
+                // Last question: always change text to "Done" and enable button
                 nextBtn.textContent = 'إنهاء';
-                nextBtn.disabled = false;
+                nextBtn.disabled = false; 
             } else {
+                // Not last question: always set text to "Next" and enable button (to allow skipping)
                 nextBtn.textContent = 'التالي';
                 nextBtn.disabled = false;
             }
 
+            // Update check button state and feedback
             if (isAnswered) {
                 checkAnswerBtn.disabled = true;
                 feedbackAreaEl.classList.remove('hidden');
                 explanationTextEl.innerHTML = questionData.fullExplanation;
             } else {
+                // Not answered yet
                 checkAnswerBtn.disabled = !userAnswer.selected || (Array.isArray(userAnswer.selected) && userAnswer.selected.length === 0);
                 feedbackAreaEl.classList.add('hidden');
             }
@@ -357,7 +393,7 @@
                     input.closest('label').classList.remove('selected');
                 });
                 labelEl.classList.add('selected');
-            } else {
+            } else { 
                 if (!Array.isArray(userAnswers[index].selected)) {
                     userAnswers[index].selected = [];
                 }
@@ -372,6 +408,7 @@
                 userAnswers[index].selected = Array.from(answerSet);
             }
             
+            // Enable Check Answer button only if an option is selected
             checkAnswerBtn.disabled = !userAnswers[index].selected || (Array.isArray(userAnswers[index].selected) && userAnswers[index].selected.length === 0);
         }
 
@@ -379,16 +416,20 @@
             const questionData = quizData[currentQuestionIndex];
             const userAnswer = userAnswers[currentQuestionIndex];
             
+            // Allow checking only if an answer is selected and not already answered
             if (!userAnswer.selected || userAnswer.answered) return;
 
             userAnswer.answered = true;
             
-            const correctAnswers = questionData.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+            // البحث عن الإجابة الصحيحة في الخيارات المخلوطة
+            const correctAnswer = questionData.answerOptions.find(opt => opt.isCorrect);
             let isCorrect = false;
 
             if (questionData.type === 'radio') {
-                isCorrect = userAnswer.selected === correctAnswers[0];
-            } else {
+                isCorrect = userAnswer.selected === correctAnswer.text;
+            } else { 
+                // للأسئلة متعددة الخيارات (لم يتم استخدامها في هذا الاختبار)
+                const correctAnswers = questionData.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
                 const userAnswerSet = new Set(userAnswer.selected);
                 const correctAnswerSet = new Set(correctAnswers);
                 isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
@@ -404,14 +445,17 @@
 
                 const optionText = input.value;
                 const isUserSelected = input.checked;
-                const isCorrectOption = correctAnswers.includes(optionText);
+                
+                // البحث عن الخيار في الخيارات المخلوطة لتحديد ما إذا كان صحيحاً
+                const option = userAnswer.shuffledOptions.find(opt => opt.text === optionText);
+                const isCorrectOption = option ? option.isCorrect : false;
 
                 if (isCorrectOption) {
                     labelEl.classList.add('correct');
                 } else if (isUserSelected && !isCorrectOption) {
                     labelEl.classList.add('incorrect');
                 }
-                labelEl.classList.remove('selected');
+                labelEl.classList.remove('selected'); 
             });
             
             checkAnswerBtn.disabled = true;
@@ -425,7 +469,8 @@
                     currentQuestionIndex++;
                     renderQuestion(currentQuestionIndex);
                 } else if (currentQuestionIndex === quizData.length - 1) {
-                    showResults();
+                    // Last question, "Done" button clicked, show results.
+                    showResults(); 
                 }
             } else if (direction === 'prev' && currentQuestionIndex > 0) {
                 currentQuestionIndex--;
@@ -447,19 +492,22 @@
                 const userAnswer = userAnswers[index];
                 const isCorrect = userAnswer.isCorrect;
                 
-                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                const correctAnswer = question.answerOptions.find(opt => opt.isCorrect);
                 const userAnswerText = Array.isArray(userAnswer.selected) ? userAnswer.selected.join(', ') : userAnswer.selected || 'لم يتم الإجابة';
-                const correctAnswerText = correctAnswers.join(', ');
+                const correctAnswerText = correctAnswer ? correctAnswer.text : 'غير معروف';
                 const explanationText = question.fullExplanation || "لا يوجد شرح متوفر.";
 
                 const resultItem = document.createElement('div');
-                resultItem.className = 'p-3 border rounded-lg text-right';
+                resultItem.className = 'p-3 border rounded-lg rtl-text';
                 
+                // Styling based on whether it was answered and if correct
                 if (userAnswer.answered) {
                     resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
                 } else {
+                    // Style for skipped/unanswered question
                     resultItem.classList.add('border-gray-500', 'bg-gray-700');
                 }
+                
 
                 resultItem.innerHTML = `
                     <p class="font-semibold text-sm text-white">${index + 1}. ${question.question}</p>
@@ -469,6 +517,7 @@
                 `;
                 resultsSummaryEl.appendChild(resultItem);
             });
+
         }
 
         checkAnswerBtn.addEventListener('click', checkAnswer);
@@ -476,9 +525,11 @@
         nextBtn.addEventListener('click', () => navigate('next'));
         
         restartBtn.addEventListener('click', () => {
-            location.reload();
+            // Simple page reload to reset the state
+            location.reload(); 
         });
 
+        // Initial render
         renderQuestion(currentQuestionIndex);
     </script>
 </body>
