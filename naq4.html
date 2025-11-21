@@ -3,32 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz: Controlling Processes (Lec 4)</title>
+    <title>Linux Process Control Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        /* FONT: Open Sans for optimal readability at small sizes */
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+        
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Open Sans', sans-serif;
+            /* CHANGE: Body background set to #1B1B1B */
+            background-color: #1B1B1B; 
+            overflow-x: hidden; 
         }
+
         .option-label {
             display: block;
-            padding: 1rem;
+            padding: 0.6rem 1rem; 
             border: 1px solid #4a5568;
-            border-radius: 0.75rem;
+            border-radius: 0.75rem; 
             cursor: pointer;
             transition: all 0.2s ease-in-out;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             color: #d1d5db;
             text-align: left;
+            font-size: 0.9rem; 
         }
-        .option-label:hover {
-            background-color: #374151;
+        .option-label:not(.answered):hover {
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
+            background-color: #111827; 
             border-color: #60a5fa;
         }
         .option-label.selected {
-            background-color: #1e3a8a;
-            border-color: #3b82f6;
-            color: #ffffff;
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
+            background-color: #111827; 
+            border-color: #60a5fa;
         }
         .option-label.correct {
             background-color: #14532d;
@@ -40,38 +48,94 @@
             border-color: #ef4444;
             color: #ffffff;
         }
+        .option-label.disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        
+        /* === UNIFIED BUTTON SIZE/PADDING (Applies to all three buttons) === */
         .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
             font-weight: 600;
             transition: all 0.2s ease-in-out;
-            border: none;
+            border: none; 
             cursor: pointer;
+            display: inline-block;
+            font-size: 0.8rem;
         }
+        /* === END UNIFIED BUTTON SIZE/PADDING === */
+
+        /* Primary buttons (Check Answer, Next) are orange/yellow */
         .btn-primary {
-            background-color: #3b82f6;
-            color: white;
+            background-color: #FCA300; 
+            color: #111827; 
+            border: none;
         }
-        .btn-primary:hover {
-            background-color: #2563eb;
+        .btn-primary:hover:not(:disabled) {
+            background-color: #e59400; 
+        }
+
+        /* Secondary button (Previous) remains gray/transparent */
+        .btn-secondary {
+            background-color: transparent;
+            color: #9ca3af; 
+            border: 1px solid #4a5568; 
+        }
+        .btn-secondary:hover:not(:disabled) {
+            background-color: #111827; 
+            color: #ffffff;
+            border-color: #9ca3af; 
+        }
+        /* Style for disabled buttons */
+        .btn:disabled {
+            opacity: 0.4; 
+            cursor: not-allowed;
+        }
+
+        .explanation {
+            margin-top: 0.75rem; 
+            padding: 0.75rem; 
+            border-left: 5px solid #3b82f6;
+            /* CHANGE: Explanation background set to #1B1B1B */
+            background-color: #1B1B1B;
+            color: #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.85rem; 
         }
     </style>
 </head>
-<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+<body class="bg-[#1B1B1B] p-4">
 
-    <main id="quiz-container" class="w-full max-w-3xl">
-        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <div id="all-questions-container" class="space-y-8"></div>
-            <div class="text-center mt-10">
-                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+    <main id="quiz-container" class="w-full mx-auto max-w-2xl">
+        <div id="quiz-content" class="bg-[#1B1B1B] p-4"> 
+            
+            <div id="question-navigation" class="text-left text-sm font-medium text-gray-400 mb-4">
+                <span id="current-question-number"></span> / <span id="total-questions"></span>
+            </div>
+            
+            <div id="current-question-container" class="space-y-6"> 
+                </div>
+
+            <div id="feedback-area" class="mt-3 hidden"> 
+                <div id="explanation-text" class="explanation"></div>
+            </div>
+
+            <div class="flex flex-wrap justify-between items-start mt-8 gap-3"> 
+                <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+                
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 ml-auto">
+                    <button id="check-answer-btn" class="btn btn-primary">Check Answer</button>
+                    <button id="next-btn" class="btn btn-primary" disabled>Next</button>
+                </div>
             </div>
         </div>
 
-        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Complete!</h2>
-            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
-            <div id="results-summary" class="space-y-6"></div>
-            <div class="text-center mt-8">
+        <div id="results-screen" class="hidden bg-[#1B1B1B] p-4"> 
+            <h2 class="text-xl font-bold text-white text-center mb-3">Quiz Complete!</h2>
+            <p id="score-text" class="text-lg text-gray-300 text-center font-semibold mb-6"></p>
+            <div id="results-summary" class="space-y-4"></div>
+            <div class="text-center mt-6">
                 <button id="restart-btn" class="btn btn-primary">Retake Quiz</button>
             </div>
         </div>
@@ -80,181 +144,312 @@
     <script>
         const quizData = [
             {
-                question: "In Linux, what is the Process ID (PID) assigned to the 'init' process?",
+                question: "What is the first process created when a Linux system starts up and typically has PID 1?",
                 answerOptions: [
-                    { text: "0", isCorrect: false },
-                    { text: "1", isCorrect: true },
-                    { text: "100", isCorrect: false },
-                    { text: "The first available number (variable)", isCorrect: false }
+                    { text: "systemd", isCorrect: false },
+                    { text: "bash", isCorrect: false },
+                    { text: "init", isCorrect: true },
+                    { text: "kernel", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "The 'init' process is the first process created after booting the Linux kernel and is always given a PID of <strong>1</strong>."
+                fullExplanation: "The <strong>init process</strong> is the first process created when a Linux system starts up and usually has a PID of 1. It becomes the parent of all other processes."
             },
             {
-                question: "Which term describes the relationship between the process that creates a new process and the newly created process?",
+                question: "What are the three system calls mentioned in the lecture that are used for process spawning?",
                 answerOptions: [
-                    { text: "Owner/Guest", isCorrect: false },
-                    { text: "Master/Slave", isCorrect: false },
-                    { text: "Parent/Child", isCorrect: true },
-                    { text: "Primary/Secondary", isCorrect: false }
+                    { text: "fork(), wait(), and exec()", isCorrect: true },
+                    { text: "create(), run(), and stop()", isCorrect: false },
+                    { text: "spawn(), child(), and parent()", isCorrect: false },
+                    { text: "init(), fork(), and exec()", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "The creating process is known as the <strong>parent</strong>, and the created process is known as the <strong>child</strong>."
+                fullExplanation: "The spawning of a process is accomplished using the system calls <strong>fork(), wait(), and exec()</strong>. These are function calls to the Linux kernel for process creation."
             },
             {
-                question: "Which system call is explicitly mentioned as being used to spawn a new process in Linux?",
+                question: "Which process state describes a process that is ready to execute whenever CPU time is available?",
                 answerOptions: [
-                    { text: "spawn()", isCorrect: false },
-                    { text: "create()", isCorrect: false },
-                    { text: "exec()", isCorrect: false },
-                    { text: "fork()", isCorrect: true }
+                    { text: "Sleeping", isCorrect: false },
+                    { text: "Zombie", isCorrect: false },
+                    { text: "Stopped", isCorrect: false },
+                    { text: "Runnable", isCorrect: true }
                 ],
                 type: 'radio',
-                fullExplanation: "The spawning of a process is accomplished using system calls to the Linux kernel, including <strong>fork()</strong>, wait(), and exec()."
+                fullExplanation: "A <strong>runnable</strong> process is ready to execute whenever CPU time is available. It has acquired all needed resources and is just waiting for CPU time to process its data."
             },
             {
-                question: "What is the primary purpose of the `ps` command when used without any options?",
+                question: "What key combination is used to suspend (temporarily stop) a foreground job?",
                 answerOptions: [
-                    { text: "To show all active processes on the system.", isCorrect: false },
-                    { text: "To show a real-time, interactive view of running processes.", isCorrect: false },
-                    { text: "To display processes associated with the current shell.", isCorrect: true },
-                    { text: "To terminate a running process by its name.", isCorrect: false }
+                    { text: "Ctrl+C", isCorrect: false },
+                    { text: "Ctrl+Z", isCorrect: true },
+                    { text: "Ctrl+D", isCorrect: false },
+                    { text: "Ctrl+S", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "The command <strong>ps</strong> (process show) without options is used to find the PIDs of the underlying processes associated with the <strong>current shell</strong> and its jobs."
+                fullExplanation: "The foreground job may be suspended (temporarily stopped) by pressing <strong>Ctrl+Z</strong>. The suspended job can then be continued with 'fg' or 'bg' commands."
             },
             {
-                question: "To forcibly terminate a process with a higher probability of success, what option is commonly used with the `kill` command?",
+                question: "Which character is appended to a command to run it directly in the background?",
                 answerOptions: [
-                    { text: "kill -f", isCorrect: false },
-                    { text: "kill -9", isCorrect: true },
-                    { text: "kill -a", isCorrect: false },
-                    { text: "kill -s", isCorrect: false }
+                    { text: "@", isCorrect: false },
+                    { text: "&", isCorrect: true },
+                    { text: "#", isCorrect: false },
+                    { text: "*", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "The <strong>-9 option</strong> is used with the kill command to send the SIGKILL signal, forcing a process to terminate abruptly and with a higher probability of success."
+                fullExplanation: "Background jobs can be run directly from the command line by appending a <strong>&</strong> character to the command. For example: 'find / -name \"file\" > output 2> errors &'"
             },
             {
-                question: "Which command shows a real-time view of running processes and displays a system information summary including CPU and memory usage?",
+                question: "Which command shows a list of all jobs associated with the current shell?",
                 answerOptions: [
-                    { text: "ps -aux", isCorrect: false },
-                    { text: "pstree", isCorrect: false },
-                    { text: "top", isCorrect: true },
-                    { text: "grep", isCorrect: false }
+                    { text: "ps", isCorrect: false },
+                    { text: "top", isCorrect: false },
+                    { text: "jobs", isCorrect: true },
+                    { text: "list", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "The <strong>top</strong> (table of process) command shows a <strong>real-time view</strong> of running processes and displays a system information summary on resource utilization."
+                fullExplanation: "The <strong>jobs</strong> command shows a list of all jobs associated with the current shell, displaying both foreground and background jobs."
             },
             {
-                question: "What does PID stand for?",
+                question: "What is the main tool for monitoring processes that shows PID, UID, priority, and control terminal information?",
                 answerOptions: [
-                    { text: "Program Identifier", isCorrect: false },
-                    { text: "Process Input Device", isCorrect: false },
-                    { text: "Parent Initialization Datum", isCorrect: false },
-                    { text: "Process ID number", isCorrect: true }
+                    { text: "top", isCorrect: false },
+                    { text: "kill", isCorrect: false },
+                    { text: "ps", isCorrect: true },
+                    { text: "monitor", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "PID stands for <strong>Process ID number</strong>. The kernel assigns a unique ID number to every process."
+                fullExplanation: "The <strong>ps (process show)</strong> command is the system administrator's main tool for monitoring processes. It shows PID, UID, priority, control terminal, memory usage, CPU time, and process status."
             },
             {
-                question: "The `init` process is responsible for which critical function after the Linux kernel has been initialized?",
+                question: "Which command option shows all processes running on the machine including those of other users?",
                 answerOptions: [
-                    { text: "Running startup scripts to set up the system (e.g., hostname, network)", isCorrect: true },
-                    { text: "Loading the kernel into memory from the boot device.", isCorrect: false },
-                    { text: "Managing graphical user interface (GUI) rendering.", isCorrect: false },
-                    { text: "Handling all network traffic and firewall rules.", isCorrect: false }
-                ],
-                type: 'radio',
-                fullExplanation: "The <strong>init</strong> process (PID 1) runs startup scripts to perform specific tasks, such as setting the hostname, checking and mounting disks, and configuring network interfaces."
-            },
-            {
-                question: "Which combination of `ps` options is used to display all processes in a hierarchical (tree-like) format, showing parent-child relationships?",
-                answerOptions: [
-                    { text: "ps -aux", isCorrect: false },
+                    { text: "ps -fae or ps -aux", isCorrect: true },
                     { text: "ps -l", isCorrect: false },
-                    { text: "ps -aeH", isCorrect: true },
+                    { text: "ps -e", isCorrect: false },
                     { text: "ps -f", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "The command <strong>ps -aeH</strong> is used to display all processes and show the process hierarchy (including the init process)."
+                fullExplanation: "To see all processes running on the machine, use <strong>ps -fae or ps -aux</strong>. These options display processes from all users."
             },
             {
-                question: "In the context of process creation, the `exec()` system call is primarily responsible for:",
+                question: "What command would you use to forcefully terminate a process with PID 27501?",
                 answerOptions: [
-                    { text: "Creating a new, identical copy of the parent process.", isCorrect: false },
-                    { text: "Waiting for a child process to terminate.", isCorrect: false },
-                    { text: "Replacing the current process's image with a new program.", isCorrect: true },
-                    { text: "Pausing the execution of the parent process indefinitely.", isCorrect: false }
+                    { text: "kill 27501", isCorrect: false },
+                    { text: "kill -9 27501", isCorrect: true },
+                    { text: "stop 27501", isCorrect: false },
+                    { text: "terminate 27501", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "The <strong>exec()</strong> system call is generally used to load a new program into the address space of the current process, effectively replacing the current running program with a new one."
+                fullExplanation: "To force a process to terminate abruptly with a higher probability of success, use <strong>kill -9 PID</strong>. The -9 option sends a SIGKILL signal that cannot be ignored."
+            },
+            {
+                question: "Which real-time monitoring tool shows running processes and system information including CPU and memory usage?",
+                answerOptions: [
+                    { text: "ps", isCorrect: false },
+                    { text: "monitor", isCorrect: false },
+                    { text: "top", isCorrect: true },
+                    { text: "htop", isCorrect: false }
+                ],
+                type: 'radio',
+                fullExplanation: "The <strong>top (table of processes)</strong> command shows a real-time view of running processes and displays system information summary including resource utilization, CPU, and memory usage."
             }
         ];
 
-        const userAnswers = new Array(quizData.length).fill(null);
+        let currentQuestionIndex = 0;
+        // Stores user's selected answer and correctness status: { selected: string | string[] | null, isCorrect: boolean | null, answered: boolean }
+        const userAnswers = quizData.map(() => ({ selected: null, isCorrect: null, answered: false }));
         
         const quizContentEl = document.getElementById('quiz-content');
-        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const currentQuestionContainerEl = document.getElementById('current-question-container');
         const resultsScreenEl = document.getElementById('results-screen');
-        const submitBtn = document.getElementById('submit-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const checkAnswerBtn = document.getElementById('check-answer-btn');
         const restartBtn = document.getElementById('restart-btn');
+        const feedbackAreaEl = document.getElementById('feedback-area');
+        const explanationTextEl = document.getElementById('explanation-text');
+        const currentQuestionNumberEl = document.getElementById('current-question-number');
+        const totalQuestionsEl = document.getElementById('total-questions');
 
-        function renderAllQuestions() {
-            quizData.forEach((question, questionIndex) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'mb-8'; 
-                questionDiv.innerHTML = `
-                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
-                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
-                `;
-                
-                const optionsContainer = questionDiv.querySelector('.options-container');
+        totalQuestionsEl.textContent = quizData.length;
 
-                question.answerOptions.forEach(option => {
-                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
-                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
-                    
-                    const optionEl = document.createElement('label');
-                    optionEl.className = 'option-label flex items-center';
-                    optionEl.setAttribute('for', optionId);
-
-                    optionEl.innerHTML = `
-                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
-                        <span>${option.text}</span>
-                    `;
-                    optionsContainer.appendChild(optionEl);
-
-                    const inputEl = optionEl.querySelector('input');
-                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
-                });
-
-                allQuestionsContainerEl.appendChild(questionDiv);
-            });
+        // Helper to calculate current score
+        function calculateScore() {
+            return userAnswers.filter(a => a.isCorrect === true).length;
         }
 
-        function handleOptionSelect(e, questionIndex) {
-            const currentQuestion = quizData[questionIndex];
-            const target = e.target;
+        function renderQuestion(index) {
+            const questionData = quizData[index];
+            const userAnswer = userAnswers[index];
+            currentQuestionContainerEl.innerHTML = `
+                <div class="question-item" data-index="${index}">
+                    <h2 class="text-base font-semibold text-gray-300 mb-4">${questionData.question}</h2>
+                    <div class="options-container space-y-3"></div>
+                </div>
+            `;
             
+            currentQuestionNumberEl.textContent = index + 1;
+
+            const optionsContainer = currentQuestionContainerEl.querySelector('.options-container');
+            const isAnswered = userAnswer.answered;
+            const inputType = questionData.type === 'radio' ? 'radio' : 'checkbox';
+
+            questionData.answerOptions.forEach((option, optionIndex) => {
+                const optionId = `q${index}-o${optionIndex}`;
+                
+                const optionEl = document.createElement('label');
+                optionEl.className = 'option-label flex items-center';
+                optionEl.setAttribute('for', optionId);
+
+                optionEl.innerHTML = `
+                    <input type="${inputType}" id="${optionId}" name="q${index}" value="${option.text}" class="mr-3" ${isAnswered ? 'disabled' : ''}>
+                    <span>${option.text}</span>
+                `;
+                optionsContainer.appendChild(optionEl);
+
+                const inputEl = optionEl.querySelector('input');
+                
+                // Set initial selection/state
+                if (questionData.type === 'radio') {
+                    if (userAnswer.selected === option.text) {
+                        inputEl.checked = true;
+                        optionEl.classList.add('selected');
+                    }
+                } else { // checkbox
+                    if (Array.isArray(userAnswer.selected) && userAnswer.selected.includes(option.text)) {
+                        inputEl.checked = true;
+                        optionEl.classList.add('selected');
+                    }
+                }
+
+                // Apply correctness styling if already answered
+                if (isAnswered) {
+                    optionEl.classList.add('answered', 'disabled');
+                    if (option.isCorrect) {
+                        optionEl.classList.add('correct');
+                    } else if (inputEl.checked) {
+                        optionEl.classList.add('incorrect');
+                    }
+                }
+
+                inputEl.addEventListener('change', (e) => handleOptionSelect(e, index));
+            });
+
+            // Update navigation buttons
+            prevBtn.disabled = index === 0;
+
+            // Next button logic
+            if (index === quizData.length - 1) {
+                // Last question: always change text to "Done" and enable button
+                nextBtn.textContent = 'Done';
+                nextBtn.disabled = false; 
+            } else {
+                // Not last question: always set text to "Next" and enable button (to allow skipping)
+                nextBtn.textContent = 'Next';
+                nextBtn.disabled = false;
+            }
+
+            // Update check button state and feedback
+            if (isAnswered) {
+                checkAnswerBtn.disabled = true;
+                feedbackAreaEl.classList.remove('hidden');
+                explanationTextEl.innerHTML = questionData.fullExplanation;
+            } else {
+                // Not answered yet
+                checkAnswerBtn.disabled = !userAnswer.selected || (Array.isArray(userAnswer.selected) && userAnswer.selected.length === 0);
+                feedbackAreaEl.classList.add('hidden');
+            }
+        }
+
+        function handleOptionSelect(e, index) {
+            const currentQuestion = quizData[index];
+            const target = e.target;
+            const labelEl = target.closest('label');
+            
+            if (userAnswers[index].answered) return;
+
             if (currentQuestion.type === 'radio') {
-                userAnswers[questionIndex] = target.value;
-                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                userAnswers[index].selected = target.value;
+                document.querySelectorAll(`input[name="q${index}"]`).forEach(input => {
                     input.closest('label').classList.remove('selected');
                 });
-                target.closest('label').classList.add('selected');
-            } else { // checkbox
-                if (!Array.isArray(userAnswers[questionIndex])) {
-                    userAnswers[questionIndex] = [];
+                labelEl.classList.add('selected');
+            } else { 
+                if (!Array.isArray(userAnswers[index].selected)) {
+                    userAnswers[index].selected = [];
                 }
-                const answerSet = new Set(userAnswers[questionIndex]);
+                let answerSet = new Set(userAnswers[index].selected);
                 if (target.checked) {
                     answerSet.add(target.value);
-                    target.closest('label').classList.add('selected');
+                    labelEl.classList.add('selected');
                 } else {
                     answerSet.delete(target.value);
-                    target.closest('label').classList.remove('selected');
+                    labelEl.classList.remove('selected');
                 }
-                userAnswers[questionIndex] = Array.from(answerSet);
+                userAnswers[index].selected = Array.from(answerSet);
+            }
+            
+            // Enable Check Answer button only if an option is selected
+            checkAnswerBtn.disabled = !userAnswers[index].selected || (Array.isArray(userAnswers[index].selected) && userAnswers[index].selected.length === 0);
+        }
+
+        function checkAnswer() {
+            const questionData = quizData[currentQuestionIndex];
+            const userAnswer = userAnswers[currentQuestionIndex];
+            
+            // Allow checking only if an answer is selected and not already answered
+            if (!userAnswer.selected || userAnswer.answered) return;
+
+            userAnswer.answered = true;
+            
+            const correctAnswers = questionData.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+            let isCorrect = false;
+
+            if (questionData.type === 'radio') {
+                isCorrect = userAnswer.selected === correctAnswers[0];
+            } else { 
+                const userAnswerSet = new Set(userAnswer.selected);
+                const correctAnswerSet = new Set(correctAnswers);
+                isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+            }
+            
+            userAnswer.isCorrect = isCorrect;
+            
+            const inputs = document.querySelectorAll(`input[name="q${currentQuestionIndex}"]`);
+            inputs.forEach(input => {
+                const labelEl = input.closest('label');
+                labelEl.classList.add('answered', 'disabled');
+                input.disabled = true;
+
+                const optionText = input.value;
+                const isUserSelected = input.checked;
+                const isCorrectOption = correctAnswers.includes(optionText);
+
+                if (isCorrectOption) {
+                    labelEl.classList.add('correct');
+                } else if (isUserSelected && !isCorrectOption) {
+                    labelEl.classList.add('incorrect');
+                }
+                labelEl.classList.remove('selected'); 
+            });
+            
+            checkAnswerBtn.disabled = true;
+            feedbackAreaEl.classList.remove('hidden');
+            explanationTextEl.innerHTML = questionData.fullExplanation;
+        }
+
+        function navigate(direction) {
+            if (direction === 'next') {
+                if (currentQuestionIndex < quizData.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion(currentQuestionIndex);
+                } else if (currentQuestionIndex === quizData.length - 1) {
+                    // Last question, "Done" button clicked, show results.
+                    showResults(); 
+                }
+            } else if (direction === 'prev' && currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion(currentQuestionIndex);
             }
         }
 
@@ -262,56 +457,55 @@
             quizContentEl.classList.add('hidden');
             resultsScreenEl.classList.remove('hidden');
 
-            let score = 0;
+            const score = calculateScore();
             const resultsSummaryEl = document.getElementById('results-summary');
             resultsSummaryEl.innerHTML = '';
 
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+            
             quizData.forEach((question, index) => {
                 const userAnswer = userAnswers[index];
-                let isCorrect = false;
+                const isCorrect = userAnswer.isCorrect;
                 
                 const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
-                
-                if (question.type === 'radio') {
-                    isCorrect = userAnswer === correctAnswers[0];
-                } else { // checkbox
-                    const userAnswerSet = new Set(userAnswer);
-                    const correctAnswerSet = new Set(correctAnswers);
-                    // Check if the user's set of answers exactly matches the correct set
-                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
-                }
-                
-                if (isCorrect) score++;
-
-                const resultItem = document.createElement('div');
-                resultItem.className = 'p-4 border rounded-lg';
-                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
-
-                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
+                const userAnswerText = Array.isArray(userAnswer.selected) ? userAnswer.selected.join(', ') : userAnswer.selected || 'Not answered';
                 const correctAnswerText = correctAnswers.join(', ');
-                
                 const explanationText = question.fullExplanation || "No explanation available.";
 
+                const resultItem = document.createElement('div');
+                resultItem.className = 'p-3 border rounded-lg';
+                
+                // Styling based on whether it was answered and if correct
+                if (userAnswer.answered) {
+                    resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+                } else {
+                    // Style for skipped/unanswered question
+                    resultItem.classList.add('border-gray-500', 'bg-gray-700');
+                }
+                
+
                 resultItem.innerHTML = `
-                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
-                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
-                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
-                    <p class="text-sm mt-3 text-gray-300">Explanation: ${explanationText}</p>
+                    <p class="font-semibold text-sm text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-xs mt-1 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-xs mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    ${userAnswer.answered ? `<p class="text-xs mt-2 text-gray-300">Explanation: ${explanationText}</p>` : '<p class="text-xs mt-2 text-gray-300 font-bold">Question was not answered.</p>'}
                 `;
                 resultsSummaryEl.appendChild(resultItem);
             });
 
-            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
         }
 
-        submitBtn.addEventListener('click', showResults);
+        checkAnswerBtn.addEventListener('click', checkAnswer);
+        prevBtn.addEventListener('click', () => navigate('prev'));
+        nextBtn.addEventListener('click', () => navigate('next'));
         
         restartBtn.addEventListener('click', () => {
-            location.reload();
+            // Simple page reload to reset the state
+            location.reload(); 
         });
 
         // Initial render
-        renderAllQuestions();
+        renderQuestion(currentQuestionIndex);
     </script>
 </body>
 </html>

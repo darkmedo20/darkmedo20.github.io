@@ -3,31 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Linux Booting and Shutting Down Quiz</title>
+    <title>Linux Boot Process Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        /* FONT: Open Sans for optimal readability at small sizes */
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+        
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Open Sans', sans-serif;
+            /* CHANGE: Body background set to #1B1B1B */
+            background-color: #1B1B1B; 
+            overflow-x: hidden; 
         }
+
         .option-label {
             display: block;
-            padding: 1rem;
+            padding: 0.6rem 1rem; 
             border: 1px solid #4a5568;
-            border-radius: 0.75rem;
+            border-radius: 0.75rem; 
             cursor: pointer;
             transition: all 0.2s ease-in-out;
-            margin-bottom: 1rem;
-            color: #d1d5db; /* Lighter text color for dark theme */
+            margin-bottom: 0.75rem;
+            color: #d1d5db;
+            text-align: left;
+            font-size: 0.9rem; 
         }
-        .option-label:hover {
-            background-color: #374151;
+        .option-label:not(.answered):hover {
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
+            background-color: #111827; 
             border-color: #60a5fa;
         }
         .option-label.selected {
-            background-color: #1e3a8a;
-            border-color: #3b82f6;
-            color: #ffffff;
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
+            background-color: #111827; 
+            border-color: #60a5fa;
         }
         .option-label.correct {
             background-color: #14532d;
@@ -39,45 +48,94 @@
             border-color: #ef4444;
             color: #ffffff;
         }
+        .option-label.disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        
+        /* === UNIFIED BUTTON SIZE/PADDING (Applies to all three buttons) === */
         .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
             font-weight: 600;
             transition: all 0.2s ease-in-out;
-            border: none;
+            border: none; 
             cursor: pointer;
+            display: inline-block;
+            font-size: 0.8rem;
         }
+        /* === END UNIFIED BUTTON SIZE/PADDING === */
+
+        /* Primary buttons (Check Answer, Next) are orange/yellow */
         .btn-primary {
-            background-color: #3b82f6;
-            color: white;
+            background-color: #FCA300; 
+            color: #111827; 
+            border: none;
         }
-        .btn-primary:hover {
-            background-color: #2563eb;
+        .btn-primary:hover:not(:disabled) {
+            background-color: #e59400; 
         }
+
+        /* Secondary button (Previous) remains gray/transparent */
         .btn-secondary {
-            background-color: #4b5563;
-            color: #d1d5db;
+            background-color: transparent;
+            color: #9ca3af; 
+            border: 1px solid #4a5568; 
         }
-        .btn-secondary:hover {
-            background-color: #6b7280;
+        .btn-secondary:hover:not(:disabled) {
+            background-color: #111827; 
+            color: #ffffff;
+            border-color: #9ca3af; 
+        }
+        /* Style for disabled buttons */
+        .btn:disabled {
+            opacity: 0.4; 
+            cursor: not-allowed;
+        }
+
+        .explanation {
+            margin-top: 0.75rem; 
+            padding: 0.75rem; 
+            border-left: 5px solid #3b82f6;
+            /* CHANGE: Explanation background set to #1B1B1B */
+            background-color: #1B1B1B;
+            color: #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.85rem; 
         }
     </style>
 </head>
-<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+<body class="bg-[#1B1B1B] p-4">
 
-    <main id="quiz-container" class="w-full max-w-3xl">
-        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <div id="all-questions-container" class="space-y-8"></div>
-            <div class="text-center mt-10">
-                <button id="submit-btn" class="btn btn-primary">Submit Quiz</button>
+    <main id="quiz-container" class="w-full mx-auto max-w-2xl">
+        <div id="quiz-content" class="bg-[#1B1B1B] p-4"> 
+            
+            <div id="question-navigation" class="text-left text-sm font-medium text-gray-400 mb-4">
+                <span id="current-question-number"></span> / <span id="total-questions"></span>
+            </div>
+            
+            <div id="current-question-container" class="space-y-6"> 
+                </div>
+
+            <div id="feedback-area" class="mt-3 hidden"> 
+                <div id="explanation-text" class="explanation"></div>
+            </div>
+
+            <div class="flex flex-wrap justify-between items-start mt-8 gap-3"> 
+                <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+                
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 ml-auto">
+                    <button id="check-answer-btn" class="btn btn-primary">Check Answer</button>
+                    <button id="next-btn" class="btn btn-primary" disabled>Next</button>
+                </div>
             </div>
         </div>
 
-        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
-            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
-            <div id="results-summary" class="space-y-6"></div>
-            <div class="text-center mt-8">
+        <div id="results-screen" class="hidden bg-[#1B1B1B] p-4"> 
+            <h2 class="text-xl font-bold text-white text-center mb-3">Quiz Complete!</h2>
+            <p id="score-text" class="text-lg text-gray-300 text-center font-semibold mb-6"></p>
+            <div id="results-summary" class="space-y-4"></div>
+            <div class="text-center mt-6">
                 <button id="restart-btn" class="btn btn-primary">Retake Quiz</button>
             </div>
         </div>
@@ -86,331 +144,312 @@
     <script>
         const quizData = [
             {
-                question: "What is the standard term for 'starting up a computer'?",
+                question: "What is the standard term for 'starting up a computer' that refers to how the computer must 'pull itself up by its own bootstraps'?",
                 answerOptions: [
-                    {
-                        text: "Kernel loading",
-                        rationale: "Kernel loading is a step within the startup process, not the term for the entire process.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Bootstrapping",
-                        rationale: "The lecture defines 'bootstrapping' as the standard term for starting up a computer.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "ROM execution",
-                        rationale: "ROM execution is a part of the initial boot process, not the general term for startup.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "init process",
-                        rationale: "The 'init' process is created later in the boot process to manage startup scripts.",
-                        isCorrect: false
-                    }
+                    { text: "Initialization", isCorrect: false },
+                    { text: "Bootstrapping", isCorrect: true },
+                    { text: "Kernel Loading", isCorrect: false },
+                    { text: "System Startup", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "The lecture defines <strong>Bootstrapping</strong> as the standard term for 'starting up a computer' where the computer must 'pull itself up by its own bootstraps' because the operating system's normal facilities are not available during startup."
             },
             {
-                question: "According to the lecture, which of the following can prevent a computer from coming up during the boot time?",
+                question: "What is the first process spawned by the kernel during the boot process that always has process number 1?",
                 answerOptions: [
-                    {
-                        text: "Errors in configuration",
-                        rationale: "The lecture explicitly lists 'Errors in configuration' as a factor that can prevent a computer from booting up.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Damaged filesystems",
-                        rationale: "The lecture explicitly lists 'damaged filesystems' as a factor that can prevent a computer from booting up.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Incompatible software",
-                        rationale: "While this can cause problems later, the lecture does not list it as a factor preventing the computer from 'coming up' during boot.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Missing or unreliable equipment",
-                        rationale: "The lecture explicitly lists 'missing or unreliable equipment' as a factor that can prevent a computer from booting up.",
-                        isCorrect: true
-                    }
+                    { text: "systemd", isCorrect: false },
+                    { text: "getty", isCorrect: false },
+                    { text: "init", isCorrect: true },
+                    { text: "bash", isCorrect: false }
                 ],
-                type: 'checkbox'
+                type: 'radio',
+                fullExplanation: "The kernel spawns the system's <strong>init process</strong>, which is always process number 1. This process then manages the rest of the boot process by running startup scripts."
             },
             {
-                question: "What is the name of the process that is always process number 1 and manages the system's startup scripts?",
+                question: "Which component contains information about the machine's configuration and tells the PC which device to boot from?",
                 answerOptions: [
-                    {
-                        text: "Kernel",
-                        rationale: "The kernel is the core of the operating system, but it spawns the 'init' process, which is PID 1.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "BIOS",
-                        rationale: "The BIOS is the initial boot code stored in ROM.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "init",
-                        rationale: "The lecture states that the kernel spawns the system's 'init' process, which is always process number 1 and manages startup scripts.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Boot Loader",
-                        rationale: "The boot loader's job is to load the kernel, not manage startup scripts.",
-                        isCorrect: false
-                    }
+                    { text: "MBR (Master Boot Record)", isCorrect: false },
+                    { text: "Kernel", isCorrect: false },
+                    { text: "Boot Loader", isCorrect: false },
+                    { text: "BIOS", isCorrect: true }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "The <strong>BIOS (Basic Input/Output System)</strong> contains information about the machine's configuration and tells the PC which device to boot from. It then tries to run code from the MBR."
             },
             {
-                question: "What is the primary function of a 'Boot Loader'?",
+                question: "What is the small program responsible for loading the operating system kernel into memory?",
                 answerOptions: [
-                    {
-                        text: "To run system startup scripts.",
-                        rationale: "Running startup scripts is the job of the 'init' process.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "To load the operating system kernel into memory.",
-                        rationale: "The lecture defines a boot loader as a small program responsible for loading the kernel into memory.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "To check for damaged filesystems.",
-                        rationale: "Checking filesystems is a task managed by the 'init' scripts.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "To detect and configure hardware devices.",
-                        rationale: "Device detection is a task performed by the kernel.",
-                        isCorrect: false
-                    }
+                    { text: "BIOS", isCorrect: false },
+                    { text: "Init", isCorrect: false },
+                    { text: "Boot Loader", isCorrect: true },
+                    { text: "MBR", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "A <strong>Boot Loader</strong> is a small program that is responsible for loading the operating system kernel into memory. Common Linux boot loaders include LILO and GRUB."
             },
             {
-                question: "Which of the following are common boot loaders for Linux mentioned in the lecture?",
+                question: "Which boot loader reads its configuration file at boot time and understands filesystems and kernel executable formats?",
                 answerOptions: [
-                    {
-                        text: "GRUB",
-                        rationale: "GRUB is listed as a common boot loader for most UNIX and Linux systems.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "LILO",
-                        rationale: "LILO is listed as a traditional and stable boot loader for Linux.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "BIOS",
-                        rationale: "BIOS is a system component that runs before the boot loader.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Windows Boot Manager",
-                        rationale: "The lecture mentions Windows but not its boot manager as a Linux boot loader.",
-                        isCorrect: false
-                    }
+                    { text: "LILO", isCorrect: false },
+                    { text: "GRUB", isCorrect: true },
+                    { text: "BIOS", isCorrect: false },
+                    { text: "MBR", isCorrect: false }
                 ],
-                type: 'checkbox'
+                type: 'radio',
+                fullExplanation: "<strong>GRUB (GRand Unified Boot loader)</strong> reads its configuration file at boot time and understands filesystems and kernel executable formats. It only needs to know the device, disk partition, and kernel filename."
             },
             {
-                question: "What does the 'BIOS' stand for and what is its role in the boot process?",
+                question: "What is the purpose of initrd (initial RAM disk) during the kernel initialization process?",
                 answerOptions: [
-                    {
-                        text: "Basic Internet Operating System; it manages network connections.",
-                        rationale: "This is an incorrect definition.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Basic Input/Output System; it contains information about the machine's configuration and tells the PC which device to boot from.",
-                        rationale: "The lecture correctly defines BIOS as Basic Input/Output System and describes its role in the boot process.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Boot Initialization Operating System; it loads the kernel directly into memory.",
-                        rationale: "This is an incorrect definition. The BIOS loads boot code from ROM, which in turn loads the boot loader.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Binary Integrated Operating System; it manages kernel processes.",
-                        rationale: "This is an incorrect definition.",
-                        isCorrect: false
-                    }
+                    { text: "To create the first user process", isCorrect: false },
+                    { text: "To load the BIOS into memory", isCorrect: false },
+                    { text: "To provide a transient root filesystem in RAM before the real root filesystem is available", isCorrect: true },
+                    { text: "To configure network interfaces", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "<strong>initrd (initial RAM disk)</strong> provides a transient root filesystem in RAM before a real root filesystem is available. It's used in the two-stage loading process, for example to install filesystem modules into the kernel."
             },
             {
-                question: "What is the role of 'init' in the startup process?",
+                question: "Which run level represents single-user mode in Linux?",
                 answerOptions: [
-                    {
-                        text: "It is the first process created by the kernel, responsible for running startup scripts.",
-                        rationale: "The lecture states that after kernel initialization, 'init' is created with PID 1 and runs startup scripts to perform specific tasks.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "It is a program that loads the operating system kernel into memory.",
-                        rationale: "This is the role of the Boot Loader.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "It is a process that checks the system's hardware.",
-                        rationale: "Hardware probing is done by the kernel.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "It is a program stored in ROM that runs when the computer is first turned on.",
-                        rationale: "This is the function of the BIOS.",
-                        isCorrect: false
-                    }
+                    { text: "Run level 0", isCorrect: false },
+                    { text: "Run level 1", isCorrect: true },
+                    { text: "Run level 3", isCorrect: false },
+                    { text: "Run level 5", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "<strong>Run level 1</strong> represents single-user mode. Run level 0 is for complete shutdown, run level 3 is full multiuser mode, and run level 5 supports networking."
             },
             {
-                question: "According to the lecture, which of the following are examples of tasks performed by startup scripts?",
+                question: "Where are the master scripts for servers/daemons typically stored that understand arguments like start, stop, and restart?",
                 answerOptions: [
-                    {
-                        text: "Setting the hostname and time zone.",
-                        rationale: "The lecture lists setting the hostname and time zone as tasks performed by startup scripts.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Configuring network interfaces.",
-                        rationale: "The lecture lists configuring network interfaces as a task performed by startup scripts.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Checking and mounting the disks.",
-                        rationale: "The lecture lists checking and mounting disks as a task performed by startup scripts.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Loading the BIOS.",
-                        rationale: "The BIOS is loaded from ROM when the computer is first turned on, before startup scripts run.",
-                        isCorrect: false
-                    }
+                    { text: "/etc/rc.d/rc[0-6].d/", isCorrect: false },
+                    { text: "/boot/grub/", isCorrect: false },
+                    { text: "/etc/inittab", isCorrect: false },
+                    { text: "/etc/init.d/", isCorrect: true }
                 ],
-                type: 'checkbox'
+                type: 'radio',
+                fullExplanation: "Each server/daemon provides a master script stored in <strong>/etc/init.d/</strong>. These scripts understand the arguments: start, stop, and restart."
             },
             {
-                question: "What is the run level for 'full multiuser mode'?",
+                question: "Which command would you use to reboot a Linux system gracefully?",
                 answerOptions: [
-                    {
-                        text: "0",
-                        rationale: "Run level 0 is for system shutdown.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "1",
-                        rationale: "Run level 1 is for single-user mode.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "3",
-                        rationale: "The lecture specifies that run level 3 is for 'full multiuser mode'.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "5",
-                        rationale: "Run level 5 is for X11 (graphical user interface).",
-                        isCorrect: false
-                    }
+                    { text: "shutdown -h now", isCorrect: false },
+                    { text: "telinit 0", isCorrect: false },
+                    { text: "shutdown -r now", isCorrect: true },
+                    { text: "poweroff", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "To reboot a Linux system, you can use <strong>shutdown -r now</strong>. Other options include 'reboot' and 'telinit 6'."
             },
             {
-                question: "Which of the following commands can be used to reboot a Linux system?",
+                question: "What file tells the init process what to do at each run level?",
                 answerOptions: [
-                    {
-                        text: "shutdown -r now",
-                        rationale: "The lecture lists 'shutdown -r now' as a command to reboot the system.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "halt",
-                        rationale: "The 'halt' command is used to halt the system, not reboot it.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "telinit 6",
-                        rationale: "The lecture lists 'telinit 6' as a command to reboot the system.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "poweroff",
-                        rationale: "The 'poweroff' command is used to halt the system, not reboot it.",
-                        isCorrect: false
-                    }
+                    { text: "/etc/init.d/", isCorrect: false },
+                    { text: "/etc/inittab", isCorrect: true },
+                    { text: "/boot/grub/grub.conf", isCorrect: false },
+                    { text: "/etc/lilo.conf", isCorrect: false }
                 ],
-                type: 'checkbox'
+                type: 'radio',
+                fullExplanation: "The <strong>/etc/inittab</strong> file tells init what to do at each run level. It controls how the system behaves at different run levels from 0 to 6."
             }
         ];
 
-        const userAnswers = new Array(quizData.length).fill(null);
+        let currentQuestionIndex = 0;
+        // Stores user's selected answer and correctness status: { selected: string | string[] | null, isCorrect: boolean | null, answered: boolean }
+        const userAnswers = quizData.map(() => ({ selected: null, isCorrect: null, answered: false }));
         
         const quizContentEl = document.getElementById('quiz-content');
-        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const currentQuestionContainerEl = document.getElementById('current-question-container');
         const resultsScreenEl = document.getElementById('results-screen');
-        const submitBtn = document.getElementById('submit-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const checkAnswerBtn = document.getElementById('check-answer-btn');
         const restartBtn = document.getElementById('restart-btn');
+        const feedbackAreaEl = document.getElementById('feedback-area');
+        const explanationTextEl = document.getElementById('explanation-text');
+        const currentQuestionNumberEl = document.getElementById('current-question-number');
+        const totalQuestionsEl = document.getElementById('total-questions');
 
-        function renderAllQuestions() {
-            quizData.forEach((question, questionIndex) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'mb-8'; 
-                questionDiv.innerHTML = `
-                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
-                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
-                `;
-                
-                const optionsContainer = questionDiv.querySelector('.options-container');
+        totalQuestionsEl.textContent = quizData.length;
 
-                question.answerOptions.forEach(option => {
-                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
-                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
-                    
-                    const optionEl = document.createElement('label');
-                    optionEl.className = 'option-label flex items-center';
-                    optionEl.setAttribute('for', optionId);
-
-                    optionEl.innerHTML = `
-                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
-                        <span>${option.text}</span>
-                    `;
-                    optionsContainer.appendChild(optionEl);
-
-                    const inputEl = optionEl.querySelector('input');
-                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
-                });
-
-                allQuestionsContainerEl.appendChild(questionDiv);
-            });
+        // Helper to calculate current score
+        function calculateScore() {
+            return userAnswers.filter(a => a.isCorrect === true).length;
         }
 
-        function handleOptionSelect(e, questionIndex) {
-            const currentQuestion = quizData[questionIndex];
-            const target = e.target;
+        function renderQuestion(index) {
+            const questionData = quizData[index];
+            const userAnswer = userAnswers[index];
+            currentQuestionContainerEl.innerHTML = `
+                <div class="question-item" data-index="${index}">
+                    <h2 class="text-base font-semibold text-gray-300 mb-4">${questionData.question}</h2>
+                    <div class="options-container space-y-3"></div>
+                </div>
+            `;
             
+            currentQuestionNumberEl.textContent = index + 1;
+
+            const optionsContainer = currentQuestionContainerEl.querySelector('.options-container');
+            const isAnswered = userAnswer.answered;
+            const inputType = questionData.type === 'radio' ? 'radio' : 'checkbox';
+
+            questionData.answerOptions.forEach((option, optionIndex) => {
+                const optionId = `q${index}-o${optionIndex}`;
+                
+                const optionEl = document.createElement('label');
+                optionEl.className = 'option-label flex items-center';
+                optionEl.setAttribute('for', optionId);
+
+                optionEl.innerHTML = `
+                    <input type="${inputType}" id="${optionId}" name="q${index}" value="${option.text}" class="mr-3" ${isAnswered ? 'disabled' : ''}>
+                    <span>${option.text}</span>
+                `;
+                optionsContainer.appendChild(optionEl);
+
+                const inputEl = optionEl.querySelector('input');
+                
+                // Set initial selection/state
+                if (questionData.type === 'radio') {
+                    if (userAnswer.selected === option.text) {
+                        inputEl.checked = true;
+                        optionEl.classList.add('selected');
+                    }
+                } else { // checkbox
+                    if (Array.isArray(userAnswer.selected) && userAnswer.selected.includes(option.text)) {
+                        inputEl.checked = true;
+                        optionEl.classList.add('selected');
+                    }
+                }
+
+                // Apply correctness styling if already answered
+                if (isAnswered) {
+                    optionEl.classList.add('answered', 'disabled');
+                    if (option.isCorrect) {
+                        optionEl.classList.add('correct');
+                    } else if (inputEl.checked) {
+                        optionEl.classList.add('incorrect');
+                    }
+                }
+
+                inputEl.addEventListener('change', (e) => handleOptionSelect(e, index));
+            });
+
+            // Update navigation buttons
+            prevBtn.disabled = index === 0;
+
+            // Next button logic
+            if (index === quizData.length - 1) {
+                // Last question: always change text to "Done" and enable button
+                nextBtn.textContent = 'Done';
+                nextBtn.disabled = false; 
+            } else {
+                // Not last question: always set text to "Next" and enable button (to allow skipping)
+                nextBtn.textContent = 'Next';
+                nextBtn.disabled = false;
+            }
+
+            // Update check button state and feedback
+            if (isAnswered) {
+                checkAnswerBtn.disabled = true;
+                feedbackAreaEl.classList.remove('hidden');
+                explanationTextEl.innerHTML = questionData.fullExplanation;
+            } else {
+                // Not answered yet
+                checkAnswerBtn.disabled = !userAnswer.selected || (Array.isArray(userAnswer.selected) && userAnswer.selected.length === 0);
+                feedbackAreaEl.classList.add('hidden');
+            }
+        }
+
+        function handleOptionSelect(e, index) {
+            const currentQuestion = quizData[index];
+            const target = e.target;
+            const labelEl = target.closest('label');
+            
+            if (userAnswers[index].answered) return;
+
             if (currentQuestion.type === 'radio') {
-                userAnswers[questionIndex] = target.value;
-                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                userAnswers[index].selected = target.value;
+                document.querySelectorAll(`input[name="q${index}"]`).forEach(input => {
                     input.closest('label').classList.remove('selected');
                 });
-                target.closest('label').classList.add('selected');
-            } else { // checkbox
-                if (!Array.isArray(userAnswers[questionIndex])) {
-                    userAnswers[questionIndex] = [];
+                labelEl.classList.add('selected');
+            } else { 
+                if (!Array.isArray(userAnswers[index].selected)) {
+                    userAnswers[index].selected = [];
                 }
-                const answerSet = new Set(userAnswers[questionIndex]);
+                let answerSet = new Set(userAnswers[index].selected);
                 if (target.checked) {
                     answerSet.add(target.value);
-                    target.closest('label').classList.add('selected');
+                    labelEl.classList.add('selected');
                 } else {
                     answerSet.delete(target.value);
-                    target.closest('label').classList.remove('selected');
+                    labelEl.classList.remove('selected');
                 }
-                userAnswers[questionIndex] = Array.from(answerSet);
+                userAnswers[index].selected = Array.from(answerSet);
+            }
+            
+            // Enable Check Answer button only if an option is selected
+            checkAnswerBtn.disabled = !userAnswers[index].selected || (Array.isArray(userAnswers[index].selected) && userAnswers[index].selected.length === 0);
+        }
+
+        function checkAnswer() {
+            const questionData = quizData[currentQuestionIndex];
+            const userAnswer = userAnswers[currentQuestionIndex];
+            
+            // Allow checking only if an answer is selected and not already answered
+            if (!userAnswer.selected || userAnswer.answered) return;
+
+            userAnswer.answered = true;
+            
+            const correctAnswers = questionData.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+            let isCorrect = false;
+
+            if (questionData.type === 'radio') {
+                isCorrect = userAnswer.selected === correctAnswers[0];
+            } else { 
+                const userAnswerSet = new Set(userAnswer.selected);
+                const correctAnswerSet = new Set(correctAnswers);
+                isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+            }
+            
+            userAnswer.isCorrect = isCorrect;
+            
+            const inputs = document.querySelectorAll(`input[name="q${currentQuestionIndex}"]`);
+            inputs.forEach(input => {
+                const labelEl = input.closest('label');
+                labelEl.classList.add('answered', 'disabled');
+                input.disabled = true;
+
+                const optionText = input.value;
+                const isUserSelected = input.checked;
+                const isCorrectOption = correctAnswers.includes(optionText);
+
+                if (isCorrectOption) {
+                    labelEl.classList.add('correct');
+                } else if (isUserSelected && !isCorrectOption) {
+                    labelEl.classList.add('incorrect');
+                }
+                labelEl.classList.remove('selected'); 
+            });
+            
+            checkAnswerBtn.disabled = true;
+            feedbackAreaEl.classList.remove('hidden');
+            explanationTextEl.innerHTML = questionData.fullExplanation;
+        }
+
+        function navigate(direction) {
+            if (direction === 'next') {
+                if (currentQuestionIndex < quizData.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion(currentQuestionIndex);
+                } else if (currentQuestionIndex === quizData.length - 1) {
+                    // Last question, "Done" button clicked, show results.
+                    showResults(); 
+                }
+            } else if (direction === 'prev' && currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion(currentQuestionIndex);
             }
         }
 
@@ -418,55 +457,55 @@
             quizContentEl.classList.add('hidden');
             resultsScreenEl.classList.remove('hidden');
 
-            let score = 0;
+            const score = calculateScore();
             const resultsSummaryEl = document.getElementById('results-summary');
             resultsSummaryEl.innerHTML = '';
 
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+            
             quizData.forEach((question, index) => {
                 const userAnswer = userAnswers[index];
-                let isCorrect = false;
+                const isCorrect = userAnswer.isCorrect;
+                
                 const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
-                
-                if (question.type === 'radio') {
-                    isCorrect = userAnswer === correctAnswers[0];
-                } else { // checkbox
-                    const userAnswerSet = new Set(userAnswer);
-                    const correctAnswerSet = new Set(correctAnswers);
-                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
-                }
-                
-                if (isCorrect) score++;
+                const userAnswerText = Array.isArray(userAnswer.selected) ? userAnswer.selected.join(', ') : userAnswer.selected || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                const explanationText = question.fullExplanation || "No explanation available.";
 
                 const resultItem = document.createElement('div');
-                resultItem.className = 'p-4 border rounded-lg';
-                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
-
-                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
-                const correctAnswerText = correctAnswers.join(', ');
+                resultItem.className = 'p-3 border rounded-lg';
                 
-                // Find the rationale for the correct answer
-                const correctRationale = question.answerOptions.find(opt => opt.isCorrect)?.rationale || "No rationale available.";
+                // Styling based on whether it was answered and if correct
+                if (userAnswer.answered) {
+                    resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+                } else {
+                    // Style for skipped/unanswered question
+                    resultItem.classList.add('border-gray-500', 'bg-gray-700');
+                }
+                
 
                 resultItem.innerHTML = `
-                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
-                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
-                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
-                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctRationale}</p>
+                    <p class="font-semibold text-sm text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-xs mt-1 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-xs mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    ${userAnswer.answered ? `<p class="text-xs mt-2 text-gray-300">Explanation: ${explanationText}</p>` : '<p class="text-xs mt-2 text-gray-300 font-bold">Question was not answered.</p>'}
                 `;
                 resultsSummaryEl.appendChild(resultItem);
             });
 
-            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
         }
 
-        submitBtn.addEventListener('click', showResults);
+        checkAnswerBtn.addEventListener('click', checkAnswer);
+        prevBtn.addEventListener('click', () => navigate('prev'));
+        nextBtn.addEventListener('click', () => navigate('next'));
         
         restartBtn.addEventListener('click', () => {
-            location.reload();
+            // Simple page reload to reset the state
+            location.reload(); 
         });
 
         // Initial render
-        renderAllQuestions();
+        renderQuestion(currentQuestionIndex);
     </script>
 </body>
 </html>
