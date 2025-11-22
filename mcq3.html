@@ -3,31 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Computing: The Mobile User Condition Quiz</title>
+    <title>Mobile Computing - Mobile User Conditions & Architecture Quiz</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        /* FONT: Open Sans for optimal readability at small sizes */
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+        
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Open Sans', sans-serif;
+            /* CHANGE: Body background set to #1B1B1B */
+            background-color: #1B1B1B; 
+            overflow-x: hidden; 
         }
+
         .option-label {
             display: block;
-            padding: 1rem;
+            padding: 0.6rem 1rem; 
             border: 1px solid #4a5568;
-            border-radius: 0.75rem;
+            border-radius: 0.75rem; 
             cursor: pointer;
             transition: all 0.2s ease-in-out;
-            margin-bottom: 1rem;
-            color: #d1d5db; /* Lighter text color for dark theme */
+            margin-bottom: 0.75rem;
+            color: #d1d5db;
+            text-align: left;
+            font-size: 0.9rem; 
         }
-        .option-label:hover {
-            background-color: #374151;
+        .option-label:not(.answered):hover {
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
+            background-color: #111827; 
             border-color: #60a5fa;
         }
         .option-label.selected {
-            background-color: #1e3a8a;
-            border-color: #3b82f6;
-            color: #ffffff;
+            /* Kept a darker gray (#111827) for visual contrast/depressed effect */
+            background-color: #111827; 
+            border-color: #60a5fa;
         }
         .option-label.correct {
             background-color: #14532d;
@@ -39,38 +48,94 @@
             border-color: #ef4444;
             color: #ffffff;
         }
+        .option-label.disabled {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        
+        /* === UNIFIED BUTTON SIZE/PADDING (Applies to all three buttons) === */
         .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 0.5rem;
             font-weight: 600;
             transition: all 0.2s ease-in-out;
-            border: none;
+            border: none; 
             cursor: pointer;
+            display: inline-block;
+            font-size: 0.8rem;
         }
+        /* === END UNIFIED BUTTON SIZE/PADDING === */
+
+        /* Primary buttons (Check Answer, Next) are orange/yellow */
         .btn-primary {
-            background-color: #3b82f6;
-            color: white;
+            background-color: #FCA300; 
+            color: #111827; 
+            border: none;
         }
-        .btn-primary:hover {
-            background-color: #2563eb;
+        .btn-primary:hover:not(:disabled) {
+            background-color: #e59400; 
+        }
+
+        /* Secondary button (Previous) remains gray/transparent */
+        .btn-secondary {
+            background-color: transparent;
+            color: #9ca3af; 
+            border: 1px solid #4a5568; 
+        }
+        .btn-secondary:hover:not(:disabled) {
+            background-color: #111827; 
+            color: #ffffff;
+            border-color: #9ca3af; 
+        }
+        /* Style for disabled buttons */
+        .btn:disabled {
+            opacity: 0.4; 
+            cursor: not-allowed;
+        }
+
+        .explanation {
+            margin-top: 0.75rem; 
+            padding: 0.75rem; 
+            border-left: 5px solid #3b82f6;
+            /* CHANGE: Explanation background set to #1B1B1B */
+            background-color: #1B1B1B;
+            color: #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.85rem; 
         }
     </style>
 </head>
-<body class="bg-gray-900 flex items-center justify-center min-h-screen p-4">
+<body class="bg-[#1B1B1B] p-4">
 
-    <main id="quiz-container" class="w-full max-w-3xl">
-        <div id="quiz-content" class="bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <div id="all-questions-container" class="space-y-8"></div>
-            <div class="text-center mt-10">
-                <button id="su4bmit-btn" class="btn btn-primary">Submit Quiz</button>
+    <main id="quiz-container" class="w-full mx-auto max-w-2xl">
+        <div id="quiz-content" class="bg-[#1B1B1B] p-4"> 
+            
+            <div id="question-navigation" class="text-left text-sm font-medium text-gray-400 mb-4">
+                <span id="current-question-number"></span> / <span id="total-questions"></span>
+            </div>
+            
+            <div id="current-question-container" class="space-y-6"> 
+                </div>
+
+            <div id="feedback-area" class="mt-3 hidden"> 
+                <div id="explanation-text" class="explanation"></div>
+            </div>
+
+            <div class="flex flex-wrap justify-between items-start mt-8 gap-3"> 
+                <button id="prev-btn" class="btn btn-secondary" disabled>Previous</button>
+                
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 ml-auto">
+                    <button id="check-answer-btn" class="btn btn-primary">Check Answer</button>
+                    <button id="next-btn" class="btn btn-primary" disabled>Next</button>
+                </div>
             </div>
         </div>
 
-        <div id="results-screen" class="hidden bg-gray-800 p-6 rounded-2xl shadow-lg">
-            <h2 class="text-3xl font-bold text-white text-center mb-4">Quiz Completed!</h2>
-            <p id="score-text" class="text-2xl text-gray-300 text-center font-semibold mb-8"></p>
-            <div id="results-summary" class="space-y-6"></div>
-            <div class="text-center mt-8">
+        <div id="results-screen" class="hidden bg-[#1B1B1B] p-4"> 
+            <h2 class="text-xl font-bold text-white text-center mb-3">Quiz Complete!</h2>
+            <p id="score-text" class="text-lg text-gray-300 text-center font-semibold mb-6"></p>
+            <div id="results-summary" class="space-y-4"></div>
+            <div class="text-center mt-6">
                 <button id="restart-btn" class="btn btn-primary">Retake Quiz</button>
             </div>
         </div>
@@ -79,336 +144,312 @@
     <script>
         const quizData = [
             {
-                question: "According to the lecture, what defines the 'Mobile Condition'?",
+                question: "What is the 'Mobile Condition' according to the lecture?",
                 answerOptions: [
-                    {
-                        text: "The speed at which the mobile user may be traveling.",
-                        rationale: "Speed is a variable related to changing location, not the definition of Mobile Condition itself.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The difference between the mobile user and the stationary user.",
-                        rationale: "The lecture explicitly defines 'Mobile Condition' as 'the difference between the mobile user and the stationary user.'",
-                        isCorrect: true
-                    },
-                    {
-                        text: "The necessity for active transactions due to lack of focus.",
-                        rationale: "The necessity of active transactions is a consequence of the lack of focus, which is a characteristic of the mobile condition.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The high expectations of performance from the system.",
-                        rationale: "High performance expectation is related to the 'Immediacy' characteristic, not the definition of the Mobile Condition.",
-                        isCorrect: false
-                    }
+                    { text: "The physical state of mobile devices", isCorrect: false },
+                    { text: "The difference between mobile and stationary users", isCorrect: true },
+                    { text: "The network connectivity status of mobile devices", isCorrect: false },
+                    { text: "The battery life of mobile devices", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "The <strong>Mobile Condition</strong> is defined as the difference between the mobile user and the stationary user. It represents the fundamental ways in which mobile users differ from stationary users."
             },
             {
-                question: "The mobile user is fundamentally different from the stationary user in which of the following ways? (Select four that apply)",
+                question: "How many fundamental ways does the mobile user differ from the stationary user according to the lecture?",
                 answerOptions: [
-                    {
-                        text: "The mobile user frequently requires high degrees of immediacy and responsiveness from the system.",
-                        rationale: "This is one of the five ways listed in the lecture.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "The mobile user is typically not focused on the computing task.",
-                        rationale: "This is one of the five ways listed in the lecture.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "The mobile user is changing tasks frequently and/or abruptly.",
-                        rationale: "This is one of the five ways listed in the lecture.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "The mobile user is typically focused on reaching a destination.",
-                        rationale: "While true, the listed difference is that the user is typically not focused on the computing task.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The mobile user is moving, at least occasionally, between known or unknown locations.",
-                        rationale: "This is one of the five ways listed in the lecture.",
-                        isCorrect: true
-                    }
+                    { text: "3 ways", isCorrect: false },
+                    { text: "4 ways", isCorrect: false },
+                    { text: "5 ways", isCorrect: true },
+                    { text: "6 ways", isCorrect: false }
                 ],
-                type: 'checkbox'
+                type: 'radio',
+                fullExplanation: "The mobile user differs from the stationary user in <strong>5 fundamental ways</strong>: changing location, lack of focus, need for immediacy, abrupt task changes, and need for anywhere/anytime access."
             },
             {
-                question: "Which of the following are variables related to a mobile user's Changing Location? (Select all that apply)",
+                question: "Which of the following is NOT mentioned as a variable related to changing location?",
                 answerOptions: [
-                    {
-                        text: "What network connectivity modes are available to the user.",
-                        rationale: "This is one of the variables listed related to changing location.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "The location of the user at a given time.",
-                        rationale: "This is one of the variables listed related to changing location.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "The primary task of reaching the destination.",
-                        rationale: "This is a reason for the 'Lack of Focus' characteristic, not a variable of 'Changing Location'.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "How long he or she may stay connected or disconnected.",
-                        rationale: "This is one of the variables listed related to changing location.",
-                        isCorrect: true
-                    }
+                    { text: "The speed at which the user is traveling", isCorrect: false },
+                    { text: "The user's age and demographic information", isCorrect: true },
+                    { text: "Network connectivity modes available", isCorrect: false },
+                    { text: "Quality of connectivity at different locations", isCorrect: false }
                 ],
-                type: 'checkbox'
+                type: 'radio',
+                fullExplanation: "The variables related to changing location mentioned are: location, speed, network connectivity modes, quality of connectivity, and connection duration. User demographics are not mentioned as location-related variables."
             },
             {
-                question: "The primary focus of the mobile user is seldom on the computing task. What does the lecture state is the primary reason for the necessity of active transactions?",
+                question: "What is the primary reason mobile users typically lack focus on computing tasks?",
                 answerOptions: [
-                    {
-                        text: "Changing tasks frequently and/or abruptly.",
-                        rationale: "This is a different characteristic of the mobile user.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The need for high degrees of immediacy and responsiveness.",
-                        rationale: "This is related to the 'Immediacy' characteristic.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The primary focus of the mobile user is seldom on the computing task.",
-                        rationale: "The lecture states that the lack of focus is the 'primary reason for the necessity of active transactions.'",
-                        isCorrect: true
-                    },
-                    {
-                        text: "The need to support a variety of platforms and user interfaces.",
-                        rationale: "This is a requirement for the 'Anywhere, Anytime' aspect.",
-                        isCorrect: false
-                    }
+                    { text: "Poor user interface design", isCorrect: false },
+                    { text: "They are primarily focused on reaching their destination", isCorrect: true },
+                    { text: "Limited device capabilities", isCorrect: false },
+                    { text: "Network connectivity issues", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "Mobile users lack focus because <strong>they are primarily focused on reaching their destination</strong> rather than the computing task. This is also the primary reason for the necessity of active transactions."
             },
             {
-                question: "Due to the mobile user's Lack of Focus (multitasking), what must the user interface to the system be? (Select two that apply)",
+                question: "What user interface feature is mentioned as particularly important for multitasking mobile users?",
                 answerOptions: [
-                    {
-                        text: "Require as few of the user's senses focused on communicating with the machine as efficiently as possible.",
-                        rationale: "The UI must require as few of the user's senses as possible due to multitasking.",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Provide functionality not possible with stationary applications.",
-                        rationale: "This is a benefit of 'Changing Location,' not a requirement of 'Lack of Focus.'",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Very user friendly.",
-                        rationale: "The UI must be 'Very user friendly.'",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Designed to support synchronous active transactions.",
-                        rationale: "Active transactions are necessary, but this is not a UI requirement.",
-                        isCorrect: false
-                    }
+                    { text: "Touch screens", isCorrect: false },
+                    { text: "Voice interfaces", isCorrect: true },
+                    { text: "Large displays", isCorrect: false },
+                    { text: "Physical keyboards", isCorrect: false }
                 ],
-                type: 'checkbox'
+                type: 'radio',
+                fullExplanation: "<strong>Voice interfaces</strong> are particularly important for multitasking mobile users because they allow interaction without requiring visual attention or manual input, which is crucial when users are engaged in other activities like driving."
             },
             {
-                question: "Which characteristic of the mobile user leads them to normally have higher expectations of performance from their devices than stationary users do?",
+                question: "Why do mobile users have higher expectations of performance than stationary users?",
                 answerOptions: [
-                    {
-                        text: "Changing Location.",
-                        rationale: "This characteristic is related to connectivity and location services.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Lack of Focus.",
-                        rationale: "This characteristic is related to the need for active transactions and simple UIs.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Abrupt Changes in Tasks.",
-                        rationale: "This characteristic is related to task flow and returning to the application.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Immediacy.",
-                        rationale: "Mobile users needing to quickly perform tasks ('Immediacy') leads to higher performance expectations, as 'a short delay in application responsiveness can decrease its usefulness.'",
-                        isCorrect: true
-                    }
+                    { text: "They pay more for mobile devices", isCorrect: false },
+                    { text: "They need to quickly perform computing tasks while mobile", isCorrect: true },
+                    { text: "Mobile devices are more advanced", isCorrect: false },
+                    { text: "They are more technically savvy", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "Mobile users have higher performance expectations because <strong>they need to quickly perform computing tasks while mobile</strong> and don't have time for long boot sequences or application setup times."
             },
             {
-                question: "Regarding Abrupt Changes in Tasks, what do mobile users expect to be able to do without much effort?",
+                question: "What do mobile users expect regarding unfinished transactions?",
                 answerOptions: [
-                    {
-                        text: "Go through a long boot sequence before starting the task.",
-                        rationale: "This is directly contradicted by the 'Immediacy' requirement.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Stop a computing task abruptly, perform an unrelated task, and later return to continue the original task.",
-                        rationale: "The lecture states the user needs to be able to 'stop performing some computing task abruptly, do something that may be completely unrelated, then return to the application... and... continue the computing task.'",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Centralize the business logic on the server (thin client).",
-                        rationale: "This is an architectural challenge, not a user expectation for abrupt task changes.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Automatically receive a synchronous active transaction when distracted.",
-                        rationale: "Active transactions are a result of lack of focus, not a core requirement for task resumption.",
-                        isCorrect: false
-                    }
+                    { text: "To automatically cancel after timeout", isCorrect: false },
+                    { text: "To resume on different devices at different times", isCorrect: true },
+                    { text: "To be completed by the system automatically", isCorrect: false },
+                    { text: "To require restarting from the beginning", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "Mobile users expect to <strong>start a transaction on one device and finish it later on a different device</strong> at a different place and time, which supports the anywhere, anytime access requirement."
             },
             {
-                question: "In the context of mobile software architecture and customer variables, what are the two constants that describe the mobile user (the customer)? (Select two that apply)",
+                question: "What architectural conflict is mentioned between supporting multiple devices and user-friendly interfaces?",
                 answerOptions: [
-                    {
-                        text: "The location of the user and the speed of travel.",
-                        rationale: "These are variables of 'Changing Location,' not the core constants defining the customer.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The mobile condition.",
-                        rationale: "The lecture states 'The cost and the mobile condition comprise the variables that describe our customer.'",
-                        isCorrect: true
-                    },
-                    {
-                        text: "The degree of immediacy required.",
-                        rationale: "Immediacy is one dimension of the mobile condition, not one of the two constants.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The cost/budget.",
-                        rationale: "The lecture states 'The cost and the mobile condition comprise the variables that describe our customer.'",
-                        isCorrect: true
-                    }
+                    { text: "Centralized logic vs. client-side functionality", isCorrect: true },
+                    { text: "Battery life vs. processing power", isCorrect: false },
+                    { text: "Cost vs. features", isCorrect: false },
+                    { text: "Security vs. accessibility", isCorrect: false }
                 ],
-                type: 'checkbox'
+                type: 'radio',
+                fullExplanation: "There's a conflict between <strong>centralizing business logic for multiple device support</strong> (thin clients) and <strong>pushing functionality to the client</strong> for better user experience when disconnected."
             },
             {
-                question: "What is the primary conflict in mobile software architecture mentioned in the lecture?",
+                question: "What two factors comprise the variables that describe the mobile customer?",
                 answerOptions: [
-                    {
-                        text: "The conflict between supporting only one platform versus supporting multiple platforms.",
-                        rationale: "Supporting multiple platforms is a critical requirement, not a stated architectural conflict.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The conflict between the user's desire for an increased CPU and the resulting increase in device size.",
-                        rationale: "This is a secondary conflict mentioned, not the primary architectural one.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "The conflict between centralizing business logic (thin client) and pushing a significant portion of the application to the client (offline use/friendly UI).",
-                        rationale: "The lecture explicitly states a direct conflict between centralizing logic for more device support (thin client) and pushing logic to the client for better UI/offline use (thick client).",
-                        isCorrect: true
-                    },
-                    {
-                        text: "The conflict between designing a user-friendly UI and requiring the user's senses to focus on the machine.",
-                        rationale: "The UI should aim to be user-friendly and require few senses; this is a design goal, not an inherent conflict.",
-                        isCorrect: false
-                    }
+                    { text: "Device type and network speed", isCorrect: false },
+                    { text: "Cost and the mobile condition", isCorrect: true },
+                    { text: "Location and task requirements", isCorrect: false },
+                    { text: "User interface and application features", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "The <strong>cost and the mobile condition</strong> comprise the variables that describe the mobile customer. While every user has specific needs, these two factors are constants that must be considered."
             },
             {
-                question: "According to the lecture, after the process of gathering requirements, what is the first step in building a software application?",
+                question: "What is the first step in building a mobile application after gathering requirements?",
                 answerOptions: [
-                    {
-                        text: "Conducting user acceptance testing (UAT).",
-                        rationale: "UAT is done at the end of the development cycle.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Deciding on the architecture (laying down a high-level plan).",
-                        rationale: "The lecture states the first step is to 'lay down a high-level plan of what the application will be like when it is finished,' which is 'to decide on the architecture.'",
-                        isCorrect: true
-                    },
-                    {
-                        text: "Centralizing all business logic for platform support.",
-                        rationale: "This is an architectural decision that comes after the first step.",
-                        isCorrect: false
-                    },
-                    {
-                        text: "Implementing active transactions.",
-                        rationale: "This is a specific feature implementation, not the first architectural step.",
-                        isCorrect: false
-                    }
+                    { text: "Choosing the programming language", isCorrect: false },
+                    { text: "Designing the user interface", isCorrect: false },
+                    { text: "Deciding on the architecture", isCorrect: true },
+                    { text: "Selecting the target devices", isCorrect: false }
                 ],
-                type: 'radio'
+                type: 'radio',
+                fullExplanation: "After gathering requirements, the first step is <strong>deciding on the architecture</strong>, which involves creating a high-level plan of what the application will be like when finished and how its components will collaborate."
             }
         ];
 
-        const userAnswers = new Array(quizData.length).fill(null);
+        let currentQuestionIndex = 0;
+        // Stores user's selected answer and correctness status: { selected: string | string[] | null, isCorrect: boolean | null, answered: boolean }
+        const userAnswers = quizData.map(() => ({ selected: null, isCorrect: null, answered: false }));
         
         const quizContentEl = document.getElementById('quiz-content');
-        const allQuestionsContainerEl = document.getElementById('all-questions-container');
+        const currentQuestionContainerEl = document.getElementById('current-question-container');
         const resultsScreenEl = document.getElementById('results-screen');
-        const submitBtn = document.getElementById('submit-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const checkAnswerBtn = document.getElementById('check-answer-btn');
         const restartBtn = document.getElementById('restart-btn');
+        const feedbackAreaEl = document.getElementById('feedback-area');
+        const explanationTextEl = document.getElementById('explanation-text');
+        const currentQuestionNumberEl = document.getElementById('current-question-number');
+        const totalQuestionsEl = document.getElementById('total-questions');
 
-        function renderAllQuestions() {
-            quizData.forEach((question, questionIndex) => {
-                const questionDiv = document.createElement('div');
-                questionDiv.className = 'mb-8'; 
-                questionDiv.innerHTML = `
-                    <h2 class="text-xl font-semibold text-gray-300 mb-6">${questionIndex + 1}. ${question.question}</h2>
-                    <div class="options-container space-y-4" data-index="${questionIndex}"></div>
-                `;
-                
-                const optionsContainer = questionDiv.querySelector('.options-container');
+        totalQuestionsEl.textContent = quizData.length;
 
-                question.answerOptions.forEach(option => {
-                    const inputType = question.type === 'radio' ? 'radio' : 'checkbox';
-                    const optionId = `q${questionIndex}-o${optionsContainer.children.length}`;
-                    
-                    const optionEl = document.createElement('label');
-                    optionEl.className = 'option-label flex items-center';
-                    optionEl.setAttribute('for', optionId);
-
-                    optionEl.innerHTML = `
-                        <input type="${inputType}" id="${optionId}" name="q${questionIndex}" value="${option.text}" class="mr-3">
-                        <span>${option.text}</span>
-                    `;
-                    optionsContainer.appendChild(optionEl);
-
-                    const inputEl = optionEl.querySelector('input');
-                    inputEl.addEventListener('change', (e) => handleOptionSelect(e, questionIndex));
-                });
-
-                allQuestionsContainerEl.appendChild(questionDiv);
-            });
+        // Helper to calculate current score
+        function calculateScore() {
+            return userAnswers.filter(a => a.isCorrect === true).length;
         }
 
-        function handleOptionSelect(e, questionIndex) {
-            const currentQuestion = quizData[questionIndex];
-            const target = e.target;
+        function renderQuestion(index) {
+            const questionData = quizData[index];
+            const userAnswer = userAnswers[index];
+            currentQuestionContainerEl.innerHTML = `
+                <div class="question-item" data-index="${index}">
+                    <h2 class="text-base font-semibold text-gray-300 mb-4">${questionData.question}</h2>
+                    <div class="options-container space-y-3"></div>
+                </div>
+            `;
             
+            currentQuestionNumberEl.textContent = index + 1;
+
+            const optionsContainer = currentQuestionContainerEl.querySelector('.options-container');
+            const isAnswered = userAnswer.answered;
+            const inputType = questionData.type === 'radio' ? 'radio' : 'checkbox';
+
+            questionData.answerOptions.forEach((option, optionIndex) => {
+                const optionId = `q${index}-o${optionIndex}`;
+                
+                const optionEl = document.createElement('label');
+                optionEl.className = 'option-label flex items-center';
+                optionEl.setAttribute('for', optionId);
+
+                optionEl.innerHTML = `
+                    <input type="${inputType}" id="${optionId}" name="q${index}" value="${option.text}" class="mr-3" ${isAnswered ? 'disabled' : ''}>
+                    <span>${option.text}</span>
+                `;
+                optionsContainer.appendChild(optionEl);
+
+                const inputEl = optionEl.querySelector('input');
+                
+                // Set initial selection/state
+                if (questionData.type === 'radio') {
+                    if (userAnswer.selected === option.text) {
+                        inputEl.checked = true;
+                        optionEl.classList.add('selected');
+                    }
+                } else { // checkbox
+                    if (Array.isArray(userAnswer.selected) && userAnswer.selected.includes(option.text)) {
+                        inputEl.checked = true;
+                        optionEl.classList.add('selected');
+                    }
+                }
+
+                // Apply correctness styling if already answered
+                if (isAnswered) {
+                    optionEl.classList.add('answered', 'disabled');
+                    if (option.isCorrect) {
+                        optionEl.classList.add('correct');
+                    } else if (inputEl.checked) {
+                        optionEl.classList.add('incorrect');
+                    }
+                }
+
+                inputEl.addEventListener('change', (e) => handleOptionSelect(e, index));
+            });
+
+            // Update navigation buttons
+            prevBtn.disabled = index === 0;
+
+            // Next button logic
+            if (index === quizData.length - 1) {
+                // Last question: always change text to "Done" and enable button
+                nextBtn.textContent = 'Done';
+                nextBtn.disabled = false; 
+            } else {
+                // Not last question: always set text to "Next" and enable button (to allow skipping)
+                nextBtn.textContent = 'Next';
+                nextBtn.disabled = false;
+            }
+
+            // Update check button state and feedback
+            if (isAnswered) {
+                checkAnswerBtn.disabled = true;
+                feedbackAreaEl.classList.remove('hidden');
+                explanationTextEl.innerHTML = questionData.fullExplanation;
+            } else {
+                // Not answered yet
+                checkAnswerBtn.disabled = !userAnswer.selected || (Array.isArray(userAnswer.selected) && userAnswer.selected.length === 0);
+                feedbackAreaEl.classList.add('hidden');
+            }
+        }
+
+        function handleOptionSelect(e, index) {
+            const currentQuestion = quizData[index];
+            const target = e.target;
+            const labelEl = target.closest('label');
+            
+            if (userAnswers[index].answered) return;
+
             if (currentQuestion.type === 'radio') {
-                userAnswers[questionIndex] = target.value;
-                document.querySelectorAll(`input[name="q${questionIndex}"]`).forEach(input => {
+                userAnswers[index].selected = target.value;
+                document.querySelectorAll(`input[name="q${index}"]`).forEach(input => {
                     input.closest('label').classList.remove('selected');
                 });
-                target.closest('label').classList.add('selected');
-            } else { // checkbox
-                if (!Array.isArray(userAnswers[questionIndex])) {
-                    userAnswers[questionIndex] = [];
+                labelEl.classList.add('selected');
+            } else { 
+                if (!Array.isArray(userAnswers[index].selected)) {
+                    userAnswers[index].selected = [];
                 }
-                const answerSet = new Set(userAnswers[questionIndex]);
+                let answerSet = new Set(userAnswers[index].selected);
                 if (target.checked) {
                     answerSet.add(target.value);
-                    target.closest('label').classList.add('selected');
+                    labelEl.classList.add('selected');
                 } else {
                     answerSet.delete(target.value);
-                    target.closest('label').classList.remove('selected');
+                    labelEl.classList.remove('selected');
                 }
-                userAnswers[questionIndex] = Array.from(answerSet);
+                userAnswers[index].selected = Array.from(answerSet);
+            }
+            
+            // Enable Check Answer button only if an option is selected
+            checkAnswerBtn.disabled = !userAnswers[index].selected || (Array.isArray(userAnswers[index].selected) && userAnswers[index].selected.length === 0);
+        }
+
+        function checkAnswer() {
+            const questionData = quizData[currentQuestionIndex];
+            const userAnswer = userAnswers[currentQuestionIndex];
+            
+            // Allow checking only if an answer is selected and not already answered
+            if (!userAnswer.selected || userAnswer.answered) return;
+
+            userAnswer.answered = true;
+            
+            const correctAnswers = questionData.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+            let isCorrect = false;
+
+            if (questionData.type === 'radio') {
+                isCorrect = userAnswer.selected === correctAnswers[0];
+            } else { 
+                const userAnswerSet = new Set(userAnswer.selected);
+                const correctAnswerSet = new Set(correctAnswers);
+                isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
+            }
+            
+            userAnswer.isCorrect = isCorrect;
+            
+            const inputs = document.querySelectorAll(`input[name="q${currentQuestionIndex}"]`);
+            inputs.forEach(input => {
+                const labelEl = input.closest('label');
+                labelEl.classList.add('answered', 'disabled');
+                input.disabled = true;
+
+                const optionText = input.value;
+                const isUserSelected = input.checked;
+                const isCorrectOption = correctAnswers.includes(optionText);
+
+                if (isCorrectOption) {
+                    labelEl.classList.add('correct');
+                } else if (isUserSelected && !isCorrectOption) {
+                    labelEl.classList.add('incorrect');
+                }
+                labelEl.classList.remove('selected'); 
+            });
+            
+            checkAnswerBtn.disabled = true;
+            feedbackAreaEl.classList.remove('hidden');
+            explanationTextEl.innerHTML = questionData.fullExplanation;
+        }
+
+        function navigate(direction) {
+            if (direction === 'next') {
+                if (currentQuestionIndex < quizData.length - 1) {
+                    currentQuestionIndex++;
+                    renderQuestion(currentQuestionIndex);
+                } else if (currentQuestionIndex === quizData.length - 1) {
+                    // Last question, "Done" button clicked, show results.
+                    showResults(); 
+                }
+            } else if (direction === 'prev' && currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                renderQuestion(currentQuestionIndex);
             }
         }
 
@@ -416,55 +457,55 @@
             quizContentEl.classList.add('hidden');
             resultsScreenEl.classList.remove('hidden');
 
-            let score = 0;
+            const score = calculateScore();
             const resultsSummaryEl = document.getElementById('results-summary');
             resultsSummaryEl.innerHTML = '';
 
+            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
+            
             quizData.forEach((question, index) => {
                 const userAnswer = userAnswers[index];
-                let isCorrect = false;
+                const isCorrect = userAnswer.isCorrect;
+                
                 const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
-                
-                if (question.type === 'radio') {
-                    isCorrect = userAnswer === correctAnswers[0];
-                } else { // checkbox
-                    const userAnswerSet = new Set(userAnswer);
-                    const correctAnswerSet = new Set(correctAnswers);
-                    isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
-                }
-                
-                if (isCorrect) score++;
+                const userAnswerText = Array.isArray(userAnswer.selected) ? userAnswer.selected.join(', ') : userAnswer.selected || 'Not answered';
+                const correctAnswerText = correctAnswers.join(', ');
+                const explanationText = question.fullExplanation || "No explanation available.";
 
                 const resultItem = document.createElement('div');
-                resultItem.className = 'p-4 border rounded-lg';
-                resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
-
-                const userAnswerText = Array.isArray(userAnswer) ? userAnswer.join(', ') : userAnswer || 'Not answered';
-                const correctAnswerText = correctAnswers.join(', ');
+                resultItem.className = 'p-3 border rounded-lg';
                 
-                // Find the rationale for the correct answer
-                const correctRationale = question.answerOptions.find(opt => opt.isCorrect)?.rationale || "No rationale available.";
+                // Styling based on whether it was answered and if correct
+                if (userAnswer.answered) {
+                    resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
+                } else {
+                    // Style for skipped/unanswered question
+                    resultItem.classList.add('border-gray-500', 'bg-gray-700');
+                }
+                
 
                 resultItem.innerHTML = `
-                    <p class="font-semibold text-white">${index + 1}. ${question.question}</p>
-                    <p class="text-sm mt-2 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
-                    <p class="text-sm mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
-                    <p class="text-sm mt-3 text-gray-300">Explanation: ${correctRationale}</p>
+                    <p class="font-semibold text-sm text-white">${index + 1}. ${question.question}</p>
+                    <p class="text-xs mt-1 text-gray-300">Your answer: <span class="font-medium">${userAnswerText}</span></p>
+                    <p class="text-xs mt-1 text-gray-300">Correct answer: <span class="font-medium">${correctAnswerText}</span></p>
+                    ${userAnswer.answered ? `<p class="text-xs mt-2 text-gray-300">Explanation: ${explanationText}</p>` : '<p class="text-xs mt-2 text-gray-300 font-bold">Question was not answered.</p>'}
                 `;
                 resultsSummaryEl.appendChild(resultItem);
             });
 
-            document.getElementById('score-text').textContent = `You scored ${score} out of ${quizData.length}`;
         }
 
-        submitBtn.addEventListener('click', showResults);
+        checkAnswerBtn.addEventListener('click', checkAnswer);
+        prevBtn.addEventListener('click', () => navigate('prev'));
+        nextBtn.addEventListener('click', () => navigate('next'));
         
         restartBtn.addEventListener('click', () => {
-            location.reload();
+            // Simple page reload to reset the state
+            location.reload(); 
         });
 
         // Initial render
-        renderAllQuestions();
+        renderQuestion(currentQuestionIndex);
     </script>
 </body>
 </html>
