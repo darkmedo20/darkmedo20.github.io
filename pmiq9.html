@@ -6,32 +6,32 @@
     <title>اختبار المجتمع والهوية في السايبر - المحاضرة التاسعة</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
         
         body {
-            font-family: 'Tajawal', sans-serif;
-            background-color: #1B1B1B;
-            overflow-x: hidden;
+            font-family: 'Open Sans', sans-serif;
+            background-color: #1B1B1B; 
+            overflow-x: hidden; 
         }
 
         .option-label {
             display: block;
-            padding: 0.6rem 1rem;
+            padding: 0.6rem 1rem; 
             border: 1px solid #4a5568;
-            border-radius: 0.75rem;
+            border-radius: 0.75rem; 
             cursor: pointer;
             transition: all 0.2s ease-in-out;
             margin-bottom: 0.75rem;
             color: #d1d5db;
             text-align: right;
-            font-size: 0.9rem;
+            font-size: 0.9rem; 
         }
         .option-label:not(.answered):hover {
-            background-color: #111827;
+            background-color: #111827; 
             border-color: #60a5fa;
         }
         .option-label.selected {
-            background-color: #111827;
+            background-color: #111827; 
             border-color: #60a5fa;
         }
         .option-label.correct {
@@ -54,66 +54,72 @@
             border-radius: 0.5rem;
             font-weight: 600;
             transition: all 0.2s ease-in-out;
-            border: none;
+            border: none; 
             cursor: pointer;
             display: inline-block;
             font-size: 0.8rem;
         }
 
         .btn-primary {
-            background-color: #FCA300;
-            color: #111827;
+            background-color: #FCA300; 
+            color: #111827; 
             border: none;
         }
         .btn-primary:hover:not(:disabled) {
-            background-color: #e59400;
+            background-color: #e59400; 
         }
 
         .btn-secondary {
             background-color: transparent;
-            color: #9ca3af;
-            border: 1px solid #4a5568;
+            color: #9ca3af; 
+            border: 1px solid #4a5568; 
         }
         .btn-secondary:hover:not(:disabled) {
-            background-color: #111827;
+            background-color: #111827; 
             color: #ffffff;
-            border-color: #9ca3af;
+            border-color: #9ca3af; 
         }
-        
         .btn:disabled {
-            opacity: 0.4;
+            opacity: 0.4; 
             cursor: not-allowed;
         }
 
         .explanation {
-            margin-top: 0.75rem;
-            padding: 0.75rem;
+            margin-top: 0.75rem; 
+            padding: 0.75rem; 
             border-right: 5px solid #3b82f6;
             background-color: #1B1B1B;
             color: #d1d5db;
             border-radius: 0.5rem;
-            font-size: 0.85rem;
+            font-size: 0.85rem; 
             text-align: right;
+        }
+        
+        .rtl-text {
+            text-align: right;
+            direction: rtl;
+        }
+        .question-text {
+            text-align: right;
+            line-height: 1.6;
         }
     </style>
 </head>
 <body class="bg-[#1B1B1B] p-4">
-
     <main id="quiz-container" class="w-full mx-auto max-w-2xl">
-        <div id="quiz-content" class="bg-[#1B1B1B] p-4">
-            
+        <div id="quiz-content" class="bg-[#1B1B1B] p-4"> 
             <div id="question-navigation" class="text-right text-sm font-medium text-gray-400 mb-4">
                 <span id="current-question-number"></span> / <span id="total-questions"></span>
             </div>
             
-            <div id="current-question-container" class="space-y-6">
+            <div id="current-question-container" class="space-y-6"> 
             </div>
 
-            <div id="feedback-area" class="mt-3 hidden">
+            <div id="feedback-area" class="mt-3 hidden"> 
                 <div id="explanation-text" class="explanation"></div>
             </div>
 
-            <div class="flex flex-wrap justify-between items-start mt-8 gap-3">
+            <div class="flex flex-wrap justify-between items-start mt-8 gap-3"> 
                 <button id="prev-btn" class="btn btn-secondary" disabled>السابق</button>
                 
                 <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 sm:space-x-reverse ml-auto">
@@ -123,7 +129,7 @@
             </div>
         </div>
 
-        <div id="results-screen" class="hidden bg-[#1B1B1B] p-4">
+        <div id="results-screen" class="hidden bg-[#1B1B1B] p-4"> 
             <h2 class="text-xl font-bold text-white text-center mb-3">تم الانتهاء من الاختبار!</h2>
             <p id="score-text" class="text-lg text-gray-300 text-center font-semibold mb-6"></p>
             <div id="results-summary" class="space-y-4"></div>
@@ -134,121 +140,136 @@
     </main>
 
     <script>
+        // دالة لخلط العناصر في مصفوفة (خوارزمية فيشر-ييتس)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
         const quizData = [
             {
-                question: "ما هو التعريف الأساسي للمجتمع الافتراضي؟",
+                question: "ما هو التعريف التقليدي للمجتمع حسب المحاضرة؟",
                 answerOptions: [
-                    { text: "مجموعة من الأشخاص يتصلون عبر السايبر يجمعهم هدف أو اهتمام مشترك", isCorrect: true },
-                    { text: "مجموعة تعيش في منطقة جغرافية واحدة", isCorrect: false },
-                    { text: "مجموعة تتحدث بلغة واحدة فقط", isCorrect: false },
-                    { text: "مجموعة تعمل في نفس الشركة", isCorrect: false }
+                    { text: "مجموعة من الناس تعيش في رقعة جغرافية واحدة وبحكمها قانون واحد", isCorrect: true },
+                    { text: "مجموعة من الأشخاص يتصلون عبر الإنترنت فقط", isCorrect: false },
+                    { text: "أفراد يعملون في نفس المؤسسة", isCorrect: false },
+                    { text: "أشخاص يتشاركون نفس الهوايات فقط", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "المجتمع الافتراضي يتكون من <strong>مجموعة من الأشخاص يتصلون عبر السايبر ببعضهم يجمعهم هدف واحد أو مجال واحد أو موضوع مشترك</strong>، وليس للموقع الجغرافي أهمية."
+                fullExplanation: "التعريف <strong>التقليدي للمجتمع</strong> هو مجموعة من الناس تعيش في رقعة جغرافية واحدة وبحكمها قانون واحد. هذا التعريف يعتمد على المكان الجغرافي، ويمكن توسيعه ليشمل مجموعة ذات مصلحة مشتركة."
             },
             {
-                question: "ما هي إحدى مزايا المجتمعات الافتراضية؟",
+                question: "ما هي الميزة الرئيسية للمجتمعات الافتراضية؟",
                 answerOptions: [
-                    { text: "تمكن الأشخاص من أماكن متباعدة من التواصل المنتظم", isCorrect: true },
-                    { text: "تزيد من الاتصال وجهًا لوجه بين الأفراد", isCorrect: false },
-                    { text: "تحد من حرية الانضمام للمجموعات", isCorrect: false },
-                    { text: "تفرض هوية حقيقية على جميع الأعضاء", isCorrect: false }
+                    { text: "تمكن الأشخاص من التواصل رغم تباعدهم الجغرافي", isCorrect: true },
+                    { text: "تفرض قيوداً أكثر من المجتمعات الحقيقية", isCorrect: false },
+                    { text: "تقلل من حرية الأفراد في الانضمام للمجموعات", isCorrect: false },
+                    { text: "تزيد من الاتصال وجهاً لوجه", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "من مزايا المجتمعات الافتراضية أنها <strong>تمكن الذين يسكنون في أماكن متباعدة جغرافياً من التواصل المنتظم</strong> كما لو أنهم في مجتمع واحد."
+                fullExplanation: "الميزة الرئيسية للمجتمعات الافتراضية هي أنها <strong>تمكن الأشخاص من التواصل رغم تباعدهم الجغرافي</strong>، حيث يجمعهم هدف أو اهتمام مشترك بغض النظر عن مواقعهم الجغرافية التي قد تفصل بينهم الصحاري والمحيطات."
             },
             {
-                question: "ما هي إحدى مساوئ المجتمعات الافتراضية؟",
+                question: "ما هي إحدى مساوئ المجتمعات الافتراضية المذكورة في المحاضرة؟",
                 answerOptions: [
-                    { text: "تقليل الاتصال وجهًا لوجه بين الأفراد", isCorrect: true },
-                    { text: "زيادة التفاعل المباشر بين الناس", isCorrect: false },
-                    { text: "تعزيز الهوية الحقيقية للأفراد", isCorrect: false },
-                    { text: "منع التزوير والاختفاء", isCorrect: false }
+                    { text: "تمكن من التخفي والغش حول الشخصية", isCorrect: true },
+                    { text: "تزيد من الاتصال المباشر وجهاً لوجه", isCorrect: false },
+                    { text: "تقلل من حرية الانضمام للمجموعات", isCorrect: false },
+                    { text: "تحد من التمرد الاجتماعي والفكري", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "من مساوئ المجتمعات الافتراضية أنها <strong>تقلل الاتصال وجهًا لوجه بين الأفراد</strong> وتمكن من الاختفاء والغش."
+                fullExplanation: "من مساوئ المجتمعات الافتراضية أنها <strong>تمكن من التخفي والغش حول الشخصية</strong>، حيث يمكن للأفراد استخدام أسماء شاشة غير حقيقية، وممارسة تزوير النوع، والولوج في سلوكيات غير أخلاقية يصعب ممارستها في المجتمع الحقيقي."
             },
             {
-                question: "ما هي البيئة الافتراضية (VR)؟",
+                question: "ما هي خاصية الواقع الافتراضي (VR) الرئيسية حسب المحاضرة؟",
                 answerOptions: [
-                    { text: "بيئة حاسوبية تفاعلية ثلاثية الأبعاد يتحكم فيها المستخدم", isCorrect: true },
-                    { text: "بيئة حقيقية يعيش فيها الناس", isCorrect: false },
-                    { text: "مجتمع تقليدي يعتمد على الجغرافيا", isCorrect: false },
-                    { text: "نظام تشغيل للحواسيب", isCorrect: false }
+                    { text: "بيئة تفاعلية ثلاثية الأبعاد يتحكم فيها المستخدم", isCorrect: true },
+                    { text: "بيئة نصية ثنائية الأبعاد", isCorrect: false },
+                    { text: "وسيلة مشاهدة سلبية مثل التلفزيون", isCorrect: false },
+                    { text: "تقنية للاتصال الصوتي فقط", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "البيئة الافتراضية (VR) هي <strong>بيئة حاسوبية تفاعلية ذات ثلاثة أبعاد يتحكم فيها المستخدم</strong> وتكاد تكون حقيقة."
+                fullExplanation: "<strong>الواقع الافتراضي (VR)</strong> هو بيئة حاسوبية تفاعلية ذات ثلاثة أبعاد يتحكم فيها المستخدم وتكاد تكون حقيقة. المستخدم هنا يكون مشاركاً وليس متفرجاً كما في التلفزيون، ويمارس أفعالاً داخل البيئة الافتراضية."
             },
             {
-                question: "ما هي الأضرار الافتراضية التي قد تسببها البيئات الافتراضية؟",
+                question: "ما هي أنواع الضرر التي يمكن أن تسببها البيئات الافتراضية؟",
                 answerOptions: [
-                    { text: "ضرر أخلاقي ونفسي رغم عدم كونها حقيقية", isCorrect: true },
-                    { text: "ضرر مادي مباشر للأشخاص", isCorrect: false },
-                    { text: "تدمير الأجهزة الإلكترونية", isCorrect: false },
-                    { text: "انقطاع التيار الكهربائي", isCorrect: false }
+                    { text: "ضرر أدبي أخلاقي وضرر نفسي", isCorrect: true },
+                    { text: "ضرر مادي مباشر فقط", isCorrect: false },
+                    { text: "ضرر اقتصادي بحت", isCorrect: false },
+                    { text: "ضرر بيئي طويل المدى", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "الأضرار الافتراضية هي <strong>ضرر أخلاقي ونفسي</strong> لأن وقعها وتأثيرها أكبر من تأثير القلم أو التلفزيون رغم عدم كونها حقيقية."
+                fullExplanation: "البيئات الافتراضية قد تسبب <strong>ضرراً أدبياً أخلاقياً وضرراً نفسياً</strong> لأن وقعها وتأثيرها أكبر من تأثير الفلم أو التلفزيون، رغم أنها لا تسبب ضرراً مادياً حقيقياً."
             },
             {
-                question: "ما هي الـ Avatars في السياق الافتراضي؟",
+                question: "ما هو الـ Avatar في سياق البيئات الافتراضية؟",
                 answerOptions: [
                     { text: "الشخصية التي تتحرك في اللعبة أو المنتج الافتراضي", isCorrect: true },
-                    { text: "أجهزة استشعار لمراقبة الحركة", isCorrect: false },
-                    { text: "أنظمة تشغيل للحواسيب", isCorrect: false },
-                    { text: "شبكات الاتصال اللاسلكي", isCorrect: false }
+                    { text: "برنامج حماية من الفيروسات", isCorrect: false },
+                    { text: "نوع من أجهزة الاستشعار", isCorrect: false },
+                    { text: "تقنية للتعرف على الوجه", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "الـ Avatars هي <strong>الشخصية التي تتحرك في اللعبة أو المنتج الافتراضي</strong> وتمثل المستخدم في البيئة الافتراضية."
+                fullExplanation: "<strong>Avatar</strong> هو الشخصية التي تتحرك في اللعبة أو المنتج الافتراضي، وهو عبارة عن روبوت شبه حقيقي تصوره البرامجيات (software robots)، ويمثّل المستخدم في البيئة الافتراضية."
             },
             {
-                question: "ما هي تقنية RFID؟",
+                question: "ما هي المخاوف الأخلاقية المرتبطة بتقنية النانوتكنولوجي؟",
                 answerOptions: [
-                    { text: "تقنية تستخدم جهاز موجات الإرسال اللاسلكي للتعرف على الهوية", isCorrect: true },
-                    { text: "تقنية لقياس البصمات الحيوية", isCorrect: false },
-                    { text: "نظام تحديد المواقع العالمي", isCorrect: false },
-                    { text: "شبكة اتصالات الأقمار الصناعية", isCorrect: false }
+                    { text: "اختراق الخصوصية بسبب إمكانية إخفاء أجهزة صغيرة جداً", isCorrect: true },
+                    { text: "زيادة تكلفة الأجهزة الإلكترونية", isCorrect: false },
+                    { text: "تقليل سرعة الإنترنت", isCorrect: false },
+                    { text: "صعوبة برمجة التطبيقات", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "تقنية RFID هي <strong>تقنية تستخدم جهاز موجات الإرسال اللاسلكي ذات الحجم المتناهي الصغر</strong> للتعرف على الهوية ومتابعة المنتجات."
+                fullExplanation: "المخاوف الأخلاقية من <strong>النانوتكنولوجي</strong> تتمثل في إمكانية صناعة حواسيب متناهية الصغر وبأثمان زهيدة يمكن إخفاؤها في عدة منتجات مثل طوابع البريد وأوراق العملة، مما يساعد في اختراق الخصوصية."
             },
             {
-                question: "ما هو التحدي الأخلاقي الرئيسي لتقنية النانو تكنولوجي؟",
+                question: "ما هو الوب الدلالي (Semantic Web) وما مخاطره الأخلاقية؟",
                 answerOptions: [
-                    { text: "اختراق الخصوصية بسبب صغر حجم الأجهزة وإمكانية إخفائها", isCorrect: true },
-                    { text: "ارتفاع تكاليف الإنتاج", isCorrect: false },
-                    { text: "صعوبة الاستخدام", isCorrect: false },
-                    { text: "عدم دقة النتائج", isCorrect: false }
+                    { text: "تطور في تقنية الويب يعرف رغبات المستخدم وقد يستغل في حجب المعلومات أو اختراق الخصوصية", isCorrect: true },
+                    { text: "نوع من مواقع التواصل الاجتماعي", isCorrect: false },
+                    { text: "برنامج لمكافحة الفيروسات", isCorrect: false },
+                    { text: "تقنية لزيادة سرعة الإنترنت فقط", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "التحدي الأخلاقي الرئيسي هو <strong>اختراق الخصوصية</strong> بسبب إمكانية صناعة حواسيب متناهية الصغر يسهل إخفاؤها في عدة منتجات."
+                fullExplanation: "<strong>الوب الدلالي (Semantic Web)</strong> هو تطور في تقنية الويب يهتم بالبيانات ووصف البيانات. النظام يعرف رغبات المستخدم ويستعرض المواقع نيابة عنه، لكن يخشى أن تستغل هذه المعرفة في حجب بعض المعلومات أو اختراق خصوصية المستخدمين."
             },
             {
-                question: "ما هي القياسات الحيوية (Biometrics)؟",
+                question: "ما هي تقنية RFID وما مخاطرها المحتملة؟",
                 answerOptions: [
-                    { text: "تقنيات التعرف على الهوية باستخدام الصفات البيولوجية", isCorrect: true },
-                    { text: "قياس سرعة الإنترنت", isCorrect: false },
-                    { text: "تحليل البيانات الإحصائية", isCorrect: false },
-                    { text: "دراسة تأثير التكنولوجيا على البيئة", isCorrect: false }
+                    { text: "نقابة تستخدم جهاز إرسال لاسلكي صغير يمكن استخدامه في المراقبة واختراق الخصوصية", isCorrect: true },
+                    { text: "تقنية للتعرف على الصوت فقط", isCorrect: false },
+                    { text: "نظام لتحديد المواقع الجغرافية", isCorrect: false },
+                    { text: "برنامج لتحرير الصور", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "القياسات الحيوية هي <strong>تقنيات التعرف على الهوية باستخدام الصفات البيولوجية</strong> مثل البصمة، التعرف على الوجه، العين، الشبكية، وغيرها."
+                fullExplanation: "<strong>RFID</strong> هي نقابة تستخدم جهاز إرسال لاسلكي متناهي الصغر يحوي بيانات الشخص. يمكن زرعها في جواز السفر أو البطاقات، ويمكن استغلالها في المراقبة والتضييق على الخصوصية، حيث يمكن لمعتدٍ أن يلتقط الإشارة من بعد ويكتشف هوية صاحب الجواز."
             },
             {
-                question: "ما هو الخطر الأخلاقي للويب المعنوي (Semantic Web)؟",
+                question: "ما هي الخدمات المرتبطة بالموقع (LBS) وما مخاطرها؟",
                 answerOptions: [
-                    { text: "استغلال معرفة تفضيلات الأشخاص لاختراق خصوصيتهم", isCorrect: true },
-                    { text: "بطء سرعة الاتصال بالإنترنت", isCorrect: false },
-                    { text: "ارتفاع تكاليف التطوير", isCorrect: false },
-                    { text: "صعوبة استخدام الواجهات", isCorrect: false }
+                    { text: "خدمات تعطي معلومات بناءً على موقع المستخدم وقد تستخدم للحد من حرية الحركة", isCorrect: true },
+                    { text: "خدمات للدردشة النصية فقط", isCorrect: false },
+                    { text: "تقنيات للتعرف على الوجوه", isCorrect: false },
+                    { text: "أنظمة لحماية البيانات من الاختراق", isCorrect: false }
                 ],
                 type: 'radio',
-                fullExplanation: "الخطر الأخلاقي للويب المعنوي هو <strong>استغلال المعرفة بما يفضله الأشخاص وما يحتاجونه في حجب بعض المعلومات عنهم أو اختراق خصوصيتهم</strong>."
+                fullExplanation: "<strong>الخدمات المرتبطة بالموقع (LBS)</strong> تعطي المستخدم خريطة بمواقع اهتماماته أثناء تحركاته باستخدام تكنولوجيا GPS. رغم منافعها في إظهار مواقع المستشفيات وغيرها، إلا أنها يمكن أن تكون وسيلة للحد من حرية حركة الأشخاص واختراق خصوصيتهم."
             }
         ];
 
         let currentQuestionIndex = 0;
-        const userAnswers = quizData.map(() => ({ selected: null, isCorrect: null, answered: false }));
+        // تخزين إجابات المستخدم مع ترتيب الخيارات لكل سؤال
+        const userAnswers = quizData.map(() => ({ 
+            selected: null, 
+            isCorrect: null, 
+            answered: false,
+            shuffledOptions: [] // سيتم تعبئتها عند عرض السؤال
+        }));
         
         const quizContentEl = document.getElementById('quiz-content');
         const currentQuestionContainerEl = document.getElementById('current-question-container');
@@ -264,6 +285,7 @@
 
         totalQuestionsEl.textContent = quizData.length;
 
+        // Helper to calculate current score
         function calculateScore() {
             return userAnswers.filter(a => a.isCorrect === true).length;
         }
@@ -271,9 +293,15 @@
         function renderQuestion(index) {
             const questionData = quizData[index];
             const userAnswer = userAnswers[index];
+            
+            // إذا لم يتم خلط الخيارات بعد، قم بخلطها
+            if (userAnswer.shuffledOptions.length === 0) {
+                userAnswer.shuffledOptions = shuffleArray([...questionData.answerOptions]);
+            }
+            
             currentQuestionContainerEl.innerHTML = `
                 <div class="question-item" data-index="${index}">
-                    <h2 class="text-base font-semibold text-gray-300 mb-4 text-right">${questionData.question}</h2>
+                    <h2 class="text-base font-semibold text-gray-300 mb-4 question-text">${questionData.question}</h2>
                     <div class="options-container space-y-3"></div>
                 </div>
             `;
@@ -284,33 +312,36 @@
             const isAnswered = userAnswer.answered;
             const inputType = questionData.type === 'radio' ? 'radio' : 'checkbox';
 
-            questionData.answerOptions.forEach((option, optionIndex) => {
+            // استخدام الخيارات المخلوطة بدلاً من الأصلية
+            userAnswer.shuffledOptions.forEach((option, optionIndex) => {
                 const optionId = `q${index}-o${optionIndex}`;
                 
                 const optionEl = document.createElement('label');
-                optionEl.className = 'option-label flex items-center';
+                optionEl.className = 'option-label flex items-center rtl-text';
                 optionEl.setAttribute('for', optionId);
 
                 optionEl.innerHTML = `
-                    <span class="flex-1 text-right">${option.text}</span>
+                    <span class="mr-3 flex-1">${option.text}</span>
                     <input type="${inputType}" id="${optionId}" name="q${index}" value="${option.text}" class="ml-3" ${isAnswered ? 'disabled' : ''}>
                 `;
                 optionsContainer.appendChild(optionEl);
 
                 const inputEl = optionEl.querySelector('input');
                 
+                // Set initial selection/state
                 if (questionData.type === 'radio') {
                     if (userAnswer.selected === option.text) {
                         inputEl.checked = true;
                         optionEl.classList.add('selected');
                     }
-                } else {
+                } else { // checkbox
                     if (Array.isArray(userAnswer.selected) && userAnswer.selected.includes(option.text)) {
                         inputEl.checked = true;
                         optionEl.classList.add('selected');
                     }
                 }
 
+                // Apply correctness styling if already answered
                 if (isAnswered) {
                     optionEl.classList.add('answered', 'disabled');
                     if (option.isCorrect) {
@@ -323,21 +354,27 @@
                 inputEl.addEventListener('change', (e) => handleOptionSelect(e, index));
             });
 
+            // Update navigation buttons
             prevBtn.disabled = index === 0;
 
+            // Next button logic
             if (index === quizData.length - 1) {
+                // Last question: always change text to "Done" and enable button
                 nextBtn.textContent = 'إنهاء';
-                nextBtn.disabled = false;
+                nextBtn.disabled = false; 
             } else {
+                // Not last question: always set text to "Next" and enable button (to allow skipping)
                 nextBtn.textContent = 'التالي';
                 nextBtn.disabled = false;
             }
 
+            // Update check button state and feedback
             if (isAnswered) {
                 checkAnswerBtn.disabled = true;
                 feedbackAreaEl.classList.remove('hidden');
                 explanationTextEl.innerHTML = questionData.fullExplanation;
             } else {
+                // Not answered yet
                 checkAnswerBtn.disabled = !userAnswer.selected || (Array.isArray(userAnswer.selected) && userAnswer.selected.length === 0);
                 feedbackAreaEl.classList.add('hidden');
             }
@@ -356,7 +393,7 @@
                     input.closest('label').classList.remove('selected');
                 });
                 labelEl.classList.add('selected');
-            } else {
+            } else { 
                 if (!Array.isArray(userAnswers[index].selected)) {
                     userAnswers[index].selected = [];
                 }
@@ -371,6 +408,7 @@
                 userAnswers[index].selected = Array.from(answerSet);
             }
             
+            // Enable Check Answer button only if an option is selected
             checkAnswerBtn.disabled = !userAnswers[index].selected || (Array.isArray(userAnswers[index].selected) && userAnswers[index].selected.length === 0);
         }
 
@@ -378,16 +416,20 @@
             const questionData = quizData[currentQuestionIndex];
             const userAnswer = userAnswers[currentQuestionIndex];
             
+            // Allow checking only if an answer is selected and not already answered
             if (!userAnswer.selected || userAnswer.answered) return;
 
             userAnswer.answered = true;
             
-            const correctAnswers = questionData.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+            // البحث عن الإجابة الصحيحة في الخيارات المخلوطة
+            const correctAnswer = questionData.answerOptions.find(opt => opt.isCorrect);
             let isCorrect = false;
 
             if (questionData.type === 'radio') {
-                isCorrect = userAnswer.selected === correctAnswers[0];
-            } else {
+                isCorrect = userAnswer.selected === correctAnswer.text;
+            } else { 
+                // للأسئلة متعددة الخيارات (لم يتم استخدامها في هذا الاختبار)
+                const correctAnswers = questionData.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
                 const userAnswerSet = new Set(userAnswer.selected);
                 const correctAnswerSet = new Set(correctAnswers);
                 isCorrect = correctAnswerSet.size === userAnswerSet.size && [...correctAnswerSet].every(item => userAnswerSet.has(item));
@@ -403,14 +445,17 @@
 
                 const optionText = input.value;
                 const isUserSelected = input.checked;
-                const isCorrectOption = correctAnswers.includes(optionText);
+                
+                // البحث عن الخيار في الخيارات المخلوطة لتحديد ما إذا كان صحيحاً
+                const option = userAnswer.shuffledOptions.find(opt => opt.text === optionText);
+                const isCorrectOption = option ? option.isCorrect : false;
 
                 if (isCorrectOption) {
                     labelEl.classList.add('correct');
                 } else if (isUserSelected && !isCorrectOption) {
                     labelEl.classList.add('incorrect');
                 }
-                labelEl.classList.remove('selected');
+                labelEl.classList.remove('selected'); 
             });
             
             checkAnswerBtn.disabled = true;
@@ -424,7 +469,8 @@
                     currentQuestionIndex++;
                     renderQuestion(currentQuestionIndex);
                 } else if (currentQuestionIndex === quizData.length - 1) {
-                    showResults();
+                    // Last question, "Done" button clicked, show results.
+                    showResults(); 
                 }
             } else if (direction === 'prev' && currentQuestionIndex > 0) {
                 currentQuestionIndex--;
@@ -446,19 +492,22 @@
                 const userAnswer = userAnswers[index];
                 const isCorrect = userAnswer.isCorrect;
                 
-                const correctAnswers = question.answerOptions.filter(opt => opt.isCorrect).map(opt => opt.text);
+                const correctAnswer = question.answerOptions.find(opt => opt.isCorrect);
                 const userAnswerText = Array.isArray(userAnswer.selected) ? userAnswer.selected.join(', ') : userAnswer.selected || 'لم يتم الإجابة';
-                const correctAnswerText = correctAnswers.join(', ');
+                const correctAnswerText = correctAnswer ? correctAnswer.text : 'غير معروف';
                 const explanationText = question.fullExplanation || "لا يوجد شرح متوفر.";
 
                 const resultItem = document.createElement('div');
-                resultItem.className = 'p-3 border rounded-lg text-right';
+                resultItem.className = 'p-3 border rounded-lg rtl-text';
                 
+                // Styling based on whether it was answered and if correct
                 if (userAnswer.answered) {
                     resultItem.classList.add(isCorrect ? 'border-green-500' : 'border-red-500', isCorrect ? 'bg-green-800' : 'bg-red-800');
                 } else {
+                    // Style for skipped/unanswered question
                     resultItem.classList.add('border-gray-500', 'bg-gray-700');
                 }
+                
 
                 resultItem.innerHTML = `
                     <p class="font-semibold text-sm text-white">${index + 1}. ${question.question}</p>
@@ -468,6 +517,7 @@
                 `;
                 resultsSummaryEl.appendChild(resultItem);
             });
+
         }
 
         checkAnswerBtn.addEventListener('click', checkAnswer);
@@ -475,9 +525,11 @@
         nextBtn.addEventListener('click', () => navigate('next'));
         
         restartBtn.addEventListener('click', () => {
-            location.reload();
+            // Simple page reload to reset the state
+            location.reload(); 
         });
 
+        // Initial render
         renderQuestion(currentQuestionIndex);
     </script>
 </body>
