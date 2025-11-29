@@ -434,7 +434,7 @@
                     {
                         id: `lecture-9`,
                         name: `Lecture 9: المجتمع والهوية`,
-                        podbeanUrl: `https://www.podbean.com/player-v2/?i=fci5a-19c3009-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=ff6d00`,
+                        podbeanUrl: `https://www.podbean.com/player-v2/?i=33qc5-19c321a-pb&from=pb6admin&share=0&download=0&rtl=0&fonts=Arial&skin=1b1b1b&font-color=auto&logo_link=episode_page&btn-skin=ff6d00`,
                         quizUrl: `pmiq9.html`
                     },
                     /*
